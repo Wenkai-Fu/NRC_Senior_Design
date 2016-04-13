@@ -120,7 +120,7 @@
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value=":STemWin528_CM7_GCC.a"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.364668170" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Senior_Design_Final_Iteration/Middlewares/ST/STemWin/Lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1787783496" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

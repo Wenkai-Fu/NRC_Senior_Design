@@ -204,7 +204,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     const float DT = 0.001f;
 
     float VerticalSpeedCommand = 0.5f;
-    DerivativeFilter VerticalDerivative(0.001f, 25.0f, 0.707f);
+    DerivativeFilter VerticalDerivative(0.001f, 10.0f, 0.707f);
     PidController VerticalSpeedPid(20.0, 20.0, 0, -1, 1, -4, 4);
 	TouchUpdate();
 
