@@ -1,0 +1,527 @@
+13:24:45 **** Incremental Build of configuration Debug for project Senior_Design_Eclipse_Workspace ****
+make all 
+'Building file: ../src/main.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cpp"
+../src/main.cpp: In function 'void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)':
+../src/main.cpp:204:17: warning: unused variable 'DT' [-Wunused-variable]
+     const float DT = 0.001f;
+                 ^
+../src/main.cpp:206:11: warning: unused variable 'VerticalSpeedCommand' [-Wunused-variable]
+     float VerticalSpeedCommand = 0.5f;
+           ^
+'Finished building: ../src/main.cpp'
+' '
+'Building target: Senior_Design_Eclipse_Workspace.elf'
+'Invoking: MCU G++ Linker'
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -L"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib" -T"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions -fno-rtti -lm -o "Senior_Design_Eclipse_Workspace.elf" @"objects.list"  -l:STemWin528_CM7_GCC.a
+'Finished building target: Senior_Design_Eclipse_Workspace.elf'
+' '
+make --no-print-directory post-build
+'Generating binary and Printing size information:'
+arm-none-eabi-objcopy -O binary "Senior_Design_Eclipse_Workspace.elf" "Senior_Design_Eclipse_Workspace.bin"
+arm-none-eabi-size "Senior_Design_Eclipse_Workspace.elf"
+   text	   data	    bss	    dec	    hex	filename
+ 103340	   1760	 157888	 262988	  4034c	Senior_Design_Eclipse_Workspace.elf
+' '
+13:27:59 **** Programing project Senior_Design_Eclipse_Workspace on chip ****
+"C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.externaltools.openocd.win32_1.8.0.201603291052\\tools\\openocd\\bin\\openocd.exe" -f stm32f746g_disco.cfg -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts\\st_board" -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts" -c "program Debug/Senior_Design_Eclipse_Workspace.elf verify reset exit" 
+Open On-Chip Debugger 0.10.0-dev-00267-g884c33c (2016-03-16-12:22)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+adapter speed: 2000 kHz
+srst_only separate srst_nogate srst_open_drain connect_assert_srst
+adapter_nsrst_delay: 100
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : clock speed 1800 kHz
+Error: libusb_open() failed with LIBUSB_ERROR_NOT_SUPPORTED
+Info : STLINK v2 JTAG v25 API v2 SWIM v13 VID 0x0483 PID 0x374B
+Info : using stlink api v2
+Info : Target voltage: 3.219397
+Info : STM32F756.cpu: hardware has 8 breakpoints, 4 watchpoints
+STM32F756.cpu: target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08009be0 msp: 0x20050000
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+adapter speed: 4000 kHz
+** Programming Started **
+auto erase enabled
+Info : flash size probed value 1024
+wrote 131072 bytes from file Debug/Senior_Design_Eclipse_Workspace.elf in 1.937328s (66.070 KiB/s)
+** Programming Finished **
+** Verify Started **
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000002e msp: 0x20050000
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000002e msp: 0x20050000
+verified 105156 bytes in 0.129156s (795.096 KiB/s)
+** Verified OK **
+** Resetting Target **
+shutdown command invoked
+13:31:10 **** Incremental Build of configuration Debug for project Senior_Design_Eclipse_Workspace ****
+make all 
+'Building file: ../src/Slider_Menu_GUI.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/Slider_Menu_GUI.d" -MT"src/Slider_Menu_GUI.o" -o "src/Slider_Menu_GUI.o" "../src/Slider_Menu_GUI.cpp"
+'Finished building: ../src/Slider_Menu_GUI.cpp'
+' '
+'Building file: ../src/main.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cpp"
+../src/main.cpp: In function 'void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)':
+../src/main.cpp:204:17: warning: unused variable 'DT' [-Wunused-variable]
+     const float DT = 0.001f;
+                 ^
+../src/main.cpp:206:11: warning: unused variable 'VerticalSpeedCommand' [-Wunused-variable]
+     float VerticalSpeedCommand = 0.5f;
+           ^
+'Finished building: ../src/main.cpp'
+' '
+'Building target: Senior_Design_Eclipse_Workspace.elf'
+'Invoking: MCU G++ Linker'
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -L"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib" -T"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions -fno-rtti -lm -o "Senior_Design_Eclipse_Workspace.elf" @"objects.list"  -l:STemWin528_CM7_GCC.a
+'Finished building target: Senior_Design_Eclipse_Workspace.elf'
+' '
+make --no-print-directory post-build
+'Generating binary and Printing size information:'
+arm-none-eabi-objcopy -O binary "Senior_Design_Eclipse_Workspace.elf" "Senior_Design_Eclipse_Workspace.bin"
+arm-none-eabi-size "Senior_Design_Eclipse_Workspace.elf"
+   text	   data	    bss	    dec	    hex	filename
+ 103340	   1760	 157888	 262988	  4034c	Senior_Design_Eclipse_Workspace.elf
+' '
+13:31:17 **** Incremental Build of configuration Debug for project Senior_Design_Eclipse_Workspace ****
+make all 
+make: Nothing to be done for `all'.
+13:31:21 **** Incremental Build of configuration Debug for project Senior_Design_Eclipse_Workspace ****
+make all 
+'Building file: ../src/main.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cpp"
+../src/main.cpp: In function 'void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)':
+../src/main.cpp:204:17: warning: unused variable 'DT' [-Wunused-variable]
+     const float DT = 0.001f;
+                 ^
+../src/main.cpp:206:11: warning: unused variable 'VerticalSpeedCommand' [-Wunused-variable]
+     float VerticalSpeedCommand = 0.5f;
+           ^
+'Finished building: ../src/main.cpp'
+' '
+'Building target: Senior_Design_Eclipse_Workspace.elf'
+'Invoking: MCU G++ Linker'
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -L"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib" -T"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions -fno-rtti -lm -o "Senior_Design_Eclipse_Workspace.elf" @"objects.list"  -l:STemWin528_CM7_GCC.a
+'Finished building target: Senior_Design_Eclipse_Workspace.elf'
+' '
+make --no-print-directory post-build
+'Generating binary and Printing size information:'
+arm-none-eabi-objcopy -O binary "Senior_Design_Eclipse_Workspace.elf" "Senior_Design_Eclipse_Workspace.bin"
+arm-none-eabi-size "Senior_Design_Eclipse_Workspace.elf"
+   text	   data	    bss	    dec	    hex	filename
+ 103340	   1760	 157888	 262988	  4034c	Senior_Design_Eclipse_Workspace.elf
+' '
+13:32:00 **** Programing project Senior_Design_Eclipse_Workspace on chip ****
+"C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.externaltools.openocd.win32_1.8.0.201603291052\\tools\\openocd\\bin\\openocd.exe" -f stm32f746g_disco.cfg -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts\\st_board" -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts" -c "program Debug/Senior_Design_Eclipse_Workspace.elf verify reset exit" 
+Open On-Chip Debugger 0.10.0-dev-00267-g884c33c (2016-03-16-12:22)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+adapter speed: 2000 kHz
+srst_only separate srst_nogate srst_open_drain connect_assert_srst
+adapter_nsrst_delay: 100
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : clock speed 1800 kHz
+Error: libusb_open() failed with LIBUSB_ERROR_NOT_SUPPORTED
+Info : STLINK v2 JTAG v25 API v2 SWIM v13 VID 0x0483 PID 0x374B
+Info : using stlink api v2
+Info : Target voltage: 3.216252
+Info : STM32F756.cpu: hardware has 8 breakpoints, 4 watchpoints
+STM32F756.cpu: target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08009b80 msp: 0x20050000
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+adapter speed: 4000 kHz
+** Programming Started **
+auto erase enabled
+Info : flash size probed value 1024
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x20000084 msp: 0x20050000
+wrote 131072 bytes from file Debug/Senior_Design_Eclipse_Workspace.elf in 1.924098s (66.525 KiB/s)
+** Programming Finished **
+** Verify Started **
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000002e msp: 0x20050000
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000002e msp: 0x20050000
+verified 105156 bytes in 0.127247s (807.024 KiB/s)
+** Verified OK **
+** Resetting Target **
+shutdown command invoked
+13:34:19 **** Incremental Build of configuration Debug for project Senior_Design_Eclipse_Workspace ****
+make all 
+'Building file: ../src/Slider_Menu_GUI.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/Slider_Menu_GUI.d" -MT"src/Slider_Menu_GUI.o" -o "src/Slider_Menu_GUI.o" "../src/Slider_Menu_GUI.cpp"
+'Finished building: ../src/Slider_Menu_GUI.cpp'
+' '
+'Building file: ../src/main.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cpp"
+../src/main.cpp: In function 'void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)':
+../src/main.cpp:204:17: warning: unused variable 'DT' [-Wunused-variable]
+     const float DT = 0.001f;
+                 ^
+../src/main.cpp:206:11: warning: unused variable 'VerticalSpeedCommand' [-Wunused-variable]
+     float VerticalSpeedCommand = 0.5f;
+           ^
+'Finished building: ../src/main.cpp'
+' '
+'Building target: Senior_Design_Eclipse_Workspace.elf'
+'Invoking: MCU G++ Linker'
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -L"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib" -T"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions -fno-rtti -lm -o "Senior_Design_Eclipse_Workspace.elf" @"objects.list"  -l:STemWin528_CM7_GCC.a
+'Finished building target: Senior_Design_Eclipse_Workspace.elf'
+' '
+make --no-print-directory post-build
+'Generating binary and Printing size information:'
+arm-none-eabi-objcopy -O binary "Senior_Design_Eclipse_Workspace.elf" "Senior_Design_Eclipse_Workspace.bin"
+arm-none-eabi-size "Senior_Design_Eclipse_Workspace.elf"
+   text	   data	    bss	    dec	    hex	filename
+ 103356	   1760	 157888	 263004	  4035c	Senior_Design_Eclipse_Workspace.elf
+' '
+13:34:40 **** Programing project Senior_Design_Eclipse_Workspace on chip ****
+"C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.externaltools.openocd.win32_1.8.0.201603291052\\tools\\openocd\\bin\\openocd.exe" -f stm32f746g_disco.cfg -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts\\st_board" -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts" -c "program Debug/Senior_Design_Eclipse_Workspace.elf verify reset exit" 
+Open On-Chip Debugger 0.10.0-dev-00267-g884c33c (2016-03-16-12:22)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+adapter speed: 2000 kHz
+srst_only separate srst_nogate srst_open_drain connect_assert_srst
+adapter_nsrst_delay: 100
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : clock speed 1800 kHz
+Error: libusb_open() failed with LIBUSB_ERROR_NOT_SUPPORTED
+Info : STLINK v2 JTAG v25 API v2 SWIM v13 VID 0x0483 PID 0x374B
+Info : using stlink api v2
+Info : Target voltage: 3.217824
+Info : STM32F756.cpu: hardware has 8 breakpoints, 4 watchpoints
+STM32F756.cpu: target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08009b80 msp: 0x20050000
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+adapter speed: 4000 kHz
+** Programming Started **
+auto erase enabled
+Info : flash size probed value 1024
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x20000084 msp: 0x20050000
+wrote 131072 bytes from file Debug/Senior_Design_Eclipse_Workspace.elf in 1.905958s (67.158 KiB/s)
+** Programming Finished **
+** Verify Started **
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000002e msp: 0x20050000
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000002e msp: 0x20050000
+verified 105172 bytes in 0.129511s (793.037 KiB/s)
+** Verified OK **
+** Resetting Target **
+shutdown command invoked
+13:38:27 **** Incremental Build of configuration Debug for project Senior_Design_Eclipse_Workspace ****
+make all 
+'Building file: ../src/Slider_Menu_GUI.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/Slider_Menu_GUI.d" -MT"src/Slider_Menu_GUI.o" -o "src/Slider_Menu_GUI.o" "../src/Slider_Menu_GUI.cpp"
+'Finished building: ../src/Slider_Menu_GUI.cpp'
+' '
+'Building file: ../src/main.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cpp"
+../src/main.cpp: In function 'void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)':
+../src/main.cpp:204:17: warning: unused variable 'DT' [-Wunused-variable]
+     const float DT = 0.001f;
+                 ^
+../src/main.cpp:205:11: warning: unused variable 'VerticalSpeedCommand' [-Wunused-variable]
+     float VerticalSpeedCommand = 0.5f;
+           ^
+'Finished building: ../src/main.cpp'
+' '
+'Building target: Senior_Design_Eclipse_Workspace.elf'
+'Invoking: MCU G++ Linker'
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -L"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib" -T"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions -fno-rtti -lm -o "Senior_Design_Eclipse_Workspace.elf" @"objects.list"  -l:STemWin528_CM7_GCC.a
+'Finished building target: Senior_Design_Eclipse_Workspace.elf'
+' '
+make --no-print-directory post-build
+'Generating binary and Printing size information:'
+arm-none-eabi-objcopy -O binary "Senior_Design_Eclipse_Workspace.elf" "Senior_Design_Eclipse_Workspace.bin"
+arm-none-eabi-size "Senior_Design_Eclipse_Workspace.elf"
+   text	   data	    bss	    dec	    hex	filename
+ 103332	   1760	 157880	 262972	  4033c	Senior_Design_Eclipse_Workspace.elf
+' '
+13:38:39 **** Erasing chip ****
+"C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.externaltools.openocd.win32_1.8.0.201603291052\\tools\\openocd\\bin\\openocd.exe" -f stm32f746g_disco.cfg -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts\\st_board" -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts" -c init -c "reset halt" -c "flash erase_sector 0 0 last" -c exit 
+Open On-Chip Debugger 0.10.0-dev-00267-g884c33c (2016-03-16-12:22)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+adapter speed: 2000 kHz
+srst_only separate srst_nogate srst_open_drain connect_assert_srst
+adapter_nsrst_delay: 100
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : clock speed 1800 kHz
+Error: libusb_open() failed with LIBUSB_ERROR_NOT_SUPPORTED
+Info : STLINK v2 JTAG v25 API v2 SWIM v13 VID 0x0483 PID 0x374B
+Info : using stlink api v2
+Info : Target voltage: 3.217824
+Info : STM32F756.cpu: hardware has 8 breakpoints, 4 watchpoints
+STM32F756.cpu: target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08009b90 msp: 0x20050000
+Info : flash size probed value 1024
+Command canceled
+13:39:14 **** Programing project Senior_Design_Eclipse_Workspace on chip ****
+"C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.externaltools.openocd.win32_1.8.0.201603291052\\tools\\openocd\\bin\\openocd.exe" -f stm32f746g_disco.cfg -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts\\st_board" -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts" -c "program Debug/Senior_Design_Eclipse_Workspace.elf verify reset exit" 
+Open On-Chip Debugger 0.10.0-dev-00267-g884c33c (2016-03-16-12:22)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+adapter speed: 2000 kHz
+srst_only separate srst_nogate srst_open_drain connect_assert_srst
+adapter_nsrst_delay: 100
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : clock speed 1800 kHz
+Error: libusb_open() failed with LIBUSB_ERROR_NOT_SUPPORTED
+Info : STLINK v2 JTAG v25 API v2 SWIM v13 VID 0x0483 PID 0x374B
+Info : using stlink api v2
+Info : Target voltage: 3.216252
+Info : STM32F756.cpu: hardware has 8 breakpoints, 4 watchpoints
+STM32F756.cpu: target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0xfffffffe msp: 0xfffffffc
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+adapter speed: 4000 kHz
+** Programming Started **
+auto erase enabled
+Info : flash size probed value 1024
+wrote 131072 bytes from file Debug/Senior_Design_Eclipse_Workspace.elf in 1.925655s (66.471 KiB/s)
+** Programming Finished **
+** Verify Started **
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000002e msp: 0xfffffffc
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000002e msp: 0xfffffffc
+verified 105148 bytes in 0.131653s (779.956 KiB/s)
+** Verified OK **
+** Resetting Target **
+shutdown command invoked
+13:42:13 **** Incremental Build of configuration Debug for project Senior_Design_Eclipse_Workspace ****
+make all 
+'Building file: ../src/Slider_Menu_GUI.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/Slider_Menu_GUI.d" -MT"src/Slider_Menu_GUI.o" -o "src/Slider_Menu_GUI.o" "../src/Slider_Menu_GUI.cpp"
+'Finished building: ../src/Slider_Menu_GUI.cpp'
+' '
+'Building file: ../src/main.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cpp"
+../src/main.cpp: In function 'void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)':
+../src/main.cpp:204:17: warning: unused variable 'DT' [-Wunused-variable]
+     const float DT = 0.001f;
+                 ^
+../src/main.cpp:205:11: warning: unused variable 'VerticalSpeedCommand' [-Wunused-variable]
+     float VerticalSpeedCommand = 0.5f;
+           ^
+'Finished building: ../src/main.cpp'
+' '
+'Building target: Senior_Design_Eclipse_Workspace.elf'
+'Invoking: MCU G++ Linker'
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -L"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib" -T"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions -fno-rtti -lm -o "Senior_Design_Eclipse_Workspace.elf" @"objects.list"  -l:STemWin528_CM7_GCC.a
+'Finished building target: Senior_Design_Eclipse_Workspace.elf'
+' '
+make --no-print-directory post-build
+'Generating binary and Printing size information:'
+arm-none-eabi-objcopy -O binary "Senior_Design_Eclipse_Workspace.elf" "Senior_Design_Eclipse_Workspace.bin"
+arm-none-eabi-size "Senior_Design_Eclipse_Workspace.elf"
+   text	   data	    bss	    dec	    hex	filename
+ 103308	   1760	 157880	 262948	  40324	Senior_Design_Eclipse_Workspace.elf
+' '
+13:42:24 **** Programing project Senior_Design_Eclipse_Workspace on chip ****
+"C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.externaltools.openocd.win32_1.8.0.201603291052\\tools\\openocd\\bin\\openocd.exe" -f stm32f746g_disco.cfg -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts\\st_board" -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts" -c "program Debug/Senior_Design_Eclipse_Workspace.elf verify reset exit" 
+Open On-Chip Debugger 0.10.0-dev-00267-g884c33c (2016-03-16-12:22)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+adapter speed: 2000 kHz
+srst_only separate srst_nogate srst_open_drain connect_assert_srst
+adapter_nsrst_delay: 100
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : clock speed 1800 kHz
+Error: libusb_open() failed with LIBUSB_ERROR_NOT_SUPPORTED
+Info : STLINK v2 JTAG v25 API v2 SWIM v13 VID 0x0483 PID 0x374B
+Info : using stlink api v2
+Info : Target voltage: 3.217824
+Info : STM32F756.cpu: hardware has 8 breakpoints, 4 watchpoints
+STM32F756.cpu: target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08009b78 msp: 0x20050000
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+adapter speed: 4000 kHz
+** Programming Started **
+auto erase enabled
+Info : flash size probed value 1024
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x20000084 msp: 0x20050000
+wrote 131072 bytes from file Debug/Senior_Design_Eclipse_Workspace.elf in 1.813943s (70.565 KiB/s)
+** Programming Finished **
+** Verify Started **
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000002e msp: 0x20050000
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000002e msp: 0x20050000
+verified 105124 bytes in 0.125352s (818.975 KiB/s)
+** Verified OK **
+** Resetting Target **
+shutdown command invoked
+13:59:03 **** Incremental Build of configuration Debug for project Senior_Design_Eclipse_Workspace ****
+make all 
+'Building file: ../src/Slider_Menu_GUI.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/Slider_Menu_GUI.d" -MT"src/Slider_Menu_GUI.o" -o "src/Slider_Menu_GUI.o" "../src/Slider_Menu_GUI.cpp"
+'Finished building: ../src/Slider_Menu_GUI.cpp'
+' '
+'Building file: ../src/main.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cpp"
+../src/main.cpp: In function 'void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)':
+../src/main.cpp:204:17: warning: unused variable 'DT' [-Wunused-variable]
+     const float DT = 0.001f;
+                 ^
+../src/main.cpp:205:11: warning: unused variable 'VerticalSpeedCommand' [-Wunused-variable]
+     float VerticalSpeedCommand = 0.5f;
+           ^
+'Finished building: ../src/main.cpp'
+' '
+'Building target: Senior_Design_Eclipse_Workspace.elf'
+'Invoking: MCU G++ Linker'
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -L"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib" -T"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions -fno-rtti -lm -o "Senior_Design_Eclipse_Workspace.elf" @"objects.list"  -l:STemWin528_CM7_GCC.a
+'Finished building target: Senior_Design_Eclipse_Workspace.elf'
+' '
+make --no-print-directory post-build
+'Generating binary and Printing size information:'
+arm-none-eabi-objcopy -O binary "Senior_Design_Eclipse_Workspace.elf" "Senior_Design_Eclipse_Workspace.bin"
+arm-none-eabi-size "Senior_Design_Eclipse_Workspace.elf"
+   text	   data	    bss	    dec	    hex	filename
+ 103308	   1760	 157880	 262948	  40324	Senior_Design_Eclipse_Workspace.elf
+' '
+14:02:49 **** Incremental Build of configuration Debug for project Senior_Design_Eclipse_Workspace ****
+make all 
+'Building file: ../src/Slider_Menu_GUI.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/Slider_Menu_GUI.d" -MT"src/Slider_Menu_GUI.o" -o "src/Slider_Menu_GUI.o" "../src/Slider_Menu_GUI.cpp"
+'Finished building: ../src/Slider_Menu_GUI.cpp'
+' '
+'Building file: ../src/main.cpp'
+'Invoking: MCU G++ Compiler'
+C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Debug
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DSTM32F746G_DISCO -DSTM32F746NGHx -DSTM32F7 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/core" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/CMSIS/device" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc/Legacy" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/HAL_Driver/Inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Config" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/inc" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire480272" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ampire640480" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/Common" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/exc7200" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ft5336" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/mfxstm32l152" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q128a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/n25q512a" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ov9655" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/rk043fn48h" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/s5k5cag" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/st7735" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/stmpe811" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/ts3510" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Components/wm8994" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Fonts" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/Log" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities" -I"C:/Users/smith/Documents/GitHub/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Utilities/STM32746G-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fno-exceptions -fno-rtti -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cpp"
+../src/main.cpp: In function 'void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)':
+../src/main.cpp:204:17: warning: unused variable 'DT' [-Wunused-variable]
+     const float DT = 0.001f;
+                 ^
+../src/main.cpp:205:11: warning: unused variable 'VerticalSpeedCommand' [-Wunused-variable]
+     float VerticalSpeedCommand = 0.5f;
+           ^
+'Finished building: ../src/main.cpp'
+' '
+'Building target: Senior_Design_Eclipse_Workspace.elf'
+'Invoking: MCU G++ Linker'
+arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -L"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib" -T"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions -fno-rtti -lm -o "Senior_Design_Eclipse_Workspace.elf" @"objects.list"  -l:STemWin528_CM7_GCC.a
+'Finished building target: Senior_Design_Eclipse_Workspace.elf'
+' '
+make --no-print-directory post-build
+'Generating binary and Printing size information:'
+arm-none-eabi-objcopy -O binary "Senior_Design_Eclipse_Workspace.elf" "Senior_Design_Eclipse_Workspace.bin"
+arm-none-eabi-size "Senior_Design_Eclipse_Workspace.elf"
+   text	   data	    bss	    dec	    hex	filename
+ 103300	   1760	 157880	 262940	  4031c	Senior_Design_Eclipse_Workspace.elf
+' '
+14:03:03 **** Programing project Senior_Design_Eclipse_Workspace on chip ****
+"C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.externaltools.openocd.win32_1.8.0.201603291052\\tools\\openocd\\bin\\openocd.exe" -f stm32f746g_disco.cfg -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts\\st_board" -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts" -c "program Debug/Senior_Design_Eclipse_Workspace.elf verify reset exit" 
+Open On-Chip Debugger 0.10.0-dev-00267-g884c33c (2016-03-16-12:22)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+adapter speed: 2000 kHz
+srst_only separate srst_nogate srst_open_drain connect_assert_srst
+adapter_nsrst_delay: 100
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : clock speed 1800 kHz
+Error: libusb_open() failed with LIBUSB_ERROR_NOT_SUPPORTED
+Info : STLINK v2 JTAG v25 API v2 SWIM v13 VID 0x0483 PID 0x374B
+Info : using stlink api v2
+Info : Target voltage: 3.217824
+Info : STM32F756.cpu: hardware has 8 breakpoints, 4 watchpoints
+STM32F756.cpu: target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08009b64 msp: 0x20050000
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+adapter speed: 4000 kHz
+** Programming Started **
+auto erase enabled
+Info : flash size probed value 1024
+wrote 131072 bytes from file Debug/Senior_Design_Eclipse_Workspace.elf in 1.893912s (67.585 KiB/s)
+** Programming Finished **
+** Verify Started **
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000002e msp: 0x20050000
+STM32F756.cpu: target state: halted
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x2000002e msp: 0x20050000
+verified 105116 bytes in 0.130593s (786.048 KiB/s)
+** Verified OK **
+** Resetting Target **
+shutdown command invoked

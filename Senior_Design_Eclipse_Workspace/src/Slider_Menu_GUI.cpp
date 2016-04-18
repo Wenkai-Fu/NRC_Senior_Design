@@ -287,78 +287,49 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
           }
           if (Id == GUI_ID_BUTTON3) {        // Stop Button
         	  AzimuthalMotor.dutyCycle(0);
-
         	  VerticalMotor.dutyCycle(0);
-
         	  ClawMotor.dutyCycle(0);
           }
           if (Id == GUI_ID_BUTTON0) {       // Azimuthal Button
 
         	  for (int8_t i = 0; i < 3; i++)
         	  {
-        		  if (i == 0)
-        		  {
-        			  EncoderEnable[i] = true;
-        		  }
-        		  else
-        		  {
-        			  EncoderEnable[i] = false;
-        		  }
+        		  if (i == 0) EncoderEnable[i] = true;
+
+        		  else EncoderEnable[i] = false;
         	  }
-
-        	  encoder.set(AzimuthalCount);
-
+        	  encoder.set(0);
         	  VerticalMotor.dutyCycle(0);
-
         	  ClawMotor.dutyCycle(0);
 
-        	  AzimuthalMotor.dutyCycle(_duty[0]);
           }
           if (Id == GUI_ID_BUTTON1) {        // Vertical Button
 
         	  for (int8_t i = 0; i < 3; i++)
         	  {
-        		  if (i == 1)
-        		  {
-        			  EncoderEnable[i] = true;
-        		  }
-        		  else
-        		  {
-        			  EncoderEnable[i] = false;
-        		  }
+        		  if (i == 1) EncoderEnable[i] = true;
+
+        		  else EncoderEnable[i] = false;
         	  }
 
         	  encoder.set(VerticalCount);
-
         	  AzimuthalMotor.dutyCycle(0);
-        	  AzimuthalMotor.start();
-
         	  ClawMotor.dutyCycle(0);
-        	  ClawMotor.start();
-
         	  VerticalMotor.dutyCycle(_duty[1]);
-        	  VerticalMotor.start();
           }
           if (Id == GUI_ID_BUTTON2) {        // Claw Button
 
         	  for (int8_t i = 0; i < 3; i++)
         	  {
-        		  if (i == 2)
-        		  {
-        			  EncoderEnable[i] = true;
-        		  }
-        		  else
-        		  {
-        			  EncoderEnable[i] = false;
-        		  }
+        		  if (i == 2) EncoderEnable[i] = true;
+
+        		  else EncoderEnable[i] = false;
         	  }
 
         	  encoder.set(ClawCount);
 
         	  AzimuthalMotor.dutyCycle(0);
-
         	  VerticalMotor.dutyCycle(0);
-
         	  ClawMotor.dutyCycle(_duty[2]);
           }
           if (Id == GUI_ID_BUTTON4) {        // Forward Button
@@ -400,11 +371,7 @@ void MainTask(void) {
   }
 
   AzimuthalMotor.dutyCycle(0);
-
-
   VerticalMotor.dutyCycle(0);
-
-
   ClawMotor.dutyCycle(0);
 
 

@@ -202,7 +202,6 @@ int main(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     const float DT = 0.001f;
-
     float VerticalSpeedCommand = 0.5f;
     DerivativeFilter VerticalDerivative(0.001f, 10.0f, 0.707f);
     PidController VerticalSpeedPid(20.0, 20.0, 0, -1, 1, -4, 4);
@@ -210,23 +209,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 	if (EncoderEnable[0] == true)
 	{
-
 	AzimuthalCount = encoder.read();
-
 	dir = encoder.direction();
-
 	AzimuthalRevolutions = -1.0f * (AzimuthalCount / Pulses_Per_Revolution / Azimuthal_Gear_Ratio);
-
-	AzimuthalDistance = AzimuthalRevolutions / ThreadPitch;
 
 	HAL_GPIO_WritePin(GPIOG,GPIO_PIN_7,GPIO_PIN_RESET);  // Channel B
 	HAL_GPIO_WritePin(GPIOI,GPIO_PIN_0,GPIO_PIN_SET);    // Channel A
 
-		if (AzimuthalRevolutions > .01)
-		{
-		  AzimuthalMotor.dutyCycle(0);
-		}
+		if (AzimuthalRevolutions > 0.5f) AzimuthalMotor.dutyCycle(0);
+		else AzimuthalMotor.dutyCycle(100);
 	}
+
 
 	if (EncoderEnable[1] == true)
 	{
@@ -236,8 +229,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 	DeltaCount = encoder.read() - VerticalCount;
 	VerticalCount = encoder.read();
-
-
 	dir = encoder.direction();
 
 	VerticalRevolutions = -1.0f * (VerticalCount / Pulses_Per_Revolution / Vertical_Gear_Ratio);
