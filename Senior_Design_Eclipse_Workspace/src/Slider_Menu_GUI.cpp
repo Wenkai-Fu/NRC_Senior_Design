@@ -91,14 +91,14 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { TEXT_CreateIndirect,     "Azimuthal:" ,  0,          		5,  35,  60,  20, TEXT_CF_LEFT },
   { TEXT_CreateIndirect,     "Vertical:", 0,             		5,  85,  60,  20, TEXT_CF_LEFT },
   { TEXT_CreateIndirect,     "Claw:",  0,                		5,  135, 60,  20, TEXT_CF_LEFT },
-  { SLIDER_CreateIndirect,   NULL,     GUI_ID_SLIDER0,  		65,  20, 300,  40 },
-  { SLIDER_CreateIndirect,   NULL,     GUI_ID_SLIDER1,  		65,  70, 300,  40 },
-  { SLIDER_CreateIndirect,   NULL,     GUI_ID_SLIDER2, 			65, 120, 300,  40 },
-  { EDIT_CreateIndirect,     NULL,     GUI_ID_EDIT0,   			370,  30,  30,  20, 0, 3 },
-  { EDIT_CreateIndirect,     NULL,     GUI_ID_EDIT1,   			370,  80,  30,  20, 0, 3 },
-  { EDIT_CreateIndirect,     NULL,     GUI_ID_EDIT2,   			370, 130,  30,  20, 0, 3 },
+//  { SLIDER_CreateIndirect,   NULL,     GUI_ID_SLIDER0,  		65,  20, 300,  40 },
+  { SLIDER_CreateIndirect,   NULL,     GUI_ID_SLIDER0,  		65,  70, 300,  40 },
+  { SLIDER_CreateIndirect,   NULL,     GUI_ID_SLIDER1, 			65, 120, 300,  40 },
+//  { EDIT_CreateIndirect,     NULL,     GUI_ID_EDIT0,   			370,  30,  30,  20, 0, 3 },
+  { EDIT_CreateIndirect,     NULL,     GUI_ID_EDIT0,   			370,  80,  30,  20, 0, 3 },
+  { EDIT_CreateIndirect,     NULL,     GUI_ID_EDIT1,   			370, 130,  30,  20, 0, 3 },
   { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT3,            410,  20,  45,  20, 0, 0 },
-  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT4,            410,  45,  45,  20, 0, 3 },
+//  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT4,            410,  45,  45,  20, 0, 3 },
   { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT5,            410,  70,  45,  20, 0, 3 },
   { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT6,            410,  95,  45,  20, 0, 3 },
   { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT7,            410, 120,  45,  20, 0, 3 },
@@ -109,6 +109,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { BUTTON_CreateIndirect,   "Vertical",    GUI_ID_BUTTON1,    	200, 200,  80,  40 },
   { BUTTON_CreateIndirect,   "Claw",     	GUI_ID_BUTTON2,     290, 200,  80,  40 },
   { BUTTON_CreateIndirect,   "Stop", 		GUI_ID_BUTTON3,  	380, 200,  80,  40 },
+  { BUTTON_CreateIndirect,	 "Increment",	GUI_ID_BUTTON6,		 10,  20,  80,  40 },
 };
 
 /*********************************************************************
@@ -117,7 +118,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 *
 **********************************************************************
 */
-static U8 _duty[3] = {0, 0, 0};  // Red, green and blue components
+static U8 _duty[2] = {0, 0};  // Red, green and blue components
 
 /*********************************************************************
 *
@@ -143,7 +144,7 @@ static void _OnValueChanged(WM_HWIN hDlg, int Id) {
 
   Index = 0;
   v     = 0;
-  if ((Id >= GUI_ID_SLIDER0) && (Id <= GUI_ID_SLIDER2)) {
+  if ((Id >= GUI_ID_SLIDER0) && (Id <= GUI_ID_SLIDER1)) {
     Index = Id - GUI_ID_SLIDER0;
     //
     // SLIDER-widget has changed, update EDIT-widget
@@ -152,7 +153,7 @@ static void _OnValueChanged(WM_HWIN hDlg, int Id) {
     hEdit   = WM_GetDialogItem(hDlg, GUI_ID_EDIT0 + Index);
     v = SLIDER_GetValue(hSlider);
     EDIT_SetValue(hEdit, v);
-  } else if ((Id >= GUI_ID_EDIT0) && (Id <= GUI_ID_EDIT2)) {
+  } else if ((Id >= GUI_ID_EDIT0) && (Id <= GUI_ID_EDIT1)) {
     Index = Id - GUI_ID_EDIT0;
     //
     // If EDIT-widget has changed, update SLIDER-widget
@@ -262,9 +263,6 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
 		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
 		WM_DisableWindow(hItem);
       }
-
-
-
       break;
     case WM_KEY:
       switch (((WM_KEY_INFO*)(pMsg->Data.p))->Key) {
@@ -291,46 +289,39 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
         	  ClawMotor.dutyCycle(0);
           }
           if (Id == GUI_ID_BUTTON0) {       // Azimuthal Button
-
         	  for (int8_t i = 0; i < 3; i++)
         	  {
         		  if (i == 0) EncoderEnable[i] = true;
 
         		  else EncoderEnable[i] = false;
         	  }
-        	  encoder.set(0);
-        	  VerticalMotor.dutyCycle(0);
+        	  encoder.set(0);				// Resets the count to 0 everytime
+        	  VerticalMotor.dutyCycle(0);	// Ensures the other motors are off
         	  ClawMotor.dutyCycle(0);
-
           }
           if (Id == GUI_ID_BUTTON1) {        // Vertical Button
-
         	  for (int8_t i = 0; i < 3; i++)
         	  {
         		  if (i == 1) EncoderEnable[i] = true;
-
         		  else EncoderEnable[i] = false;
         	  }
-
         	  encoder.set(VerticalCount);
         	  AzimuthalMotor.dutyCycle(0);
         	  ClawMotor.dutyCycle(0);
-        	  VerticalMotor.dutyCycle(_duty[1]);
+        	  VerticalMotor.dutyCycle(_duty[0]);
           }
           if (Id == GUI_ID_BUTTON2) {        // Claw Button
 
         	  for (int8_t i = 0; i < 3; i++)
         	  {
         		  if (i == 2) EncoderEnable[i] = true;
-
         		  else EncoderEnable[i] = false;
         	  }
-
         	  encoder.set(ClawCount);
-
+//        	  encoder.set(0);
         	  AzimuthalMotor.dutyCycle(0);
         	  VerticalMotor.dutyCycle(0);
-        	  ClawMotor.dutyCycle(_duty[2]);
+        	  ClawMotor.dutyCycle(_duty[1]);
           }
           if (Id == GUI_ID_BUTTON4) {        // Forward Button
         	  HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);
@@ -386,7 +377,7 @@ void MainTask(void) {
   while (1) {
     GUI_Delay(10);
     _SetEditValue(GUI_ID_EDIT3, AzimuthalRevolutions);
-    _SetEditValue(GUI_ID_EDIT4, AzimuthalDistance);
+
     _SetEditValue(GUI_ID_EDIT5, VerticalSpeed);
     _SetEditValue(GUI_ID_EDIT6, VerticalDistance);
     _SetEditValue(GUI_ID_EDIT7, ClawRevolutions);

@@ -150,6 +150,8 @@ int main(void)
 		// Enable GPIO Ports
 		__HAL_RCC_GPIOI_CLK_ENABLE();
 		__HAL_RCC_GPIOG_CLK_ENABLE();
+		__HAL_RCC_GPIOF_CLK_ENABLE();
+		__HAL_RCC_GPIOA_CLK_ENABLE();
 
 		GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -162,6 +164,11 @@ int main(void)
 		GPIO_InitStruct.Pin = GPIO_PIN_7;
 		HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
+		GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_10;
+		HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+		GPIO_InitStruct.Pin = GPIO_PIN_0;
+		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 
   /***********************************************************/
@@ -201,11 +208,7 @@ int main(void)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-    const float DT = 0.001f;
-    float VerticalSpeedCommand = 0.5f;
-    DerivativeFilter VerticalDerivative(0.001f, 10.0f, 0.707f);
-    PidController VerticalSpeedPid(20.0, 20.0, 0, -1, 1, -4, 4);
-	TouchUpdate();
+	TouchUpdate();			// REQUIRED to update the touchscreen.
 
 	if (EncoderEnable[0] == true)
 	{
@@ -216,14 +219,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	HAL_GPIO_WritePin(GPIOG,GPIO_PIN_7,GPIO_PIN_RESET);  // Channel B
 	HAL_GPIO_WritePin(GPIOI,GPIO_PIN_0,GPIO_PIN_SET);    // Channel A
 
-		if (AzimuthalRevolutions > 0.5f) AzimuthalMotor.dutyCycle(0);
+	float Limit = 0.05f;
+		if ((AzimuthalRevolutions > Limit)||(AzimuthalRevolutions < -Limit)) AzimuthalMotor.dutyCycle(0);
 		else AzimuthalMotor.dutyCycle(100);
 	}
 
 
 	if (EncoderEnable[1] == true)
 	{
-	float VerticalDeltaDistance = 0.0f;
 	float DeltaRevolution;
 	int32_t DeltaCount;
 
@@ -235,12 +238,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	DeltaRevolution = -1.0f * (DeltaCount / Pulses_Per_Revolution / Vertical_Gear_Ratio);
 
 	VerticalDistance = VerticalRevolutions / ThreadPitch;
-	VerticalDeltaDistance = DeltaRevolution / ThreadPitch;
 
-//	VerticalSpeed = VerticalDeltaDistance / 0.001f;
-    VerticalSpeed = VerticalDerivative.calculate(VerticalDeltaDistance);
-    VerticalSpeed = VerticalSpeed * 1000.0f;
-//    float left_duty_command = VerticalSpeedPid.calculate(VerticalSpeedCommand - VerticalSpeed, DT);
 
 	HAL_GPIO_WritePin(GPIOG,GPIO_PIN_7,GPIO_PIN_SET);    // Channel B
 	HAL_GPIO_WritePin(GPIOI,GPIO_PIN_0,GPIO_PIN_RESET);  // Channel A
@@ -264,12 +262,23 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 	HAL_GPIO_WritePin(GPIOG,GPIO_PIN_7,GPIO_PIN_SET);    // Channel B
 	HAL_GPIO_WritePin(GPIOI,GPIO_PIN_0,GPIO_PIN_SET);    // Channel A
+
+	float Limit = 0.1f;
+	if ((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_9)) == GPIO_PIN_SET)// && (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_3) == GPIO_PIN_RESET)) //Limit Pin and Motor Direction
+	{
+		ClawMotor.dutyCycle(0);
+	}
+	else if((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_9)) == GPIO_PIN_RESET) //&& (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_3) == GPIO_PIN_SET)) //Limit Pin and Motor Direction
+	{
+		ClawMotor.dutyCycle(100);
+		if ((ClawDistance > Limit)||(ClawDistance < -Limit)) ClawMotor.dutyCycle(0);
 	}
 
 
+
+
+	}
 }
-
-
 
 
 /**
