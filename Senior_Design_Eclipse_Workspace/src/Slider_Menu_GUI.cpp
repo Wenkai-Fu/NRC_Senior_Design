@@ -212,11 +212,8 @@ static void _SetProgbarValue(int Id, I32 Value) {
 static void _SetEditValue(int Id, float Value) {
 
   WM_HWIN hItem;
-
   hItem = WM_GetDialogItem(_hDialogMain, Id);
   EDIT_SetFloatValue(hItem, Value);
-
-
 }
 
 /*********************************************************************

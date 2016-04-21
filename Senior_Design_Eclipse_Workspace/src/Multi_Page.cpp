@@ -86,22 +86,22 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate1[] = {
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate2[] = {
   { WINDOW_CreateIndirect,    "Dialog 2", 0,                   			0,   0, 480, 272, 0 },
   { BUTTON_CreateIndirect,   "ClockWise",   		GUI_ID_BUTTON0,   	100,  50,  80,  40 },
-  { BUTTON_CreateIndirect,   "Counter-Clockwise",    	GUI_ID_BUTTON1,    	200, 100,  80,  40 },
-  { BUTTON_CreateIndirect,   "Stop",     		GUI_ID_BUTTON2,     	300, 150,  80,  40 },
+  { BUTTON_CreateIndirect,   "Counter-Clockwise",    	GUI_ID_BUTTON1,    	100, 100,  80,  40 },
+  { BUTTON_CreateIndirect,   "Stop",     		GUI_ID_BUTTON2,     	100, 150,  80,  40 },
 };
 
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate3[] = {
   { WINDOW_CreateIndirect,    "Dialog 3", 0,                   		0,   0, 480, 272, 0 },
   { BUTTON_CreateIndirect,   "Up",   		GUI_ID_BUTTON0,   	100,  50,  80,  40 },
-  { BUTTON_CreateIndirect,   "Down",    	GUI_ID_BUTTON1,    	200, 100,  80,  40 },
-  { BUTTON_CreateIndirect,   "Stop",     	GUI_ID_BUTTON2,     	300, 150,  80,  40 },
+  { BUTTON_CreateIndirect,   "Down",    	GUI_ID_BUTTON1,    	100, 100,  80,  40 },
+  { BUTTON_CreateIndirect,   "Stop",     	GUI_ID_BUTTON2,     	100, 150,  80,  40 },
 };
 
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate4[] = {
   { WINDOW_CreateIndirect,   "Dialog 4", 0,                       	0,   0, 480, 272, 0 },
   { BUTTON_CreateIndirect,   "Open",   		GUI_ID_BUTTON0,   	100,  50,  80,  40 },
-  { BUTTON_CreateIndirect,   "Close",    	GUI_ID_BUTTON1,    	200, 100,  80,  40 },
-  { BUTTON_CreateIndirect,   "Stop",     	GUI_ID_BUTTON2,     	300, 150,  80,  40 },
+  { BUTTON_CreateIndirect,   "Close",    	GUI_ID_BUTTON1,    	100, 100,  80,  40 },
+  { BUTTON_CreateIndirect,   "Stop",     	GUI_ID_BUTTON2,     	100, 150,  80,  40 },
 };
 
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate5[] = {
@@ -230,7 +230,7 @@ static void _cbDialog2(WM_MESSAGE * pMsg) {
 
       		  else EncoderEnable[i] = false;
       	  }
-      	  encoder.set(AzimuthalCount);
+      	  encoder.set(0);
       	  VerticalMotor.dutyCycle(0);	// Ensures the other motors are off
       	  AzimuthalMotor.dutyCycle(0);
       	  ClawMotor.dutyCycle(0);
@@ -239,10 +239,10 @@ static void _cbDialog2(WM_MESSAGE * pMsg) {
           HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);
       	  for (int8_t i = 0; i < 3; i++)
       	  {
-      		  if (i == 1) EncoderEnable[i] = true;
+      		  if (i == 0) EncoderEnable[i] = true;
       		  else EncoderEnable[i] = false;
       	  }
-      	  encoder.set(AzimuthalCount);
+      	  encoder.set(0);
       	  AzimuthalMotor.dutyCycle(0);
       	  ClawMotor.dutyCycle(0);
       	  VerticalMotor.dutyCycle(0);
@@ -278,12 +278,12 @@ static void _cbDialog3(WM_MESSAGE * pMsg) {
           HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
       	  for (int8_t i = 0; i < 3; i++)
       	  {
-      		  if (i == 0) EncoderEnable[i] = true;
+      		  if (i == 1) EncoderEnable[i] = true;
 
       		  else EncoderEnable[i] = false;
       	  }
       	  encoder.set(VerticalCount);
-      	  VerticalMotor.dutyCycle(0);	// Ensures the other motors are off
+      	  VerticalMotor.dutyCycle(100);	// Ensures the other motors are off
       	  AzimuthalMotor.dutyCycle(0);
       	  ClawMotor.dutyCycle(0);
         }
@@ -297,7 +297,7 @@ static void _cbDialog3(WM_MESSAGE * pMsg) {
       	  encoder.set(VerticalCount);
       	  AzimuthalMotor.dutyCycle(0);
       	  ClawMotor.dutyCycle(0);
-      	  VerticalMotor.dutyCycle(0);
+      	  VerticalMotor.dutyCycle(100);
         }
         if (Id == GUI_ID_BUTTON2) {        		// Stop Button
       	  AzimuthalMotor.dutyCycle(0);
@@ -330,25 +330,25 @@ static void _cbDialog4(WM_MESSAGE * pMsg) {
           HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
       	  for (int8_t i = 0; i < 3; i++)
       	  {
-      		  if (i == 0) EncoderEnable[i] = true;
+      		  if (i == 2) EncoderEnable[i] = true;
 
       		  else EncoderEnable[i] = false;
       	  }
       	  encoder.set(ClawCount);
       	  VerticalMotor.dutyCycle(0);	// Ensures the other motors are off
       	  AzimuthalMotor.dutyCycle(0);
-      	  ClawMotor.dutyCycle(0);
+      	  ClawMotor.dutyCycle(100);
         }
         if (Id == GUI_ID_BUTTON1) {        		// Close Button
           HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);
       	  for (int8_t i = 0; i < 3; i++)
       	  {
-      		  if (i == 1) EncoderEnable[i] = true;
+      		  if (i == 2) EncoderEnable[i] = true;
       		  else EncoderEnable[i] = false;
       	  }
       	  encoder.set(ClawCount);
       	  AzimuthalMotor.dutyCycle(0);
-      	  ClawMotor.dutyCycle(0);
+      	  ClawMotor.dutyCycle(100);
       	  VerticalMotor.dutyCycle(0);
         }
         if (Id == GUI_ID_BUTTON2) {        		// Stop Button
@@ -449,10 +449,7 @@ void MainTask(void) {
   //
   // Demonstrate the use of MULTIPAGE_SetAlign
   //
-  MULTIPAGE_SetAlign(hMultiPage, MULTIPAGE_ALIGN_RIGHT);
-  GUI_Delay(500);
-  MULTIPAGE_SetAlign(hMultiPage, MULTIPAGE_ALIGN_RIGHT | MULTIPAGE_ALIGN_BOTTOM);
-  GUI_Delay(500);
+
   MULTIPAGE_SetAlign(hMultiPage, MULTIPAGE_ALIGN_LEFT | MULTIPAGE_ALIGN_BOTTOM);
   while (1) {
     GUI_Delay(100);
