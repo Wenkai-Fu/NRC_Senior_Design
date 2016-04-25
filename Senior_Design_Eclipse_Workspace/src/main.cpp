@@ -54,7 +54,7 @@ uint16_t dir;
 float AzimuthalRevolutions, VerticalRevolutions, ClawRevolutions;
 float AzimuthalSpeed, VerticalSpeed, ClawSpeed;
 float AzimuthalDistance, VerticalDistance, ClawDistance;
-int32_t AzimuthalCount, VerticalCount, ClawCount;
+int32_t AzimuthalCount, VerticalCount, ClawCount, Divisor, DeltaVerticalCount;
 
 TIM_OC_InitTypeDef sConfig;
 
@@ -203,7 +203,7 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim)
       HAL_GPIO_WritePin (GPIOG, GPIO_PIN_7, GPIO_PIN_RESET);  // Channel B
       HAL_GPIO_WritePin (GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
 
-      float Limit = 0.5f;
+      float Limit = 1 / (float)(Divisor);
       if ((AzimuthalRevolutions > Limit) || (AzimuthalRevolutions < -Limit))
 	AzimuthalMotor.dutyCycle (0);
       else
@@ -212,24 +212,23 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim)
 
   if (EncoderEnable[1] == true)
     {
-      float DeltaRevolution;
-      int32_t DeltaCount;
+      float DeltaRevolutions, DeltaDistance;
 
-      DeltaCount = encoder.read () - VerticalCount;
       VerticalCount = encoder.read ();
       dir = encoder.direction ();
 
       VerticalRevolutions = -1.0f
-	  * (VerticalCount / Pulses_Per_Revolution / Vertical_Gear_Ratio);
-      DeltaRevolution = -1.0f
-	  * (DeltaCount / Pulses_Per_Revolution / Vertical_Gear_Ratio);
+	  * (VerticalCount / Pulses_Per_Revolution / Vertical_Gear_Ratio / Pinion_Spur_Gear_Ratio);
+      DeltaRevolutions = -1.0f
+	  * (DeltaVerticalCount / Pulses_Per_Revolution / Vertical_Gear_Ratio / Pinion_Spur_Gear_Ratio);
 
-      VerticalDistance = VerticalRevolutions / ThreadPitch;
+      VerticalDistance = (VerticalRevolutions / ThreadPitch) * Inches_to_Centimeters;
+      DeltaDistance = (DeltaRevolutions / ThreadPitch) * Inches_to_Centimeters;
 
       HAL_GPIO_WritePin (GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
       HAL_GPIO_WritePin (GPIOI, GPIO_PIN_0, GPIO_PIN_RESET);  // Channel A
 
-      if (VerticalDistance > 20.0f)
+      if ((VerticalDistance - DeltaDistance) > 5.0f)
 	{
 	  VerticalMotor.dutyCycle (0);
 	}
@@ -262,9 +261,10 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim)
 	  encoder.set(0);
 	}
       else if (((HAL_GPIO_ReadPin (GPIOF, GPIO_PIN_9)) == GPIO_PIN_RESET)
-	      && ((ClawDistance > Limit) || (ClawDistance < -Limit)))//NO Limit
+	      && ((ClawDistance > Limit) || (ClawDistance < -Limit)))	//NO Limit
 	{
 	  ClawMotor.dutyCycle (0);
+	  encoder.set(0);
 	}
 
 

@@ -162,9 +162,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="fr.ac6.managedbuild.config.gnu.cross.exe.debug.1591986701.1670119602" name="Slider_Menu_GUI.cpp" rcbsApplicability="disable" resourcePath="src/Slider_Menu_GUI.cpp" toolsToInvoke="fr.ac6.managedbuild.tool.gnu.cross.cpp.compiler.1325944174.1813264590">
-						<tool id="fr.ac6.managedbuild.tool.gnu.cross.cpp.compiler.1325944174.1813264590" name="MCU G++ Compiler" superClass="fr.ac6.managedbuild.tool.gnu.cross.cpp.compiler.1325944174"/>
-					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="HAL_Driver"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>

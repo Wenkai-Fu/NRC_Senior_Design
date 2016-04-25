@@ -103,7 +103,10 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { BUTTON_CreateIndirect,   "Vertical",    GUI_ID_BUTTON1,    	200, 200,  80,  40 },
   { BUTTON_CreateIndirect,   "Claw",     	GUI_ID_BUTTON2,     290, 200,  80,  40 },
   { BUTTON_CreateIndirect,   "Stop", 		GUI_ID_BUTTON3,  	380, 200,  80,  40 },
-  { BUTTON_CreateIndirect,	 "Increment",	GUI_ID_BUTTON6,		 10,  20,  80,  40 },
+  { BUTTON_CreateIndirect,	"Increment",	GUI_ID_BUTTON6,		 10,  20,  80,  40 },
+  { PROGBAR_CreateIndirect,   "",                    GUI_ID_PROGBAR0,   90, 160, 100,  18},
+  { SPINBOX_CreateIndirect,  NULL,                GUI_ID_SPINBOX0, 130, 15,  80,  40, 0, 0, 0 },
+
 };
 
 /*********************************************************************
@@ -189,15 +192,11 @@ WM_HWIN _hDialogMain;
 *       _SetProgbarValue
 */
 static void _SetProgbarValue(int Id, I32 Value) {
-  char    acBuffer[6] = {"   "};
-  WM_HWIN hItem;
 
+  WM_HWIN hItem;
   hItem = WM_GetDialogItem(_hDialogMain, Id);
   PROGBAR_SetValue(hItem, Value);
-  acBuffer[2] = '0' + Value % 10;
-  acBuffer[1] = (Value >=  10) ? '0' + (Value % 100) /  10 : ' ';
-  acBuffer[0] = (Value >= 100) ? '0' + Value / 100 : ' ';
-  PROGBAR_SetText(hItem, acBuffer);
+
 }
 /*********************************************************************
 *
@@ -216,6 +215,7 @@ static void _SetEditValue(int Id, float Value) {
 */
 static void _cbCallback(WM_MESSAGE * pMsg) {
   WM_HWIN hDlg;
+  EDIT_Handle hEdit;
   WM_HWIN hItem;
   int     i;
   int     NCode;
@@ -223,9 +223,22 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
 
 
 
+
   hDlg = pMsg->hWin;
   switch (pMsg->MsgId) {
     case WM_INIT_DIALOG:
+
+
+      hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX0);
+      SPINBOX_SetSkin(hItem, SPINBOX_SKIN_FLEX);
+      hEdit = SPINBOX_GetEditHandle(hItem);
+      EDIT_SetDecMode(hEdit, 16, 1, 100, 0, 0);
+
+
+      SPINBOX_SetEditMode(hItem, SPINBOX_EM_EDIT);
+      SPINBOX_SetRange(hItem, 0, 100);
+
+
       //
       // Init progress bars
       //
@@ -258,6 +271,7 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
 
       Id    = WM_GetId(pMsg->hWinSrc);      // Id of widget
       NCode = pMsg->Data.v;                 // Notification code
+
       switch (NCode) {
         case WM_NOTIFICATION_RELEASED:      // React only if released
           if (Id == GUI_ID_OK) {            // OK Button
@@ -292,6 +306,7 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
         		  else EncoderEnable[i] = false;
         	  }
         	  encoder.set(VerticalCount);
+        	  DeltaVerticalCount = VerticalCount;
         	  AzimuthalMotor.dutyCycle(0);
         	  ClawMotor.dutyCycle(0);
         	  VerticalMotor.dutyCycle(100);
@@ -316,6 +331,10 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
           }
           break;
         case WM_NOTIFICATION_VALUE_CHANGED: // Value has changed
+          if (Id == GUI_ID_SPINBOX0) {
+            Divisor = SPINBOX_GetValue(pMsg->hWinSrc);
+            hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX0);
+          }
           break;
       }
       break;
@@ -361,13 +380,13 @@ void MainTask(void) {
   while (1) {
     GUI_Delay(10);
     _SetEditValue(GUI_ID_EDIT3, AzimuthalRevolutions);
-
-    _SetEditValue(GUI_ID_EDIT5, VerticalSpeed);
+    _SetEditValue(GUI_ID_EDIT5, (int)(Divisor));
     _SetEditValue(GUI_ID_EDIT6, VerticalDistance);
     _SetEditValue(GUI_ID_EDIT7, ClawRevolutions);
     _SetEditValue(GUI_ID_EDIT8, ClawDistance);
 
-//    _SetProgbarValue(GUI_ID_PROGBAR0, count);
+
+    _SetProgbarValue(GUI_ID_PROGBAR0, (int)(ClawDistance * 400));
 
   }
 }

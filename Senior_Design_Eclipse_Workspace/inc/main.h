@@ -65,7 +65,7 @@
 extern float AzimuthalRevolutions, VerticalRevolutions, ClawRevolutions;
 extern float AzimuthalSpeed, VerticalSpeed, ClawSpeed;
 extern float AzimuthalDistance, VerticalDistance, ClawDistance;
-extern int32_t AzimuthalCount, VerticalCount, ClawCount;
+extern int32_t AzimuthalCount, VerticalCount, ClawCount, Divisor, DeltaVerticalCount;
 
 
 
