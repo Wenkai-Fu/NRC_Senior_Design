@@ -81,6 +81,8 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate1[] = {
   { BUTTON_CreateIndirect,   "Stop", 		GUI_ID_BUTTON3,  	380, 160,  80,  40 },
   { BUTTON_CreateIndirect,   "Forward",     	GUI_ID_BUTTON4,      	 10,  70,  80,  30 },
   { BUTTON_CreateIndirect,   "Reverse",     	GUI_ID_BUTTON5,      	 10, 110,  80,  30 },
+  { EDIT_CreateIndirect,     NULL,     GUI_ID_EDIT0,   			290,  80,  30,  20, 0, 3 },
+
 };
 
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate2[] = {
@@ -122,6 +124,18 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate6[] = {
 *
 **********************************************************************
 */
+WM_HWIN hDialog1;
+
+/*********************************************************************
+*
+*       _SetEditValue
+*/
+/*static void _SetEditValue(int Id, float Value) {
+
+  WM_HWIN hItem;
+  hItem = WM_GetDialogItem(hDialog1, Id);
+  EDIT_SetFloatValue(hItem, Value);
+}*/
 /*********************************************************************
 *
 *       _cbDialog1
@@ -146,12 +160,20 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate6[] = {
 *       _cbDialog1
 */
 static void _cbDialog1(WM_MESSAGE * pMsg) {
-  WM_HWIN hWinSrc;
+  WM_HWIN hItem;
+  WM_HWIN hDlg;
+
   int Id, NCode;
-  hWinSrc = pMsg->hWinSrc;
-  switch (pMsg->MsgId) {
-  case WM_NOTIFY_PARENT:
-    Id    = WM_GetId(hWinSrc);                    /* Id of widget */
+  hDlg = pMsg->hWin;
+
+  switch (pMsg->MsgId)
+    {
+    case WM_INIT_DIALOG:
+      hItem = WM_GetDialogItem (hDlg, GUI_ID_EDIT0);
+      EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
+      break;
+    case WM_NOTIFY_PARENT:
+    Id    = WM_GetId(pMsg->hWinSrc);                    /* Id of widget */
     NCode = pMsg->Data.v;                         /* Notification code */
     switch (NCode){
     case WM_NOTIFICATION_RELEASED:
@@ -331,7 +353,6 @@ static void _cbDialog4(WM_MESSAGE * pMsg) {
       	  for (int8_t i = 0; i < 3; i++)
       	  {
       		  if (i == 2) EncoderEnable[i] = true;
-
       		  else EncoderEnable[i] = false;
       	  }
       	  encoder.set(ClawCount);
@@ -396,7 +417,7 @@ static void _cbBkWindow(WM_MESSAGE * pMsg) {
 void MainTask(void) {
   WM_HWIN hMultiPage;
   WM_HWIN hFrameWin;
-  WM_HWIN hDialog;
+  WM_HWIN hDialog, hDialog1;
 
   //
   // Enable use of memory devices
@@ -422,19 +443,19 @@ void MainTask(void) {
   // Create the MULTIPAGE widget
   //
   hMultiPage = MULTIPAGE_CreateEx(0, 0, 480, 252, WM_GetClientWindow(hFrameWin), WM_CF_SHOW, 0, 0);
-  GUI_Delay(500);
+  GUI_Delay(50);
   //
   // Create and attach the MULTIPAGE dialog windows
   //
   MULTIPAGE_SetTabHeight(hMultiPage, 40);
 
-  hDialog = GUI_CreateDialogBox(_aDialogCreate1, GUI_COUNTOF(_aDialogCreate1), _cbDialog1, WM_UNATTACHED, 0, 0);
-  MULTIPAGE_AddPage(hMultiPage, hDialog, "	Debug	");
+  hDialog1 = GUI_CreateDialogBox(_aDialogCreate1, GUI_COUNTOF(_aDialogCreate1), _cbDialog1, WM_UNATTACHED, 0, 0);
+  MULTIPAGE_AddPage(hMultiPage, hDialog1, "	Debug	");
   GUI_Delay(50);
-  hDialog = GUI_CreateDialogBox(_aDialogCreate2, GUI_COUNTOF(_aDialogCreate2), _cbDialog2,       WM_UNATTACHED, 0, 0);
+  hDialog = GUI_CreateDialogBox(_aDialogCreate2, GUI_COUNTOF(_aDialogCreate2), _cbDialog2, WM_UNATTACHED, 0, 0);
   MULTIPAGE_AddPage(hMultiPage, hDialog, "	Azimuthal	");
   GUI_Delay(50);
-  hDialog = GUI_CreateDialogBox(_aDialogCreate3, GUI_COUNTOF(_aDialogCreate3), _cbDialog3,       WM_UNATTACHED, 0, 0);
+  hDialog = GUI_CreateDialogBox(_aDialogCreate3, GUI_COUNTOF(_aDialogCreate3), _cbDialog3, WM_UNATTACHED, 0, 0);
   MULTIPAGE_AddPage(hMultiPage, hDialog, "	Vertical	");
   GUI_Delay(50);
   hDialog = GUI_CreateDialogBox(_aDialogCreate4, GUI_COUNTOF(_aDialogCreate4), _cbDialog4, WM_UNATTACHED, 0, 0);

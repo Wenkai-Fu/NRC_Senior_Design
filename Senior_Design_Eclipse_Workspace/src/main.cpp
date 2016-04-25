@@ -136,14 +136,10 @@ main (void)
   GPIO_InitTypeDef GPIO_InitStruct;
 
   // Enable GPIO Ports
-  __HAL_RCC_GPIOI_CLK_ENABLE()
-  ;
-  __HAL_RCC_GPIOG_CLK_ENABLE()
-  ;
-  __HAL_RCC_GPIOF_CLK_ENABLE()
-  ;
-  __HAL_RCC_GPIOA_CLK_ENABLE()
-  ;
+  __HAL_RCC_GPIOI_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
 
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -193,8 +189,7 @@ main (void)
  * @retval None
  */
 
-void
-HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim)
+void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim)
 {
   TouchUpdate ();			// REQUIRED to update the touchscreen.
 
@@ -203,8 +198,7 @@ HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim)
       AzimuthalCount = encoder.read ();
       dir = encoder.direction ();
       AzimuthalRevolutions = -1.0f
-	  * (AzimuthalCount / Pulses_Per_Revolution / Azimuthal_Gear_Ratio)
-	  * (72.0f / 20.0f);
+	  * (AzimuthalCount / Pulses_Per_Revolution / Azimuthal_Gear_Ratio / Pinion_Spur_Gear_Ratio);
 
       HAL_GPIO_WritePin (GPIOG, GPIO_PIN_7, GPIO_PIN_RESET);  // Channel B
       HAL_GPIO_WritePin (GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
@@ -235,9 +229,13 @@ HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim)
       HAL_GPIO_WritePin (GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
       HAL_GPIO_WritePin (GPIOI, GPIO_PIN_0, GPIO_PIN_RESET);  // Channel A
 
-      if (VerticalDistance > 50.0f)
+      if (VerticalDistance > 20.0f)
 	{
 	  VerticalMotor.dutyCycle (0);
+	}
+      if(((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10) == GPIO_PIN_SET)) || ((HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET)))
+	{
+	  VerticalMotor.dutyCycle(0);
 	}
     }
 
@@ -257,19 +255,20 @@ HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim)
       HAL_GPIO_WritePin (GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
 
       float Limit = 0.25f;
-      if (((HAL_GPIO_ReadPin (GPIOF, GPIO_PIN_9)) == GPIO_PIN_SET)
-	  && (HAL_GPIO_ReadPin (GPIOI, GPIO_PIN_3) == GPIO_PIN_SET)) //Limit Pin and Motor Direction
+      if (((HAL_GPIO_ReadPin (GPIOF, GPIO_PIN_9)) == GPIO_PIN_SET)	//Limit Engaged
+	  && (HAL_GPIO_ReadPin (GPIOI, GPIO_PIN_3) == GPIO_PIN_SET)) 	//Moving Reverse or Opening
 	{
 	  ClawMotor.dutyCycle (0);
 	  encoder.set(0);
 	}
       else if (((HAL_GPIO_ReadPin (GPIOF, GPIO_PIN_9)) == GPIO_PIN_RESET)
-	  && (HAL_GPIO_ReadPin (GPIOI, GPIO_PIN_3) == GPIO_PIN_RESET)) //Limit Pin and Motor Direction
+	      && ((ClawDistance > Limit) || (ClawDistance < -Limit)))//NO Limit
 	{
-	  ClawMotor.dutyCycle (100);
-	  if ((ClawDistance > Limit) || (ClawDistance < -Limit))
-	    ClawMotor.dutyCycle (0);
+	  ClawMotor.dutyCycle (0);
 	}
+
+
+
     }
 }
 

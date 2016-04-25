@@ -1,4 +1,4 @@
-22:38:05 **** Programing project Senior_Design_Eclipse_Workspace on chip ****
+21:39:05 **** Programing project Senior_Design_Eclipse_Workspace on chip ****
 "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.externaltools.openocd.win32_1.8.0.201603291052\\tools\\openocd\\bin\\openocd.exe" -f stm32f746g_disco.cfg -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts\\st_board" -s "C:\\STM32_Toolchain\\eclipse\\plugins\\fr.ac6.mcu.debug_1.8.0.201603291114\\resources\\openocd\\scripts" -c "program Debug/Senior_Design_Eclipse_Workspace.elf verify reset exit" 
 Open On-Chip Debugger 0.10.0-dev-00267-g884c33c (2016-03-16-12:22)
 Licensed under GNU GPL v2
@@ -18,7 +18,7 @@ Info : Target voltage: 3.219895
 Info : STM32F756.cpu: hardware has 8 breakpoints, 4 watchpoints
 STM32F756.cpu: target state: halted
 target halted due to debug-request, current mode: Thread 
-xPSR: 0x01000000 pc: 0x08009200 msp: 0x20050000
+xPSR: 0x01000000 pc: 0x08009350 msp: 0x20050000
 Info : Unable to match requested speed 8000 kHz, using 4000 kHz
 Info : Unable to match requested speed 8000 kHz, using 4000 kHz
 adapter speed: 4000 kHz
@@ -28,7 +28,7 @@ Info : flash size probed value 1024
 STM32F756.cpu: target state: halted
 target halted due to breakpoint, current mode: Thread 
 xPSR: 0x61000000 pc: 0x20000084 msp: 0x20050000
-wrote 131072 bytes from file Debug/Senior_Design_Eclipse_Workspace.elf in 1.902668s (67.274 KiB/s)
+wrote 98304 bytes from file Debug/Senior_Design_Eclipse_Workspace.elf in 1.563737s (61.391 KiB/s)
 ** Programming Finished **
 ** Verify Started **
 STM32F756.cpu: target state: halted
@@ -37,10 +37,10 @@ xPSR: 0x61000000 pc: 0x2000002e msp: 0x20050000
 STM32F756.cpu: target state: halted
 target halted due to breakpoint, current mode: Thread 
 xPSR: 0x61000000 pc: 0x2000002e msp: 0x20050000
-verified 110392 bytes in 0.129754s (830.839 KiB/s)
+verified 98072 bytes in 0.128993s (742.470 KiB/s)
 ** Verified OK **
 ** Resetting Target **
 shutdown command invoked
 
-22:38:07 Build Finished (took 2s.213ms)
+21:39:06 Build Finished (took 1s.868ms)
 

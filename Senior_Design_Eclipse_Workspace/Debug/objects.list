@@ -82,7 +82,7 @@
 "Utilities/STM32746G-Discovery/stm32746g_discovery_sdram.o"
 "Utilities/STM32746G-Discovery/stm32746g_discovery_ts.o"
 "src/Derivative_Filter.o"
-"src/Multi_Page.o"
+"src/Slider_Menu_GUI.o"
 "src/System_Variable_Settings.o"
 "src/bsp.o"
 "src/encoder.o"

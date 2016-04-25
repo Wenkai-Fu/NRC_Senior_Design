@@ -5,7 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/Derivative_Filter.cpp \
-../src/Multi_Page.cpp \
+../src/Slider_Menu_GUI.cpp \
 ../src/System_Variable_Settings.cpp \
 ../src/bsp.cpp \
 ../src/encoder.cpp \
@@ -18,7 +18,7 @@ CPP_SRCS += \
 
 OBJS += \
 ./src/Derivative_Filter.o \
-./src/Multi_Page.o \
+./src/Slider_Menu_GUI.o \
 ./src/System_Variable_Settings.o \
 ./src/bsp.o \
 ./src/encoder.o \
@@ -31,7 +31,7 @@ OBJS += \
 
 CPP_DEPS += \
 ./src/Derivative_Filter.d \
-./src/Multi_Page.d \
+./src/Slider_Menu_GUI.d \
 ./src/System_Variable_Settings.d \
 ./src/bsp.d \
 ./src/encoder.d \

@@ -11,6 +11,7 @@
 extern const float Azimuthal_Gear_Ratio;
 extern const float Vertical_Gear_Ratio;
 extern const float Claw_Gear_Ratio;
+extern const float Pinion_Spur_Gear_Ratio;
 
 extern const float Pulses_Per_Revolution;
 extern const float ThreadPitch;
