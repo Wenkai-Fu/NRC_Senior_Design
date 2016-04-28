@@ -228,13 +228,21 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim)
       HAL_GPIO_WritePin (GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
       HAL_GPIO_WritePin (GPIOI, GPIO_PIN_0, GPIO_PIN_RESET);  // Channel A
 
-      if ((VerticalDistance - DeltaDistance) > 5.0f)
+      float Limit = 47.5f;
+      if (((VerticalDistance - DeltaDistance) > Limit)
+	  || ((VerticalDistance - DeltaDistance) < -Limit))
 	{
 	  VerticalMotor.dutyCycle (0);
 	}
-      if(((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10) == GPIO_PIN_SET)) || ((HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET)))
+      else if (((HAL_GPIO_ReadPin (GPIOI, GPIO_PIN_3) == GPIO_PIN_SET))
+	  && ((HAL_GPIO_ReadPin (GPIOA, GPIO_PIN_0) == GPIO_PIN_SET)))
 	{
-	  VerticalMotor.dutyCycle(0);
+	  VerticalMotor.dutyCycle (0);
+	}
+      else if (((HAL_GPIO_ReadPin (GPIOI, GPIO_PIN_3) == GPIO_PIN_RESET))
+	  && ((HAL_GPIO_ReadPin (GPIOF, GPIO_PIN_10) == GPIO_PIN_SET)))
+	{
+	  VerticalMotor.dutyCycle (0);
 	}
     }
 
@@ -254,17 +262,17 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim)
       HAL_GPIO_WritePin (GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
 
       float Limit = 0.25f;
-      if (((HAL_GPIO_ReadPin (GPIOF, GPIO_PIN_9)) == GPIO_PIN_SET)	//Limit Engaged
-	  && (HAL_GPIO_ReadPin (GPIOI, GPIO_PIN_3) == GPIO_PIN_SET)) 	//Moving Reverse or Opening
+      if (((HAL_GPIO_ReadPin (GPIOF, GPIO_PIN_9)) == GPIO_PIN_SET)//Limit Engaged
+      && (HAL_GPIO_ReadPin (GPIOI, GPIO_PIN_3) == GPIO_PIN_SET)) //Moving Reverse or Opening
 	{
 	  ClawMotor.dutyCycle (0);
-	  encoder.set(0);
+	  encoder.set (0);
 	}
       else if (((HAL_GPIO_ReadPin (GPIOF, GPIO_PIN_9)) == GPIO_PIN_RESET)
-	      && ((ClawDistance > Limit) || (ClawDistance < -Limit)))	//NO Limit
+	  && ((ClawDistance > Limit) || (ClawDistance < -Limit)))//NO Limit
 	{
 	  ClawMotor.dutyCycle (0);
-	  encoder.set(0);
+	  encoder.set (0);
 	}
 
 
