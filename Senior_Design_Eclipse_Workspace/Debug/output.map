@@ -28176,7 +28176,7 @@ LOAD c:/stm32_toolchain/eclipse/plugins/fr.ac6.mcu.externaltools.arm-none.win32_
                 0x000039ad       0x34 c:/stm32_toolchain/eclipse/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.7.0.201602121829/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7e-m/fpu/fpv5-sp-d16/crtend.o
  .ARM.attributes
                 0x000039e1       0x22 c:/stm32_toolchain/eclipse/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.7.0.201602121829/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7e-m/fpu/fpv5-sp-d16/crtn.o
-OUTPUT(Senior_Design_Eclipse_Workspace.elf elf32-littlearm)
+OUTPUT(Senior_Design_Final_Iteration.elf elf32-littlearm)
 
 .debug_info     0x00000000    0x96919
  .debug_info    0x00000000      0x8bb HAL_Driver/Src/stm32f7xx_hal.o

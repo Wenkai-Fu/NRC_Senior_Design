@@ -56,13 +56,13 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: Senior_Design_Eclipse_Workspace.elf
+all: Senior_Design_Final_Iteration.elf
 
 # Tool invocations
-Senior_Design_Eclipse_Workspace.elf: $(OBJS) $(USER_OBJS)
+Senior_Design_Final_Iteration.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU G++ Linker'
-	arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -L"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib" -T"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions -fno-rtti -lm -o "Senior_Design_Eclipse_Workspace.elf" @"objects.list" $(USER_OBJS) $(LIBS)
+	arm-none-eabi-g++ -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -L"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib" -T"C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions -fno-rtti -lm -o "Senior_Design_Final_Iteration.elf" @"objects.list" $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build
@@ -74,8 +74,8 @@ clean:
 
 post-build:
 	-@echo 'Generating binary and Printing size information:'
-	arm-none-eabi-objcopy -O binary "Senior_Design_Eclipse_Workspace.elf" "Senior_Design_Eclipse_Workspace.bin"
-	arm-none-eabi-size "Senior_Design_Eclipse_Workspace.elf"
+	arm-none-eabi-objcopy -O binary "Senior_Design_Final_Iteration.elf" "Senior_Design_Final_Iteration.bin"
+	arm-none-eabi-size "Senior_Design_Final_Iteration.elf"
 	-@echo ' '
 
 .PHONY: all clean dependents
