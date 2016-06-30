@@ -58,17 +58,15 @@ int32_t AzimuthalCount, VerticalCount, ClawCount, Divisor, DeltaVerticalCount;
 
 TIM_OC_InitTypeDef sConfig;
 
-Motor AzimuthalMotor (Azimuthal_Motor);
-Motor VerticalMotor (Vertical_Motor);
-Motor ClawMotor (Claw_Motor);
+Motor AzimuthalMotor(Azimuthal_Motor);
+Motor VerticalMotor(Vertical_Motor);
+Motor ClawMotor(Claw_Motor);
 Encoder encoder;
 
 /* Private function prototypes -----------------------------------------------*/
-static void
-SystemClock_Config (void);
+static void SystemClock_Config(void);
 
-extern void
-MainTask (void);
+extern void MainTask(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -77,109 +75,106 @@ MainTask (void);
  * @param  None
  * @retval None
  */
-int
-main (void)
-{
-  /* Enable the CPU Cache */
-  // CPU_CACHE_Enable();
-  /* STM32F7xx HAL library initialization:
-   - Configure the Flash ART accelerator on ITCM interface
-   - Configure the Systick to generate an interrupt each 1 msec
-   - Set NVIC Group Priority to 4
-   - Global MSP (MCU Support Package) initialization
-   */
-  HAL_Init ();
+int main(void) {
+	/* Enable the CPU Cache */
+	// CPU_CACHE_Enable();
+	/* STM32F7xx HAL library initialization:
+	 - Configure the Flash ART accelerator on ITCM interface
+	 - Configure the Systick to generate an interrupt each 1 msec
+	 - Set NVIC Group Priority to 4
+	 - Global MSP (MCU Support Package) initialization
+	 */
+	HAL_Init();
 
-  /* Configure the system clock to 200 MHz */
-  SystemClock_Config ();
+	/* Configure the system clock to 200 MHz */
+	SystemClock_Config();
 
-  // Used to refresh the touch screen and to convert the STemWin screen info to HAL_GUI info
-  BspInit ();
+	// Used to refresh the touch screen and to convert the STemWin screen info to HAL_GUI info
+	BspInit();
 
-  /* Configure LED1 */
-  BSP_LED_Init (LED1);
+	/* Configure LED1 */
+	BSP_LED_Init(LED1);
 
-  /***********************************************************/
+	/***********************************************************/
 
-  //This timer(TIM3) is used as an interupt to refresh the touchscreen
-  /* Set TIMx instance */
-  TimHandle.Instance = TIM3;
+	//This timer(TIM3) is used as an interupt to refresh the touchscreen
+	/* Set TIMx instance */
+	TimHandle.Instance = TIM3;
 
-  /* Initialize TIM3 peripheral as follows:
+	/* Initialize TIM3 peripheral as follows:
 
-   + Period = 500 - 1
-   + Prescaler = ((SystemCoreClock/2)/10000) - 1
-   + TIM3 Clock is at 50 MHz
-   + ClockDivision = 0
-   + Counter direction = Up
-   */
-  TimHandle.Init.Period = 99;
-  TimHandle.Init.Prescaler = 499;
-  TimHandle.Init.ClockDivision = 0;
-  TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
-  if (HAL_TIM_Base_Init (&TimHandle) != HAL_OK)
-    {
-      while (1)
-	{
+	 + Period = 500 - 1
+	 + Prescaler = ((SystemCoreClock/2)/10000) - 1
+	 + TIM3 Clock is at 50 MHz
+	 + ClockDivision = 0
+	 + Counter direction = Up
+	 */
+	TimHandle.Init.Period = 99;
+	TimHandle.Init.Prescaler = 499;
+	TimHandle.Init.ClockDivision = 0;
+	TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
+	if (HAL_TIM_Base_Init(&TimHandle) != HAL_OK) {
+		while (1) {
+		}
 	}
-    }
-  /*##-2- Start the TIM Base generation in interrupt mode ####################*/
-  /* Start Channel1 */
+	/*##-2- Start the TIM Base generation in interrupt mode ####################*/
+	/* Start Channel1 */
 
-  if (HAL_TIM_Base_Start_IT (&TimHandle) != HAL_OK)
-    {
-      while (1)
-	{
+	if (HAL_TIM_Base_Start_IT(&TimHandle) != HAL_OK) {
+		while (1) {
+		}
 	}
-    }
 
-  GPIO_InitTypeDef GPIO_InitStruct;
+	GPIO_InitTypeDef GPIO_InitStruct;
 
-  // Enable GPIO Ports
-  __HAL_RCC_GPIOI_CLK_ENABLE();
-  __HAL_RCC_GPIOG_CLK_ENABLE();
-  __HAL_RCC_GPIOF_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
+	// Enable GPIO Ports
+	__HAL_RCC_GPIOI_CLK_ENABLE()
+	;
+	__HAL_RCC_GPIOG_CLK_ENABLE()
+	;
+	__HAL_RCC_GPIOF_CLK_ENABLE()
+	;
+	__HAL_RCC_GPIOA_CLK_ENABLE()
+	;
 
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
 
-  GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_3;
-  HAL_GPIO_Init (GPIOI, &GPIO_InitStruct);
+	GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_3;
+	HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
 
-  GPIO_InitStruct.Pin = GPIO_PIN_7;
-  HAL_GPIO_Init (GPIOG, &GPIO_InitStruct);
+	GPIO_InitStruct.Pin = GPIO_PIN_7;
+	HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
-  GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
-  HAL_GPIO_Init (GPIOF, &GPIO_InitStruct);
+	GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
+	HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
-  GPIO_InitStruct.Pin = GPIO_PIN_0;
-  HAL_GPIO_Init (GPIOA, &GPIO_InitStruct);
+	GPIO_InitStruct.Pin = GPIO_PIN_0;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /***********************************************************/
+	/***********************************************************/
 
-  /* Init the STemWin GUI Library */
-  BSP_SDRAM_Init (); /* Initializes the SDRAM device */
-  __HAL_RCC_CRC_CLK_ENABLE()
-  ; /* Enable the CRC Module */
-  GUI_Init ();
+	/* Init the STemWin GUI Library */
+	BSP_SDRAM_Init(); /* Initializes the SDRAM device */
+	__HAL_RCC_CRC_CLK_ENABLE()
+	; /* Enable the CRC Module */
+	GUI_Init();
 
-  GUI_DispStringAt ("Starting...", 0, 0);
+	GUI_DispStringAt("Starting...", 0, 0);
 
-  GUI_Clear ();
+	GUI_Clear();
 
-  GUI_Initialized = 1;
+	GUI_Initialized = 1;
 
-  /* Activate the use of memory device feature */
-  WM_SetCreateFlags (WM_CF_MEMDEV);
+	/* Activate the use of memory device feature */
+	WM_SetCreateFlags(WM_CF_MEMDEV);
 
-  while (1)
-    {
-      // Starts the MainTask() Function which is in an External .c file
-      MainTask ();
+	while (1) {
+		// Starts the MainTask() Function which is in an External .c file
+		MainTask();
 
-    }
+	}
 
 }
 
@@ -189,95 +184,87 @@ main (void)
  * @retval None
  */
 
-void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim)
-{
-  TouchUpdate ();			// REQUIRED to update the touchscreen.
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+	TouchUpdate();			// REQUIRED to update the touchscreen.
 
-  if (EncoderEnable[0] == true)
-    {
-      AzimuthalCount = encoder.read ();
-      dir = encoder.direction ();
-      AzimuthalRevolutions = -1.0f
-	  * (AzimuthalCount / Pulses_Per_Revolution / Azimuthal_Gear_Ratio / Pinion_Spur_Gear_Ratio);
+	if (EncoderEnable[0] == true) {
+		AzimuthalCount = encoder.read();
+		dir = encoder.direction();
+		AzimuthalRevolutions = -1.0f
+				* (AzimuthalCount / Pulses_Per_Revolution / Azimuthal_Gear_Ratio
+						/ Pinion_Spur_Gear_Ratio);
 
-      HAL_GPIO_WritePin (GPIOG, GPIO_PIN_7, GPIO_PIN_RESET);  // Channel B
-      HAL_GPIO_WritePin (GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
+		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_RESET);  // Channel B
+		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
 
-      float Limit = 1 / (float)(Divisor);
-      if ((AzimuthalRevolutions > Limit) || (AzimuthalRevolutions < -Limit))
-	AzimuthalMotor.dutyCycle (0);
-      else
-	AzimuthalMotor.dutyCycle (100);
-    }
-
-  if (EncoderEnable[1] == true)
-    {
-      float DeltaRevolutions, DeltaDistance;
-
-      VerticalCount = encoder.read ();
-      dir = encoder.direction ();
-
-      VerticalRevolutions = -1.0f
-	  * (VerticalCount / Pulses_Per_Revolution / Vertical_Gear_Ratio / Pinion_Spur_Gear_Ratio);
-      DeltaRevolutions = -1.0f
-	  * (DeltaVerticalCount / Pulses_Per_Revolution / Vertical_Gear_Ratio / Pinion_Spur_Gear_Ratio);
-
-      VerticalDistance = (VerticalRevolutions / ThreadPitch) * Inches_to_Centimeters;
-      DeltaDistance = (DeltaRevolutions / ThreadPitch) * Inches_to_Centimeters;
-
-      HAL_GPIO_WritePin (GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
-      HAL_GPIO_WritePin (GPIOI, GPIO_PIN_0, GPIO_PIN_RESET);  // Channel A
-
-      float Limit = 47.5f;
-      if (((VerticalDistance - DeltaDistance) > Limit)
-	  || ((VerticalDistance - DeltaDistance) < -Limit))
-	{
-	  VerticalMotor.dutyCycle (0);
-	}
-      else if (((HAL_GPIO_ReadPin (GPIOI, GPIO_PIN_3) == GPIO_PIN_SET))
-	  && ((HAL_GPIO_ReadPin (GPIOA, GPIO_PIN_0) == GPIO_PIN_SET)))
-	{
-	  VerticalMotor.dutyCycle (0);
-	}
-      else if (((HAL_GPIO_ReadPin (GPIOI, GPIO_PIN_3) == GPIO_PIN_RESET))
-	  && ((HAL_GPIO_ReadPin (GPIOF, GPIO_PIN_10) == GPIO_PIN_SET)))
-	{
-	  VerticalMotor.dutyCycle (0);
-	}
-    }
-
-  if (EncoderEnable[2] == true)
-    {
-
-      ClawCount = encoder.read ();
-
-      dir = encoder.direction ();
-
-      ClawRevolutions = -1.0f
-	  * (ClawCount / Pulses_Per_Revolution / Claw_Gear_Ratio);
-
-      ClawDistance = ClawRevolutions / ThreadPitch;
-
-      HAL_GPIO_WritePin (GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
-      HAL_GPIO_WritePin (GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
-
-      float Limit = 0.25f;
-      if (((HAL_GPIO_ReadPin (GPIOF, GPIO_PIN_9)) == GPIO_PIN_SET)//Limit Engaged
-      && (HAL_GPIO_ReadPin (GPIOI, GPIO_PIN_3) == GPIO_PIN_SET)) //Moving Reverse or Opening
-	{
-	  ClawMotor.dutyCycle (0);
-	  encoder.set (0);
-	}
-      else if (((HAL_GPIO_ReadPin (GPIOF, GPIO_PIN_9)) == GPIO_PIN_RESET)
-	  && ((ClawDistance > Limit) || (ClawDistance < -Limit)))//NO Limit
-	{
-	  ClawMotor.dutyCycle (0);
-	  encoder.set (0);
+		float Limit = 1 / (float) (Divisor);
+		if ((AzimuthalRevolutions > Limit) || (AzimuthalRevolutions < -Limit))
+			AzimuthalMotor.dutyCycle(0);
+		else
+			AzimuthalMotor.dutyCycle(100);
 	}
 
+	if (EncoderEnable[1] == true) {
+		float DeltaRevolutions, DeltaDistance;
 
+		VerticalCount = encoder.read();
+		dir = encoder.direction();
 
-    }
+		VerticalRevolutions = -1.0f * (VerticalCount / Pulses_Per_Revolution / Vertical_Gear_Ratio
+						/ Pinion_Spur_Gear_Ratio);
+		DeltaRevolutions = -1.0f
+				* (DeltaVerticalCount / Pulses_Per_Revolution
+						/ Vertical_Gear_Ratio / Pinion_Spur_Gear_Ratio);
+
+		VerticalDistance = (VerticalRevolutions / ThreadPitch)
+				* Inches_to_Centimeters;
+		DeltaDistance = (DeltaRevolutions / ThreadPitch)
+				* Inches_to_Centimeters;
+
+		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
+		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_RESET);  // Channel A
+
+		float Limit = 47.5f;
+		if (((VerticalDistance - DeltaDistance) > Limit)
+				|| ((VerticalDistance - DeltaDistance) < -Limit)) {
+			VerticalMotor.dutyCycle(0);
+		} else if (((HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_3) == GPIO_PIN_SET))
+				&& ((HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET))) {
+			VerticalMotor.dutyCycle(0);
+		} else if (((HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_3) == GPIO_PIN_RESET))
+				&& ((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10) == GPIO_PIN_SET))) {
+			VerticalMotor.dutyCycle(0);
+		}
+	}
+
+	if (EncoderEnable[2] == true) {
+
+		ClawCount = encoder.read();
+
+		dir = encoder.direction();
+
+		ClawRevolutions = -1.0f
+				* (ClawCount / Pulses_Per_Revolution / Claw_Gear_Ratio);
+
+		ClawDistance = ClawRevolutions / ThreadPitch;
+
+		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
+		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
+
+		float Limit = 0.25f;
+		if (((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_9)) == GPIO_PIN_SET) //Limit Engaged
+		&& (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_3) == GPIO_PIN_SET)) //Moving Reverse or Opening
+				{
+			ClawMotor.dutyCycle(0);
+			encoder.set(0);
+		} else if (((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_9)) == GPIO_PIN_RESET)
+				&& ((ClawDistance > Limit) || (ClawDistance < -Limit))) //NO Limit
+				{
+			ClawMotor.dutyCycle(0);
+			encoder.set(0);
+		}
+
+	}
 }
 
 /**
@@ -300,58 +287,50 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim)
  * @param  None
  * @retval None
  */
-static void
-SystemClock_Config (void)
-{
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  HAL_StatusTypeDef ret = HAL_OK;
+static void SystemClock_Config(void) {
+	RCC_ClkInitTypeDef RCC_ClkInitStruct;
+	RCC_OscInitTypeDef RCC_OscInitStruct;
+	HAL_StatusTypeDef ret = HAL_OK;
 
-  /* Enable HSE Oscillator and activate PLL with HSE as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 25;
-  RCC_OscInitStruct.PLL.PLLN = 400;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 8;
+	/* Enable HSE Oscillator and activate PLL with HSE as source */
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+	RCC_OscInitStruct.PLL.PLLM = 25;
+	RCC_OscInitStruct.PLL.PLLN = 400;
+	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+	RCC_OscInitStruct.PLL.PLLQ = 8;
 
-  ret = HAL_RCC_OscConfig (&RCC_OscInitStruct);
-  if (ret != HAL_OK)
-    {
-      while (1)
-	{
-	  ;
+	ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
+	if (ret != HAL_OK) {
+		while (1) {
+			;
+		}
 	}
-    }
 
-  /* Activate the OverDrive to reach the 200 MHz Frequency */
-  ret = HAL_PWREx_EnableOverDrive ();
-  if (ret != HAL_OK)
-    {
-      while (1)
-	{
-	  ;
+	/* Activate the OverDrive to reach the 200 MHz Frequency */
+	ret = HAL_PWREx_EnableOverDrive();
+	if (ret != HAL_OK) {
+		while (1) {
+			;
+		}
 	}
-    }
 
-  /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers */
-  RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK
-      | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+	/* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers */
+	RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK
+			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
+	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  ret = HAL_RCC_ClockConfig (&RCC_ClkInitStruct, FLASH_LATENCY_6);
-  if (ret != HAL_OK)
-    {
-      while (1)
-	{
-	  ;
+	ret = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_6);
+	if (ret != HAL_OK) {
+		while (1) {
+			;
+		}
 	}
-    }
 }
 
 #ifdef  USE_FULL_ASSERT
@@ -363,14 +342,14 @@ SystemClock_Config (void)
  * @retval None
  */
 void assert_failed(uint8_t* file, uint32_t line)
-  {
-    /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+{
+	/* User can add his own implementation to report the file name and line number,
+	 ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 
-    /* Infinite loop */
-    while (1)
-      {}
-  }
+	/* Infinite loop */
+	while (1)
+	{}
+}
 #endif
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

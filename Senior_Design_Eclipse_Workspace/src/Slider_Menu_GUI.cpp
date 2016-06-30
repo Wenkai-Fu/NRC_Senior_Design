@@ -115,7 +115,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 *
 **********************************************************************
 */
-static U8 _duty[2] = {0, 0};  // Red, green and blue components
+static U8 duty[2] = {0, 0};  // Red, green and blue components
 
 /*********************************************************************
 *
