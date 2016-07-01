@@ -51,12 +51,8 @@ Requirements: WindowManager - (x)
 
 
 
-extern Motor AzimuthalMotor;
-extern Motor VerticalMotor;
-extern Motor ClawMotor;
+
 extern Motor motor;
-
-
 extern Encoder encoder;
 
 /*
@@ -279,9 +275,9 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
             GUI_EndDialog(hDlg, 0);
           }
           if (Id == GUI_ID_BUTTON3) {        // Stop Button
-        	  AzimuthalMotor.setDuty(0);
-        	  VerticalMotor.setDuty(0);
-        	  ClawMotor.setDuty(0);
+        	  motor.setDuty(Azimuthal_Motor, 0);
+        	  motor.setDuty(Vertical_Motor, 0);
+        	  motor.setDuty(Claw_Motor, 0);
 
 /*        	  for (int8_t i = 0; i < 3; i++)
         	  {
@@ -295,10 +291,10 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
 
         		  else EncoderEnable[i] = false;
         	  }
-        	  encoder.setCount(0);				// Resets the count to 0 everytime
-        	  VerticalMotor.setDuty(0);	// Ensures the other motors are off
-        	  ClawMotor.setDuty(0);
-        	  AzimuthalMotor.setDuty(0);
+        	  encoder.setCount(encoder.getCount());				// Resets the count to 0 everytime
+        	  motor.setDuty(Azimuthal_Motor, 100);
+        	  motor.setDuty(Vertical_Motor, 0);
+        	  motor.setDuty(Claw_Motor, 0);
           }
           if (Id == GUI_ID_BUTTON1) {        // Vertical Button
         	  for (int8_t i = 0; i < 3; i++)
@@ -308,9 +304,9 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
         	  }
         	  encoder.setCount(VerticalCount);
         	  DeltaVerticalCount = VerticalCount;
-        	  AzimuthalMotor.setDuty(0);
-        	  ClawMotor.setDuty(0);
-        	  VerticalMotor.setDuty(100);
+        	  motor.setDuty(Azimuthal_Motor, 0);
+        	  motor.setDuty(Vertical_Motor, 100);
+        	  motor.setDuty(Claw_Motor, 0);
           }
           if (Id == GUI_ID_BUTTON2) {        // Claw Button
 
@@ -320,15 +316,15 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
         		  else EncoderEnable[i] = false;
         	  }
         	  encoder.setCount(ClawCount);
-        	  AzimuthalMotor.setDuty(0);
-        	  VerticalMotor.setDuty(0);
-        	  ClawMotor.setDuty(100);
+        	  motor.setDuty(Azimuthal_Motor, 0);
+        	  motor.setDuty(Vertical_Motor, 0);
+        	  motor.setDuty(Claw_Motor, 100);
           }
           if (Id == GUI_ID_BUTTON4) {        // Forward Button
-        	 // motor.setDirection(false);
+        	  motor.setDirection(false);
           }
           if (Id == GUI_ID_BUTTON5) {        // Reverse Button
-        	//  motor.setDirection(true);
+        	  motor.setDirection(true);
           }
           break;
         case WM_NOTIFICATION_VALUE_CHANGED: // Value has changed
@@ -365,9 +361,9 @@ void MainTask(void) {
     return;
   }
 
-  AzimuthalMotor.setDuty(0);
-  VerticalMotor.setDuty(0);
-  ClawMotor.setDuty(0);
+  motor.setDuty(Azimuthal_Motor, 0);
+  motor.setDuty(Vertical_Motor, 0);
+  motor.setDuty(Claw_Motor, 0);
 
 
   _hDialogMain  = GUI_CreateDialogBox(_aDialogCreate,  GUI_COUNTOF(_aDialogCreate),  _cbCallback,  WM_HBKWIN, 0, 0);
@@ -380,7 +376,7 @@ void MainTask(void) {
 
   while (1) {
     GUI_Delay(10);
-    _SetEditValue(GUI_ID_EDIT3, AzimuthalRevolutions);
+    _SetEditValue(GUI_ID_EDIT3, encoder.getRevolutions(Azimuthal_Encoder));
     _SetEditValue(GUI_ID_EDIT5, (int)(Divisor));
     _SetEditValue(GUI_ID_EDIT6, VerticalDistance);
     _SetEditValue(GUI_ID_EDIT7, ClawRevolutions);

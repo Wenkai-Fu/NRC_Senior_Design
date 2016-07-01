@@ -19,13 +19,14 @@ class Motor
 {
 public:
 
-	Motor(motor_id_t id);
+	Motor(void);
+	void motorInit(motor_id_t id);
 
-	void start(void);
-	void stop(void);
+	void start(motor_id_t id);
+	void stop(motor_id_t id);
 
-	void setDuty(int16_t duty);
-	int16_t getDuty(void);
+	void setDuty(motor_id_t id, int16_t duty);
+	int16_t getDuty(motor_id_t id);
 
 	void setDirection(bool direction);
 	bool getDirection(void);
