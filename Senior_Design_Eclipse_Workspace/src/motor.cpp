@@ -14,35 +14,19 @@ GPIO_InitTypeDef   GPIO_InitStruct;
 Motor::Motor(motor_id_t id)
 {
 	motor_id_ = id;
-
 	switch (motor_id_)
 	{
 	case Azimuthal_Motor:
-
 		TIM_HANDLE_ = TimHandle_TIM10;
-
 		TIM_HANDLE_.Instance = TIM10;
-
-
 		break;
-
 	case Vertical_Motor:
-
 		TIM_HANDLE_ = TimHandle_TIM11;
-
 		TIM_HANDLE_.Instance = TIM11;
-
-
 		break;
-
 	case Claw_Motor:
-
 		TIM_HANDLE_ = TimHandle_TIM13;
-
 		TIM_HANDLE_.Instance = TIM13;
-
-
-
 		break;
 	}
 
@@ -70,52 +54,46 @@ Motor::Motor(motor_id_t id)
 	/*##-3- Start PWM signals generation #######################################*/
 	/* Start channel 1 */
 	sMotorConfig.Pulse = 0;
-	if (HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1) != HAL_OK)
-	{
-	/* PWM Generation Error */
-	Error_Handler();
-	}
+	HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1);
 }
 
 void Motor::start(void)
 {
 	/*##-3- Start PWM signals generation #######################################*/
 	/* Start channel 1 */
-	if (HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1) != HAL_OK)
-	{
-	/* PWM Generation Error */
-	Error_Handler();
-	}
+	HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1);
 }
 
 void Motor::stop(void)
 {
 	/*##-3- Start PWM signals generation #######################################*/
 	/* Start channel 1 */
-	if (HAL_TIM_PWM_Stop(&TIM_HANDLE_, TIM_CHANNEL_1) != HAL_OK)
-	{
-	/* PWM Generation Error */
-	Error_Handler();
-	}
+	HAL_TIM_PWM_Stop(&TIM_HANDLE_, TIM_CHANNEL_1);
 }
 
-
-void Motor::dutyCycle(int16_t duty)
+void Motor::setDuty(int16_t duty)
 {
 	/* Set the pulse value for channel 1 */
 	sMotorConfig.Pulse = duty;
+	HAL_TIM_PWM_ConfigChannel(&TIM_HANDLE_, &sMotorConfig, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1);
+}
 
-	if (HAL_TIM_PWM_ConfigChannel(&TIM_HANDLE_, &sMotorConfig, TIM_CHANNEL_1) != HAL_OK)
-	{
-    //Configuration Error
-	Error_Handler();
-	}
+int16_t Motor::getDuty(void)
+{
+	return duty_;
+}
 
-	if (HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1) != HAL_OK)
-	{
-	/* PWM Generation Error */
-	Error_Handler();
-	}
+void Motor::setDirection(bool direction)
+{
+	dir_ = direction;
+	if(dir_) HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
+	else HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);
+}
+
+bool Motor::getDirection(void)
+{
+	return(dir_);
 }
 void Motor::Error_Handler(void)
 {

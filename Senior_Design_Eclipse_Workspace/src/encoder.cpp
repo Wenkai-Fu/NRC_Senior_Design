@@ -57,7 +57,7 @@ Encoder::Encoder(void)
 
 }
 
-int32_t Encoder::read(void)
+int32_t Encoder::getCount(void)
 {
 	    uint16_t counter; // 16 bit counter of timer
 	    int32_t count32;  // 32 bit counter which accounts for timer overflows
@@ -82,18 +82,32 @@ int32_t Encoder::read(void)
 
 	    return count32;
 }
-
-int16_t Encoder::direction(void)
+float Encoder::getRevolutions(encoder_id_t encode)
+{
+	switch(encode)
+	{
+	case Azimuthal_Encoder:
+		return(-1.0f * (getCount() / Pulses_Per_Revolution / Azimuthal_Gear_Ratio / Pinion_Spur_Gear_Ratio));
+		break;
+	case Vertical_Encoder:
+		return(-1.0f * (getCount() / Pulses_Per_Revolution / Vertical_Gear_Ratio / Pinion_Spur_Gear_Ratio));
+		break;
+	case Claw_Encoder:
+		return(-1.0f * (getCount() / Pulses_Per_Revolution / Claw_Gear_Ratio));
+		break;
+	default:
+		return(0);
+		break;
+	}
+}
+bool Encoder::getDirection(void)
 {
 	/* Get the current direction */
-	bool direction;
-	direction =__HAL_TIM_IS_TIM_COUNTING_DOWN(&Encoder_Handle);
-	return direction;
-
+	return(__HAL_TIM_IS_TIM_COUNTING_DOWN(&Encoder_Handle));
 }
 
 //*****************************************************************************
-void Encoder::set(int32_t count32)
+void Encoder::setCount(int32_t count32)
 {
     if (count32 < 0)
     {
@@ -108,10 +122,26 @@ void Encoder::set(int32_t count32)
     prev_counter_ = counter;
 
     __HAL_TIM_SET_COUNTER(&Encoder_Handle, counter);
-
-
 }
 
+void Encoder::enableEncoder(encoder_id_t encode)
+{
+	switch(encode)
+	{
+	case Azimuthal_Encoder:
+		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_RESET);  // Channel B
+		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
+		break;
+	case Vertical_Encoder:
+		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
+		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_RESET);  // Channel A
+		break;
+	case Claw_Encoder:
+		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
+		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
+		break;
+	}
+}
 void Encoder::Error_Handler(void)
 {
   /* Turn LED3 on */

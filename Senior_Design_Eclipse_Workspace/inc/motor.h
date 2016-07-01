@@ -21,13 +21,14 @@ public:
 
 	Motor(motor_id_t id);
 
-	int32_t read(void);
-
 	void start(void);
-
 	void stop(void);
 
-	void dutyCycle(int16_t duty);
+	void setDuty(int16_t duty);
+	int16_t getDuty(void);
+
+	void setDirection(bool direction);
+	bool getDirection(void);
 
 	void Error_Handler(void);
 
@@ -35,6 +36,7 @@ private:
 	motor_id_t motor_id_;
 	int16_t duty_;
 	TIM_HandleTypeDef TIM_HANDLE_;
+	bool dir_;
 };
 
 

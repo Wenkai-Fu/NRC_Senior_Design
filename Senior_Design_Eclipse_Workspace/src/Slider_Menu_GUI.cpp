@@ -54,6 +54,7 @@ Requirements: WindowManager - (x)
 extern Motor AzimuthalMotor;
 extern Motor VerticalMotor;
 extern Motor ClawMotor;
+extern Motor motor;
 
 
 extern Encoder encoder;
@@ -278,9 +279,9 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
             GUI_EndDialog(hDlg, 0);
           }
           if (Id == GUI_ID_BUTTON3) {        // Stop Button
-        	  AzimuthalMotor.dutyCycle(0);
-        	  VerticalMotor.dutyCycle(0);
-        	  ClawMotor.dutyCycle(0);
+        	  AzimuthalMotor.setDuty(0);
+        	  VerticalMotor.setDuty(0);
+        	  ClawMotor.setDuty(0);
 
 /*        	  for (int8_t i = 0; i < 3; i++)
         	  {
@@ -294,10 +295,10 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
 
         		  else EncoderEnable[i] = false;
         	  }
-        	  encoder.set(0);				// Resets the count to 0 everytime
-        	  VerticalMotor.dutyCycle(0);	// Ensures the other motors are off
-        	  ClawMotor.dutyCycle(0);
-        	  AzimuthalMotor.dutyCycle(0);
+        	  encoder.setCount(0);				// Resets the count to 0 everytime
+        	  VerticalMotor.setDuty(0);	// Ensures the other motors are off
+        	  ClawMotor.setDuty(0);
+        	  AzimuthalMotor.setDuty(0);
           }
           if (Id == GUI_ID_BUTTON1) {        // Vertical Button
         	  for (int8_t i = 0; i < 3; i++)
@@ -305,11 +306,11 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
         		  if (i == 1) EncoderEnable[i] = true;
         		  else EncoderEnable[i] = false;
         	  }
-        	  encoder.set(VerticalCount);
+        	  encoder.setCount(VerticalCount);
         	  DeltaVerticalCount = VerticalCount;
-        	  AzimuthalMotor.dutyCycle(0);
-        	  ClawMotor.dutyCycle(0);
-        	  VerticalMotor.dutyCycle(100);
+        	  AzimuthalMotor.setDuty(0);
+        	  ClawMotor.setDuty(0);
+        	  VerticalMotor.setDuty(100);
           }
           if (Id == GUI_ID_BUTTON2) {        // Claw Button
 
@@ -318,16 +319,16 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
         		  if (i == 2) EncoderEnable[i] = true;
         		  else EncoderEnable[i] = false;
         	  }
-        	  encoder.set(ClawCount);
-        	  AzimuthalMotor.dutyCycle(0);
-        	  VerticalMotor.dutyCycle(0);
-        	  ClawMotor.dutyCycle(100);
+        	  encoder.setCount(ClawCount);
+        	  AzimuthalMotor.setDuty(0);
+        	  VerticalMotor.setDuty(0);
+        	  ClawMotor.setDuty(100);
           }
           if (Id == GUI_ID_BUTTON4) {        // Forward Button
-        	  HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);
+        	 // motor.setDirection(false);
           }
           if (Id == GUI_ID_BUTTON5) {        // Reverse Button
-        	  HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
+        	//  motor.setDirection(true);
           }
           break;
         case WM_NOTIFICATION_VALUE_CHANGED: // Value has changed
@@ -364,9 +365,9 @@ void MainTask(void) {
     return;
   }
 
-  AzimuthalMotor.dutyCycle(0);
-  VerticalMotor.dutyCycle(0);
-  ClawMotor.dutyCycle(0);
+  AzimuthalMotor.setDuty(0);
+  VerticalMotor.setDuty(0);
+  ClawMotor.setDuty(0);
 
 
   _hDialogMain  = GUI_CreateDialogBox(_aDialogCreate,  GUI_COUNTOF(_aDialogCreate),  _cbCallback,  WM_HBKWIN, 0, 0);

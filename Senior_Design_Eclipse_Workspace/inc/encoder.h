@@ -8,23 +8,30 @@
 #ifndef ENCODER_H_
 #define ENCODER_H_
 
-
+typedef enum
+{
+	Azimuthal_Encoder,
+	Claw_Encoder,
+	Vertical_Encoder
+}encoder_id_t;
 
 class Encoder
 {
 	public:
 		Encoder(void);
 
-		int32_t read(void);
+		int32_t getCount(void);
+		void setCount(int32_t count32);
 
-		int16_t direction(void);
+		bool getDirection(void);
 
-		void set(int32_t count32);
-
+		void enableEncoder(encoder_id_t encode);
 		void Error_Handler(void);
 
-	private:
+		float getRevolutions(encoder_id_t encode);
 
+	private:
+		encoder_id_t encoder_id_;
 		uint16_t prev_counter_;
 		int16_t overflows_;
 

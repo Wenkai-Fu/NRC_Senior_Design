@@ -37,6 +37,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "stdlib.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -107,7 +108,7 @@ int main(void) {
 	 + Prescaler = ((SystemCoreClock/2)/10000) - 1
 	 + TIM3 Clock is at 50 MHz
 	 + ClockDivision = 0
-	 + Counter direction = Up
+	 + Counter Direction = Up
 	 */
 	TimHandle.Init.Period = 99;
 	TimHandle.Init.Prescaler = 499;
@@ -128,14 +129,10 @@ int main(void) {
 	GPIO_InitTypeDef GPIO_InitStruct;
 
 	// Enable GPIO Ports
-	__HAL_RCC_GPIOI_CLK_ENABLE()
-	;
-	__HAL_RCC_GPIOG_CLK_ENABLE()
-	;
-	__HAL_RCC_GPIOF_CLK_ENABLE()
-	;
-	__HAL_RCC_GPIOA_CLK_ENABLE()
-	;
+	__HAL_RCC_GPIOI_CLK_ENABLE();
+	__HAL_RCC_GPIOG_CLK_ENABLE();
+	__HAL_RCC_GPIOF_CLK_ENABLE();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
 
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -188,30 +185,26 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	TouchUpdate();			// REQUIRED to update the touchscreen.
 
 	if (EncoderEnable[0] == true) {
-		AzimuthalCount = encoder.read();
-		dir = encoder.direction();
-		AzimuthalRevolutions = -1.0f
-				* (AzimuthalCount / Pulses_Per_Revolution / Azimuthal_Gear_Ratio
-						/ Pinion_Spur_Gear_Ratio);
+		AzimuthalCount = encoder.getCount();
+		dir = encoder.getDirection();
+		AzimuthalRevolutions = encoder.getRevolutions(Azimuthal_Encoder);
 
-		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_RESET);  // Channel B
-		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
+		encoder.enableEncoder(Azimuthal_Encoder);
 
 		float Limit = 1 / (float) (Divisor);
 		if ((AzimuthalRevolutions > Limit) || (AzimuthalRevolutions < -Limit))
-			AzimuthalMotor.dutyCycle(0);
+			AzimuthalMotor.setDuty(0);
 		else
-			AzimuthalMotor.dutyCycle(100);
+			AzimuthalMotor.setDuty(100);
 	}
 
 	if (EncoderEnable[1] == true) {
 		float DeltaRevolutions, DeltaDistance;
 
-		VerticalCount = encoder.read();
-		dir = encoder.direction();
+		VerticalCount = encoder.getCount();
+		dir = encoder.getDirection();
 
-		VerticalRevolutions = -1.0f * (VerticalCount / Pulses_Per_Revolution / Vertical_Gear_Ratio
-						/ Pinion_Spur_Gear_Ratio);
+		VerticalRevolutions = encoder.getRevolutions(Vertical_Encoder);
 		DeltaRevolutions = -1.0f
 				* (DeltaVerticalCount / Pulses_Per_Revolution
 						/ Vertical_Gear_Ratio / Pinion_Spur_Gear_Ratio);
@@ -221,47 +214,39 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		DeltaDistance = (DeltaRevolutions / ThreadPitch)
 				* Inches_to_Centimeters;
 
-		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
-		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_RESET);  // Channel A
+		encoder.enableEncoder(Vertical_Encoder);
 
 		float Limit = 47.5f;
-		if (((VerticalDistance - DeltaDistance) > Limit)
-				|| ((VerticalDistance - DeltaDistance) < -Limit)) {
-			VerticalMotor.dutyCycle(0);
-		} else if (((HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_3) == GPIO_PIN_SET))
+		if (abs(VerticalDistance - DeltaDistance) > Limit) VerticalMotor.setDuty(0);
+		else if (((HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_3) == GPIO_PIN_SET))
 				&& ((HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET))) {
-			VerticalMotor.dutyCycle(0);
+			VerticalMotor.setDuty(0);
 		} else if (((HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_3) == GPIO_PIN_RESET))
 				&& ((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10) == GPIO_PIN_SET))) {
-			VerticalMotor.dutyCycle(0);
+			VerticalMotor.setDuty(0);
 		}
 	}
 
 	if (EncoderEnable[2] == true) {
 
-		ClawCount = encoder.read();
-
-		dir = encoder.direction();
-
-		ClawRevolutions = -1.0f
-				* (ClawCount / Pulses_Per_Revolution / Claw_Gear_Ratio);
-
+		ClawCount = encoder.getCount();
+		dir = encoder.getDirection();
+		ClawRevolutions = encoder.getRevolutions(Claw_Encoder);
 		ClawDistance = ClawRevolutions / ThreadPitch;
 
-		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
-		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
+		encoder.enableEncoder(Claw_Encoder);
 
 		float Limit = 0.25f;
 		if (((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_9)) == GPIO_PIN_SET) //Limit Engaged
 		&& (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_3) == GPIO_PIN_SET)) //Moving Reverse or Opening
 				{
-			ClawMotor.dutyCycle(0);
-			encoder.set(0);
+			ClawMotor.setDuty(0);
+			encoder.setCount(0);
 		} else if (((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_9)) == GPIO_PIN_RESET)
 				&& ((ClawDistance > Limit) || (ClawDistance < -Limit))) //NO Limit
 				{
-			ClawMotor.dutyCycle(0);
-			encoder.set(0);
+			ClawMotor.setDuty(0);
+			encoder.setCount(0);
 		}
 
 	}
