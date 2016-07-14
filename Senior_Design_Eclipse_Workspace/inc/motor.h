@@ -25,7 +25,7 @@ public:
 	void start(motor_id_t id);
 	void stop(motor_id_t id);
 
-	void setDuty(motor_id_t id, int16_t duty);
+	void setDuty(motor_id_t id, int16_t dutyInput);
 	int16_t getDuty(motor_id_t id);
 
 	void setDirection(bool direction);
@@ -38,6 +38,8 @@ private:
 	int16_t duty_;
 	TIM_HandleTypeDef TIM_HANDLE_;
 	bool dir_;
+	int16_t prescaler_;
+	int16_t period_;
 };
 
 

@@ -100,6 +100,63 @@ float Encoder::getRevolutions(encoder_id_t encode)
 		break;
 	}
 }
+
+float Encoder::getPosition(encoder_id_t encode)
+{
+	switch(encode)
+	{
+	case Azimuthal_Encoder:
+		return((getRevolutions(Vertical_Encoder) / ThreadPitch) * Inches_to_Centimeters);
+		break;
+	case Vertical_Encoder:
+		return(-1.0f * (getCount() / Pulses_Per_Revolution / Vertical_Gear_Ratio / Pinion_Spur_Gear_Ratio));
+		break;
+	case Claw_Encoder:
+		return((getRevolutions(Claw_Encoder) / ThreadPitch) * Inches_to_Centimeters);
+		break;
+	default:
+		return(0);
+		break;
+	}
+}
+
+void Encoder::setPosition(encoder_id_t encode, float pos)
+{
+	switch(encode)
+	{
+	case Vertical_Encoder:
+		vertPos_ = pos;
+		break;
+	default:
+		break;
+	}
+}
+
+float Encoder::getDesiredPosition(encoder_id_t encode)
+{
+	switch(encode)
+	{
+	case Azimuthal_Encoder:
+		return(0);
+		break;
+	case Vertical_Encoder:
+		return(desiredVertPos_);
+		break;
+	case Claw_Encoder:
+		return(0);
+		break;
+	}
+}
+
+void Encoder::setDesiredPosition(encoder_id_t encode, float pos)
+{
+	switch(encode)
+	{
+	case Vertical_Encoder:
+		desiredVertPos_ = pos;
+		break;
+	}
+}
 bool Encoder::getDirection(void)
 {
 	/* Get the current direction */

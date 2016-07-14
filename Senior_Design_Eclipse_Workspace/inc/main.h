@@ -67,9 +67,7 @@ extern float AzimuthalSpeed, VerticalSpeed, ClawSpeed;
 extern float AzimuthalDistance, VerticalDistance, ClawDistance;
 extern int32_t AzimuthalCount, VerticalCount, ClawCount, Divisor, DeltaVerticalCount;
 
+extern float posError;
 
 
-void ExecSetup(void);
-void ExecAbout(void);
-void ExecCalibration(void);
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

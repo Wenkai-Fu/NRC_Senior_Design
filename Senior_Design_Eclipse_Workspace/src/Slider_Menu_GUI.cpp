@@ -88,12 +88,12 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { TEXT_CreateIndirect,     "Azimuthal:" ,  0,          		5,  35,  60,  20, TEXT_CF_LEFT },
   { TEXT_CreateIndirect,     "Vertical:", 0,             		5,  85,  60,  20, TEXT_CF_LEFT },
   { TEXT_CreateIndirect,     "Claw:",  0,                		5,  135, 60,  20, TEXT_CF_LEFT },
-  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT3,            410,  20,  45,  20, 0, 0 },
-//  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT4,            410,  45,  45,  20, 0, 3 },
-  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT5,            410,  70,  45,  20, 0, 3 },
-  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT6,            410,  95,  45,  20, 0, 3 },
-  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT7,            410, 120,  45,  20, 0, 3 },
-  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT8,            410, 145,  45,  20, 0, 3 },
+  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT0,            410,  20,  45,  20, 0, 0 },
+  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT1,            410,  40,  45,  20, 0, 3 },
+  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT2,            410,  60,  45,  20, 0, 3 },
+  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT3,            410,  80,  45,  20, 0, 3 },
+  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT4,            410, 100,  45,  20, 0, 3 },
+  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT5,            410, 120,  45,  20, 0, 3 },
   { BUTTON_CreateIndirect,   "Forward",     GUI_ID_BUTTON4,      10, 170,  80,  30 },
   { BUTTON_CreateIndirect,   "Reverse",     GUI_ID_BUTTON5,      10, 210,  80,  30 },
   { BUTTON_CreateIndirect,   "Azimuthal",   GUI_ID_BUTTON0,   	110, 200,  80,  40 },
@@ -195,16 +195,6 @@ static void _SetProgbarValue(int Id, I32 Value) {
   PROGBAR_SetValue(hItem, Value);
 
 }
-/*********************************************************************
-*
-*       _SetEditValue
-*/
-static void _SetEditValue(int Id, float Value) {
-
-  WM_HWIN hItem;
-  hItem = WM_GetDialogItem(_hDialogMain, Id);
-  EDIT_SetFloatValue(hItem, Value);
-}
 
 /*********************************************************************
 *
@@ -248,10 +238,20 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
 		//
 		// Init edit widgets
 		//
-		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT0 + i);
-//		EDIT_SetDecMode(hItem, 0, -99999, 99999, 0, 0);
+		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT0);
 		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
-		WM_DisableWindow(hItem);
+		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT1);
+		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
+		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT2);
+		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
+		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT3);
+		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
+		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT4);
+		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
+		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT5);
+		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
+		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT6);
+		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
       }
       break;
     case WM_KEY:
@@ -292,9 +292,6 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
         		  else EncoderEnable[i] = false;
         	  }
         	  encoder.setCount(encoder.getCount());				// Resets the count to 0 everytime
-        	  motor.setDuty(Azimuthal_Motor, 100);
-        	  motor.setDuty(Vertical_Motor, 0);
-        	  motor.setDuty(Claw_Motor, 0);
           }
           if (Id == GUI_ID_BUTTON1) {        // Vertical Button
         	  for (int8_t i = 0; i < 3; i++)
@@ -304,9 +301,6 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
         	  }
         	  encoder.setCount(VerticalCount);
         	  DeltaVerticalCount = VerticalCount;
-        	  motor.setDuty(Azimuthal_Motor, 0);
-        	  motor.setDuty(Vertical_Motor, 100);
-        	  motor.setDuty(Claw_Motor, 0);
           }
           if (Id == GUI_ID_BUTTON2) {        // Claw Button
 
@@ -316,15 +310,12 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
         		  else EncoderEnable[i] = false;
         	  }
         	  encoder.setCount(ClawCount);
-        	  motor.setDuty(Azimuthal_Motor, 0);
-        	  motor.setDuty(Vertical_Motor, 0);
-        	  motor.setDuty(Claw_Motor, 100);
           }
           if (Id == GUI_ID_BUTTON4) {        // Forward Button
-        	  motor.setDirection(false);
+//        	  motor.setDirection(false);
           }
           if (Id == GUI_ID_BUTTON5) {        // Reverse Button
-        	  motor.setDirection(true);
+//        	  motor.setDirection(true);
           }
           break;
         case WM_NOTIFICATION_VALUE_CHANGED: // Value has changed
@@ -351,6 +342,9 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
 *       MainTask
 */
 void MainTask(void) {
+  WM_HWIN hDialogMain;
+  WM_HWIN hItem;
+
   WM_SetCreateFlags(WM_CF_MEMDEV);  // Use memory devices on all windows to avoid flicker
   GUI_Init();
   //
@@ -360,13 +354,7 @@ void MainTask(void) {
     GUI_ErrorOut("Not enough memory available.");
     return;
   }
-
-  motor.setDuty(Azimuthal_Motor, 0);
-  motor.setDuty(Vertical_Motor, 0);
-  motor.setDuty(Claw_Motor, 0);
-
-
-  _hDialogMain  = GUI_CreateDialogBox(_aDialogCreate,  GUI_COUNTOF(_aDialogCreate),  _cbCallback,  WM_HBKWIN, 0, 0);
+  hDialogMain  = GUI_CreateDialogBox(_aDialogCreate,  GUI_COUNTOF(_aDialogCreate),  _cbCallback,  WM_HBKWIN, 0, 0);
 
 /*
   WM_SetCallback(WM_HBKWIN, _cbBkWindow);
@@ -376,14 +364,20 @@ void MainTask(void) {
 
   while (1) {
     GUI_Delay(10);
-    _SetEditValue(GUI_ID_EDIT3, encoder.getRevolutions(Azimuthal_Encoder));
-    _SetEditValue(GUI_ID_EDIT5, (int)(Divisor));
-    _SetEditValue(GUI_ID_EDIT6, VerticalDistance);
-    _SetEditValue(GUI_ID_EDIT7, ClawRevolutions);
-    _SetEditValue(GUI_ID_EDIT8, ClawDistance);
 
+    hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT0);
+    EDIT_SetFloatValue(hItem, encoder.getPosition(Vertical_Encoder));
+    hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
+    EDIT_SetFloatValue(hItem, encoder.getDesiredPosition(Vertical_Encoder));
+    hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);
+    EDIT_SetFloatValue(hItem, motor.getDuty(Vertical_Motor));
+    hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
+    EDIT_SetFloatValue(hItem, encoder.getDirection());
+    hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT4);
+    EDIT_SetFloatValue(hItem, motor.getDirection());
+    hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT5);
+    EDIT_SetFloatValue(hItem, posError);
 
-    _SetProgbarValue(GUI_ID_PROGBAR0, (int)(ClawDistance * 400));
 
   }
 }

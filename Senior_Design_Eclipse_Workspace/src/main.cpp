@@ -38,29 +38,27 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stdlib.h"
+#include "arm_math.h"
 
 /* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-
-uint8_t GUI_Initialized = 0;
 TIM_HandleTypeDef TimHandle;
 TIM_HandleTypeDef MotorPWM;
-
-//Motor AzimuthalMotor(Azimuthal_Motor);
-
-uint16_t dir;
-
+/* Private define ------------------------------------------------------------*/
+#define kp 2.0f;
+#define ki 0.005f;
+#define kd 0.005f;
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
 float AzimuthalRevolutions, VerticalRevolutions, ClawRevolutions;
 float AzimuthalSpeed, VerticalSpeed, ClawSpeed;
 float AzimuthalDistance, VerticalDistance, ClawDistance;
 int32_t AzimuthalCount, VerticalCount, ClawCount, Divisor, DeltaVerticalCount;
 
-TIM_OC_InitTypeDef sConfig;
 
+float posError;
 Motor motor;
 Encoder encoder;
+arm_pid_instance_f32 PID;
 
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
@@ -93,6 +91,12 @@ int main(void) {
 
 	/* Configure LED1 */
 	BSP_LED_Init(LED1);
+
+	PID.Kp = kp;
+	PID.Ki = ki;
+	PID.Kd = kd;
+
+	arm_pid_init_f32(&PID,1);
 
 	motor.motorInit(Azimuthal_Motor);
 	motor.motorInit(Vertical_Motor);
@@ -159,21 +163,17 @@ int main(void) {
 	__HAL_RCC_CRC_CLK_ENABLE()
 	; /* Enable the CRC Module */
 	GUI_Init();
-
-	GUI_DispStringAt("Starting...", 0, 0);
-
-	GUI_Clear();
-
-	GUI_Initialized = 1;
-
+	GUI_SelectLayer(0);
 	/* Activate the use of memory device feature */
 	WM_SetCreateFlags(WM_CF_MEMDEV);
 
 	while (1) {
 		// Starts the MainTask() Function which is in an External .c file
 		MainTask();
-
 	}
+
+
+
 
 }
 
@@ -183,8 +183,22 @@ int main(void) {
  * @retval None
  */
 
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-	TouchUpdate();			// REQUIRED to update the touchscreen.
+	TouchUpdate();
+
+	encoder.setDesiredPosition(Vertical_Encoder, -10.0f);
+	encoder.enableEncoder(Vertical_Encoder);
+	encoder.getPosition(Vertical_Encoder);
+
+	posError = encoder.getPosition(Vertical_Encoder) - encoder.getDesiredPosition(Vertical_Encoder);
+	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
+	motor.setDuty(Vertical_Motor, 100);
+
+//		if(posError > 0) motor.setDuty(Vertical_Motor, 100);
+//		else motor.setDuty(Vertical_Motor, -100);
+/*
+
 
 	if (EncoderEnable[0] == true) {
 		AzimuthalCount = encoder.getCount();
@@ -239,7 +253,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			encoder.setCount(0);
 		}
 
-	}
+	}*/
 }
 
 /**

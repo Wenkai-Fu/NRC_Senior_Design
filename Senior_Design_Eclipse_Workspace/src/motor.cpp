@@ -1,3 +1,7 @@
+#include "stdlib.h"
+#include "stm32f7xx_hal.h"
+#include "stm32746g_discovery.h"
+#include "motor.h"
 #include "main.h"
 
 /* Timer handler declaration*/
@@ -13,7 +17,8 @@ GPIO_InitTypeDef   GPIO_InitStruct;
 
 Motor::Motor(void)
 {
-
+	period_ = 99;
+	prescaler_ = 99;
 }
 void Motor::motorInit(motor_id_t id)
 {
@@ -34,8 +39,8 @@ void Motor::motorInit(motor_id_t id)
 	}
 
 	/*##-1- Configure the TIM peripheral #######################################*/
-	TIM_HANDLE_.Init.Prescaler         = 99;
-	TIM_HANDLE_.Init.Period            = 99;
+	TIM_HANDLE_.Init.Prescaler         = prescaler_;
+	TIM_HANDLE_.Init.Period            = period_;
 	TIM_HANDLE_.Init.ClockDivision     = 0;
 	TIM_HANDLE_.Init.CounterMode       = TIM_COUNTERMODE_UP;
 	TIM_HANDLE_.Init.RepetitionCounter = 0;
@@ -106,7 +111,7 @@ void Motor::stop(motor_id_t id)
 	HAL_TIM_PWM_Stop(&TIM_HANDLE_, TIM_CHANNEL_1);
 }
 
-void Motor::setDuty(motor_id_t id, int16_t duty)
+void Motor::setDuty(motor_id_t id, int16_t dutyInput)
 {
 	switch (id)
 	{
@@ -123,8 +128,19 @@ void Motor::setDuty(motor_id_t id, int16_t duty)
 		TIM_HANDLE_.Instance = TIM13;
 		break;
 	}
+
+/*
+	int16_t maxLimit = period_ + 1;
+	if(dutyInput < -maxLimit) duty_ = -maxLimit;
+	else if (dutyInput > maxLimit) duty_ = maxLimit;
+	else duty_ = dutyInput;
+*/
+
+//	if (duty_ < 0) HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);
+//	else HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
+
 	/* Set the pulse value for channel 1 */
-	sMotorConfig.Pulse = duty;
+	sMotorConfig.Pulse = duty_;
 	HAL_TIM_PWM_ConfigChannel(&TIM_HANDLE_, &sMotorConfig, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1);
 }
@@ -137,8 +153,8 @@ int16_t Motor::getDuty(motor_id_t id)
 void Motor::setDirection(bool direction)
 {
 	dir_ = direction;
-	if(dir_) HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
-	else HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);
+//	if(dir_) HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
+//	else HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);
 }
 
 bool Motor::getDirection(void)

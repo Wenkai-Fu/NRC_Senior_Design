@@ -30,11 +30,18 @@ class Encoder
 
 		float getRevolutions(encoder_id_t encode);
 
+		float getPosition(encoder_id_t encode);
+		void setPosition(encoder_id_t encode, float pos);
+
+		float getDesiredPosition(encoder_id_t encode);
+		void setDesiredPosition(encoder_id_t encode, float despos);
 	private:
 		encoder_id_t encoder_id_;
 		uint16_t prev_counter_;
 		int16_t overflows_;
-
+		float pos_;
+		float vertPos_;
+		float desiredVertPos_;
 };
 
 
