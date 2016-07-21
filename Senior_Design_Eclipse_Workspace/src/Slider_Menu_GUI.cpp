@@ -37,6 +37,7 @@ Requirements: WindowManager - (x)
 #include "GUI.h"
 #include "DIALOG.h"
 #include "main.h"
+#include "limit_switches.h"
 
 /*********************************************************************
 *
@@ -104,7 +105,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { BUTTON_CreateIndirect,   "Vertical",    GUI_ID_BUTTON1,    	200, 200,  80,  40 },
   { BUTTON_CreateIndirect,   "Claw",     	GUI_ID_BUTTON2,     290, 200,  80,  40 },
   { BUTTON_CreateIndirect,   "Stop", 		GUI_ID_BUTTON3,  	380, 200,  80,  40 },
-  { BUTTON_CreateIndirect,	"Increment",	GUI_ID_BUTTON6,		 10,  20,  80,  40 },
+  { BUTTON_CreateIndirect,	"Increment",	GUI_ID_BUTTON6,		130,  60,  80,  40 },
   { PROGBAR_CreateIndirect,   "",           GUI_ID_PROGBAR0,   	 90, 160, 100,  18},
   { SPINBOX_CreateIndirect,  NULL,          GUI_ID_SPINBOX0, 	130,  15,  80,  40, 0, 0, 0 },
 
@@ -122,64 +123,6 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 //
 WM_HWIN _hDialogMain;
 
-/*********************************************************************
-*
-*       _OnValueChanged
-*/
-/*static void _OnValueChanged(WM_HWIN hDlg, int Id) {
-  unsigned Index;
-  unsigned v;
-  WM_HWIN  hSlider;
-  WM_HWIN  hEdit;
-
-  Index = 0;
-  v     = 0;
-  if ((Id >= GUI_ID_SLIDER0) && (Id <= GUI_ID_SLIDER1)) {
-    Index = Id - GUI_ID_SLIDER0;
-    //
-    // SLIDER-widget has changed, update EDIT-widget
-    //
-    hSlider = WM_GetDialogItem(hDlg, GUI_ID_SLIDER0 + Index);
-    hEdit   = WM_GetDialogItem(hDlg, GUI_ID_EDIT0 + Index);
-    v = SLIDER_GetValue(hSlider);
-    EDIT_SetValue(hEdit, v);
-  } else if ((Id >= GUI_ID_EDIT0) && (Id <= GUI_ID_EDIT1)) {
-    Index = Id - GUI_ID_EDIT0;
-    //
-    // If EDIT-widget has changed, update SLIDER-widget
-    //
-    hSlider = WM_GetDialogItem(hDlg, GUI_ID_SLIDER0 + Index);
-    hEdit   = WM_GetDialogItem(hDlg, GUI_ID_EDIT0 + Index);
-    v = EDIT_GetValue(hEdit);
-    SLIDER_SetValue(hSlider, v);
-  }
-  _duty[Index] = v;
-  //
-  // At last invalidate dialog client window
-  //
-  WM_InvalidateWindow(WM_GetClientWindow(hDlg));
-}*/
-
-/*********************************************************************
-*
-*       _cbBkWindow
-*/
-/*static void _cbBkWindow(WM_MESSAGE * pMsg) {
-
-
-
-  switch (pMsg->MsgId) {
-  case WM_PAINT:
-    GUI_SetBkColor(GUI_WHITE);
-    GUI_Clear();
-    GUI_SetColor(GUI_BLACK);
-    GUI_SetFont(&GUI_Font24_ASCII);
-
-
-  default:
-    WM_DefaultProc(pMsg);
-  }
-}*/
 /*********************************************************************
 *
 *       _SetProgbarValue
@@ -200,37 +143,31 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
   WM_HWIN hDlg;
   EDIT_Handle hEdit;
   WM_HWIN hItem;
-  int     i;
   int     NCode;
   int     Id;
-
-
-
 
   hDlg = pMsg->hWin;
   switch (pMsg->MsgId) {
     case WM_INIT_DIALOG:
 
-
-      hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX0);
-      SPINBOX_SetSkin(hItem, SPINBOX_SKIN_FLEX);
-      hEdit = SPINBOX_GetEditHandle(hItem);
-      EDIT_SetDecMode(hEdit, 16, 1, 100, 0, 0);
-
-
-      SPINBOX_SetEditMode(hItem, SPINBOX_EM_EDIT);
-      SPINBOX_SetRange(hItem, 0, 100);
+		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX0);
+		SPINBOX_SetSkin(hItem, SPINBOX_SKIN_FLEX);
+		hEdit = SPINBOX_GetEditHandle(hItem);
+		EDIT_SetFloatMode(hEdit, 5.0,-100.0,100.0,0,0);
+		//      EDIT_SetDecMode(hEdit, 16, 1, 100, 0, 0);
 
 
-      //
-      // Init progress bars
-      //
-      hItem = WM_GetDialogItem(hDlg, GUI_ID_PROGBAR0);
-      WIDGET_SetEffect(hItem, &WIDGET_Effect_3D);
-      _SetProgbarValue(GUI_ID_PROGBAR0, 0);
+		/*      SPINBOX_SetEditMode(hItem, SPINBOX_EM_EDIT);
+		SPINBOX_SetRange(hItem, 0, 100);*/
 
-      for (i = 3; i < 9; i++)
-      {
+
+		//
+		// Init progress bars
+		//
+		hItem = WM_GetDialogItem(hDlg, GUI_ID_PROGBAR0);
+		WIDGET_SetEffect(hItem, &WIDGET_Effect_3D);
+		_SetProgbarValue(GUI_ID_PROGBAR0, 0);
+
 		//
 		// Init edit widgets
 		//
@@ -248,7 +185,7 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
 		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT6);
 		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
-      }
+
       break;
     case WM_KEY:
       switch (((WM_KEY_INFO*)(pMsg->Data.p))->Key) {
@@ -261,7 +198,6 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
       }
       break;
     case WM_NOTIFY_PARENT:
-
       Id    = WM_GetId(pMsg->hWinSrc);      // Id of widget
       NCode = pMsg->Data.v;                 // Notification code
 
@@ -316,7 +252,7 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
           break;
         case WM_NOTIFICATION_VALUE_CHANGED: // Value has changed
           if (Id == GUI_ID_SPINBOX0) {
-            Divisor = SPINBOX_GetValue(pMsg->hWinSrc);
+            encoder.setDesiredPosition(Vertical_Encoder,SPINBOX_GetValue(pMsg->hWinSrc));
             hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX0);
           }
           break;
@@ -358,6 +294,8 @@ void MainTask(void) {
   GUI_ExecDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), &_cbCallback, 0, 0, 0);
 */
 
+
+
   while (1) {
     GUI_Delay(10);
 
@@ -374,7 +312,7 @@ void MainTask(void) {
     hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT5);
     EDIT_SetFloatValue(hItem, encoder.getPosError(Vertical_Encoder));
     hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT6);
-    EDIT_SetFloatValue(hItem, (encoder.getPosition(Vertical_Encoder) - encoder.getDesiredPosition(Vertical_Encoder)));
+    EDIT_SetFloatValue(hItem, 0.0f);
 
 
   }
