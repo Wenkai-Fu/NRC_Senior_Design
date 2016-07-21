@@ -16,9 +16,14 @@ TIM_OC_InitTypeDef sMotorConfig;
 GPIO_InitTypeDef   GPIO_InitStruct;
 
 Motor::Motor(void)
+	:motor_id_(Azimuthal_Motor),
+	 duty_ (0),
+	 TIM_HANDLE_ (TimHandle_TIM10),
+	 dir_ (false),
+	 prescaler_ (99),
+	 period_ (99)
 {
-	period_ = 99;
-	prescaler_ = 99;
+
 }
 void Motor::motorInit(motor_id_t id)
 {
@@ -151,8 +156,8 @@ int16_t Motor::getDuty(motor_id_t id){return duty_;}
 void Motor::setDirection(bool direction)
 {
 	dir_ = direction;
-/*	if(dir_) HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
-	else HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);*/
+	if(dir_) HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);
+	else HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
 }
 
 bool Motor::getDirection(void){return(dir_);}
