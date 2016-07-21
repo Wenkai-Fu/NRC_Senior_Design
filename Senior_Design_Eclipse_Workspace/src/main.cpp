@@ -135,8 +135,6 @@ int main(void) {
 	GPIO_InitTypeDef GPIO_InitStruct;
 
 	// Enable GPIO Ports
-	__HAL_RCC_GPIOI_CLK_ENABLE();
-	__HAL_RCC_GPIOG_CLK_ENABLE();
 	__HAL_RCC_GPIOF_CLK_ENABLE();
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 
@@ -144,11 +142,6 @@ int main(void) {
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
 
-	GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_3;
-	HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
-
-	GPIO_InitStruct.Pin = GPIO_PIN_7;
-	HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
 	HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
@@ -178,25 +171,22 @@ int main(void) {
  * @param  htim: TIM handle
  * @retval None
  */
-
+float threshold = 0.01f;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	TouchUpdate();
-
-	motor.setDirection(true);
 	encoder.setDesiredPosition(Vertical_Encoder, -5.0f);
 	encoder.enableEncoder(Vertical_Encoder);
 	encoder.getPosition(Vertical_Encoder);
-
 	encoder.setPosError(Vertical_Encoder,(encoder.getPosition(Vertical_Encoder) - encoder.getDesiredPosition(Vertical_Encoder)));
 
 
 //	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
-	motor.setDuty(Vertical_Motor, 100);
+//	motor.setDuty(Vertical_Motor, 100);
 
 
-/*	if(encoder.getPosError(Vertical_Encoder) > 0) motor.setDuty(Vertical_Motor, 100);
-	else motor.setDuty(Vertical_Motor, -100);*/
-
+	if(encoder.getPosError(Vertical_Encoder) > threshold) motor.setDuty(Vertical_Motor, -100);
+	else if(encoder.getPosError(Vertical_Encoder) < -threshold) motor.setDuty(Vertical_Motor, 100);
+	else motor.setDuty(Vertical_Motor, 0);
 
 /*
 	if (EncoderEnable[0] == true) {

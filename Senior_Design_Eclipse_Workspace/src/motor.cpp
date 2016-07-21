@@ -24,6 +24,19 @@ Motor::Motor(void)
 	 period_ (99)
 {
 
+	/*Initalization of GPIO pin to control the motor's direction
+	through the direction pin of the h-bridge*/
+	GPIO_InitTypeDef GPIO_InitStruct;
+
+	// Enable GPIO Ports
+	__HAL_RCC_GPIOI_CLK_ENABLE();
+
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+
+	GPIO_InitStruct.Pin = GPIO_PIN_3;
+	HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
 }
 void Motor::motorInit(motor_id_t id)
 {
@@ -87,7 +100,6 @@ void Motor::start(motor_id_t id)
 		TIM_HANDLE_.Instance = TIM13;
 		break;
 	}
-
 	/*##-3- Start PWM signals generation #######################################*/
 	/* Start channel 1 */
 	HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1);
@@ -110,7 +122,6 @@ void Motor::stop(motor_id_t id)
 		TIM_HANDLE_.Instance = TIM13;
 		break;
 	}
-
 	/*##-3- Start PWM signals generation #######################################*/
 	/* Start channel 1 */
 	HAL_TIM_PWM_Stop(&TIM_HANDLE_, TIM_CHANNEL_1);
@@ -142,8 +153,8 @@ void Motor::setDuty(motor_id_t id, int16_t dutyInput)
 	else duty_ = dutyInput;
 
 	/*Sets motor direction depending on if the duty command is negative or positive*/
-/*	if (duty_ < 0) setDirection(false);
-	else setDirection(true);*/
+	if (duty_ < 0) setDirection(false);
+	else setDirection(true);
 
 	/* Set the pulse value for channel 1 */
 	sMotorConfig.Pulse = abs(duty_);

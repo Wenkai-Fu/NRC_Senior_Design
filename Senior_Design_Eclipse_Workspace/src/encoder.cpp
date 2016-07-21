@@ -21,42 +21,61 @@ Encoder::Encoder(void)
 	desiredVertPos_ (0),
 	posError_ (0)
 {
-	  /* -1- Initialize TIM1 to handle the encoder sensor */
-	  /* Initialize TIM1 peripheral as follows:
-	       + Period = 65535
-	       + Prescaler = 0
-	       + ClockDivision = 0
-	       + Counter direction = Up
-	  */
-	  Encoder_Handle.Instance = TIM8;
 
-	  Encoder_Handle.Init.Period            = 65535;
-	  Encoder_Handle.Init.Prescaler         = 0;
-	  Encoder_Handle.Init.ClockDivision     = 0;
-	  Encoder_Handle.Init.CounterMode       = TIM_COUNTERMODE_UP;
-	  Encoder_Handle.Init.RepetitionCounter = 0;
+	/*Initialization of GPIO pins responsable for encoder
+	selection with hardware multiplexer*/
 
-	  sEncoderConfig.EncoderMode        = TIM_ENCODERMODE_TI12;
+	GPIO_InitTypeDef GPIO_InitStruct;
 
-	  sEncoderConfig.IC1Polarity        = TIM_ICPOLARITY_RISING;
-	  sEncoderConfig.IC1Selection       = TIM_ICSELECTION_DIRECTTI;
-	  sEncoderConfig.IC1Prescaler       = TIM_ICPSC_DIV1;
-	  sEncoderConfig.IC1Filter          = 0;
+	// Enable GPIO Ports
+	__HAL_RCC_GPIOI_CLK_ENABLE();
+	__HAL_RCC_GPIOG_CLK_ENABLE();
 
-	  sEncoderConfig.IC2Polarity        = TIM_ICPOLARITY_RISING;
-	  sEncoderConfig.IC2Selection       = TIM_ICSELECTION_DIRECTTI;
-	  sEncoderConfig.IC2Prescaler       = TIM_ICPSC_DIV1;
-	  sEncoderConfig.IC2Filter          = 0;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+	GPIO_InitStruct.Pin = GPIO_PIN_0;
+	HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+	GPIO_InitStruct.Pin = GPIO_PIN_7;
+	HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
-	  if(HAL_TIM_Encoder_Init(&Encoder_Handle, &sEncoderConfig) != HAL_OK)
-	  {
-	    /* Initialization Error */
-	    Error_Handler();
-	  }
 
-	  /* Start the encoder interface */
-	  HAL_TIM_Encoder_Start(&Encoder_Handle, TIM_CHANNEL_ALL);
 
+	/* -1- Initialize TIM1 to handle the encoder sensor */
+	/* Initialize TIM1 peripheral as follows:
+	   + Period = 65535
+	   + Prescaler = 0
+	   + ClockDivision = 0
+	   + Counter direction = Up
+	 */
+	Encoder_Handle.Instance = TIM8;
+
+	Encoder_Handle.Init.Period            = 65535;
+	Encoder_Handle.Init.Prescaler         = 0;
+	Encoder_Handle.Init.ClockDivision     = 0;
+	Encoder_Handle.Init.CounterMode       = TIM_COUNTERMODE_UP;
+	Encoder_Handle.Init.RepetitionCounter = 0;
+
+	sEncoderConfig.EncoderMode        = TIM_ENCODERMODE_TI12;
+
+	sEncoderConfig.IC1Polarity        = TIM_ICPOLARITY_RISING;
+	sEncoderConfig.IC1Selection       = TIM_ICSELECTION_DIRECTTI;
+	sEncoderConfig.IC1Prescaler       = TIM_ICPSC_DIV1;
+	sEncoderConfig.IC1Filter          = 0;
+
+	sEncoderConfig.IC2Polarity        = TIM_ICPOLARITY_RISING;
+	sEncoderConfig.IC2Selection       = TIM_ICSELECTION_DIRECTTI;
+	sEncoderConfig.IC2Prescaler       = TIM_ICPSC_DIV1;
+	sEncoderConfig.IC2Filter          = 0;
+
+  if(HAL_TIM_Encoder_Init(&Encoder_Handle, &sEncoderConfig) != HAL_OK)
+  {
+	/* Initialization Error */
+	Error_Handler();
+  }
+
+  /* Start the encoder interface */
+  HAL_TIM_Encoder_Start(&Encoder_Handle, TIM_CHANNEL_ALL);
 }
 
 int32_t Encoder::getCount(void)
