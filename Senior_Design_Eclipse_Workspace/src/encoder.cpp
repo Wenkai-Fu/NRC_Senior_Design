@@ -14,11 +14,13 @@
 
 
 Encoder::Encoder(void)
+  : prev_counter_(0),
+	overflows_ (0),
+	pos_ (0),
+	vertPos_ (0),
+	desiredVertPos_ (0),
+	posError_ (0)
 {
-	prev_counter_ = 0;
-	overflows_ = 0;
-
-
 	  /* -1- Initialize TIM1 to handle the encoder sensor */
 	  /* Initialize TIM1 peripheral as follows:
 	       + Period = 65535
@@ -137,8 +139,10 @@ float Encoder::getPosError(encoder_id_t encode)
 	switch(encode)
 	{
 	case Vertical_Encoder:
-		return (posError_);
+		return posError_;
 		break;
+	default:
+		return 0;
 	}
 }
 
@@ -146,8 +150,12 @@ void Encoder::setPosError(encoder_id_t encode, float posError)
 {
 	switch(encode)
 	{
+	case Azimuthal_Encoder:
+		break;
 	case Vertical_Encoder:
 		posError_ = posError;
+		break;
+	case Claw_Encoder:
 		break;
 	}
 }
@@ -164,14 +172,21 @@ float Encoder::getDesiredPosition(encoder_id_t encode)
 	case Claw_Encoder:
 		return(0);
 		break;
+	default:
+		return(0);
+		break;
 	}
 }
 void Encoder::setDesiredPosition(encoder_id_t encode, float posDesired)
 {
 	switch(encode)
 	{
+	case Azimuthal_Encoder:
+		break;
 	case Vertical_Encoder:
 		desiredVertPos_ = posDesired;
+		break;
+	case Claw_Encoder:
 		break;
 	}
 }

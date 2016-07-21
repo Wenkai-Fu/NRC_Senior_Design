@@ -112,14 +112,6 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 
 /*********************************************************************
 *
-*       Static data, colors
-*
-**********************************************************************
-*/
-static U8 duty[2] = {0, 0};  // Red, green and blue components
-
-/*********************************************************************
-*
 *       Static code
 *
 **********************************************************************
@@ -316,10 +308,10 @@ static void _cbCallback(WM_MESSAGE * pMsg) {
         	  encoder.setCount(ClawCount);
           }
           if (Id == GUI_ID_BUTTON4) {        // Forward Button
-//        	  motor.setDirection(false);
+        	  motor.setDirection(false);
           }
           if (Id == GUI_ID_BUTTON5) {        // Reverse Button
-//        	  motor.setDirection(true);
+        	  motor.setDirection(true);
           }
           break;
         case WM_NOTIFICATION_VALUE_CHANGED: // Value has changed
