@@ -171,10 +171,6 @@ int main(void) {
 		// Starts the MainTask() Function which is in an External .c file
 		MainTask();
 	}
-
-
-
-
 }
 
 /**
@@ -187,19 +183,22 @@ int main(void) {
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	TouchUpdate();
 
-	encoder.setDesiredPosition(Vertical_Encoder, -10.0f);
+	encoder.setDesiredPosition(Vertical_Encoder, -5.0f);
 	encoder.enableEncoder(Vertical_Encoder);
 	encoder.getPosition(Vertical_Encoder);
 
-	posError = encoder.getPosition(Vertical_Encoder) - encoder.getDesiredPosition(Vertical_Encoder);
+	encoder.setPosError(Vertical_Encoder,(encoder.getPosition(Vertical_Encoder) - encoder.getDesiredPosition(Vertical_Encoder)));
+
+	//motor.setDirection(true);
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
 	motor.setDuty(Vertical_Motor, 100);
 
-//		if(posError > 0) motor.setDuty(Vertical_Motor, 100);
-//		else motor.setDuty(Vertical_Motor, -100);
+
+/*	if(encoder.getPosError(Vertical_Encoder) > 0) motor.setDuty(Vertical_Motor, 100);
+	else motor.setDuty(Vertical_Motor, -100);*/
+
+
 /*
-
-
 	if (EncoderEnable[0] == true) {
 		AzimuthalCount = encoder.getCount();
 		encoder.enableEncoder(Azimuthal_Encoder);

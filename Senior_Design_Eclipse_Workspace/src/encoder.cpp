@@ -132,6 +132,25 @@ void Encoder::setPosition(encoder_id_t encode, float pos)
 	}
 }
 
+float Encoder::getPosError(encoder_id_t encode)
+{
+	switch(encode)
+	{
+	case Vertical_Encoder:
+		return (posError_);
+		break;
+	}
+}
+
+void Encoder::setPosError(encoder_id_t encode, float posError)
+{
+	switch(encode)
+	{
+	case Vertical_Encoder:
+		posError_ = posError;
+		break;
+	}
+}
 float Encoder::getDesiredPosition(encoder_id_t encode)
 {
 	switch(encode)
@@ -147,13 +166,12 @@ float Encoder::getDesiredPosition(encoder_id_t encode)
 		break;
 	}
 }
-
-void Encoder::setDesiredPosition(encoder_id_t encode, float pos)
+void Encoder::setDesiredPosition(encoder_id_t encode, float posDesired)
 {
 	switch(encode)
 	{
 	case Vertical_Encoder:
-		desiredVertPos_ = pos;
+		desiredVertPos_ = posDesired;
 		break;
 	}
 }

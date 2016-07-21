@@ -34,7 +34,10 @@ class Encoder
 		void setPosition(encoder_id_t encode, float pos);
 
 		float getDesiredPosition(encoder_id_t encode);
-		void setDesiredPosition(encoder_id_t encode, float despos);
+		void setDesiredPosition(encoder_id_t encode, float posDesired);
+
+		float getPosError(encoder_id_t encode);
+		void setPosError(encoder_id_t encode, float posError);
 	private:
 		encoder_id_t encoder_id_;
 		uint16_t prev_counter_;
@@ -42,6 +45,7 @@ class Encoder
 		float pos_;
 		float vertPos_;
 		float desiredVertPos_;
+		float posError_;
 };
 
 

@@ -85,15 +85,19 @@ Encoder ClawEncoder(Claw_Encoder);
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { FRAMEWIN_CreateIndirect, "Motor Control", 0,         		0,  0, 480, 272, 0},
-  { TEXT_CreateIndirect,     "Azimuthal:" ,  0,          		5,  35,  60,  20, TEXT_CF_LEFT },
-  { TEXT_CreateIndirect,     "Vertical:", 0,             		5,  85,  60,  20, TEXT_CF_LEFT },
-  { TEXT_CreateIndirect,     "Claw:",  0,                		5,  135, 60,  20, TEXT_CF_LEFT },
+  { TEXT_CreateIndirect,     "Position" ,  0,          			300,  20,  80,  20, TEXT_CF_LEFT },
+  { TEXT_CreateIndirect,     "Desired Position", 0,             300,  40,  80,  20, TEXT_CF_LEFT },
+  { TEXT_CreateIndirect,     "Duty Cycle",  0,                	300,  60,  80,  20, TEXT_CF_LEFT },
+  { TEXT_CreateIndirect,     "Encoder Dir" ,  0,          		300,  80,  80,  20, TEXT_CF_LEFT },
+  { TEXT_CreateIndirect,     "Motor Dir", 0,             		300, 100,  80,  20, TEXT_CF_LEFT },
+  { TEXT_CreateIndirect,     "Pos Error",  0,                	300, 120,  80,  20, TEXT_CF_LEFT },
   { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT0,            410,  20,  45,  20, 0, 0 },
   { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT1,            410,  40,  45,  20, 0, 3 },
   { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT2,            410,  60,  45,  20, 0, 3 },
   { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT3,            410,  80,  45,  20, 0, 3 },
   { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT4,            410, 100,  45,  20, 0, 3 },
   { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT5,            410, 120,  45,  20, 0, 3 },
+  { EDIT_CreateIndirect,	 NULL, 	   GUI_ID_EDIT6,            410, 140,  45,  20, 0, 3 },
   { BUTTON_CreateIndirect,   "Forward",     GUI_ID_BUTTON4,      10, 170,  80,  30 },
   { BUTTON_CreateIndirect,   "Reverse",     GUI_ID_BUTTON5,      10, 210,  80,  30 },
   { BUTTON_CreateIndirect,   "Azimuthal",   GUI_ID_BUTTON0,   	110, 200,  80,  40 },
@@ -101,8 +105,8 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { BUTTON_CreateIndirect,   "Claw",     	GUI_ID_BUTTON2,     290, 200,  80,  40 },
   { BUTTON_CreateIndirect,   "Stop", 		GUI_ID_BUTTON3,  	380, 200,  80,  40 },
   { BUTTON_CreateIndirect,	"Increment",	GUI_ID_BUTTON6,		 10,  20,  80,  40 },
-  { PROGBAR_CreateIndirect,   "",                    GUI_ID_PROGBAR0,   90, 160, 100,  18},
-  { SPINBOX_CreateIndirect,  NULL,                GUI_ID_SPINBOX0, 130, 15,  80,  40, 0, 0, 0 },
+  { PROGBAR_CreateIndirect,   "",           GUI_ID_PROGBAR0,   	 90, 160, 100,  18},
+  { SPINBOX_CreateIndirect,  NULL,          GUI_ID_SPINBOX0, 	130,  15,  80,  40, 0, 0, 0 },
 
 };
 
@@ -376,7 +380,9 @@ void MainTask(void) {
     hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT4);
     EDIT_SetFloatValue(hItem, motor.getDirection());
     hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT5);
-    EDIT_SetFloatValue(hItem, posError);
+    EDIT_SetFloatValue(hItem, encoder.getPosError(Vertical_Encoder));
+    hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT6);
+    EDIT_SetFloatValue(hItem, (encoder.getPosition(Vertical_Encoder) - encoder.getDesiredPosition(Vertical_Encoder)));
 
 
   }

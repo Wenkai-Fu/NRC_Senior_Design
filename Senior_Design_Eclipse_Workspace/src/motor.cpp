@@ -113,6 +113,7 @@ void Motor::stop(motor_id_t id)
 
 void Motor::setDuty(motor_id_t id, int16_t dutyInput)
 {
+//	duty_ = dutyInput;
 	switch (id)
 	{
 	case Azimuthal_Motor:
@@ -129,38 +130,33 @@ void Motor::setDuty(motor_id_t id, int16_t dutyInput)
 		break;
 	}
 
-/*
+	/*Overflow protection of duty cycle. Duty cycle cannot be higher than the timer period length*/
 	int16_t maxLimit = period_ + 1;
 	if(dutyInput < -maxLimit) duty_ = -maxLimit;
 	else if (dutyInput > maxLimit) duty_ = maxLimit;
 	else duty_ = dutyInput;
-*/
 
-//	if (duty_ < 0) HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);
-//	else HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
+	/*Sets motor direction depending on if the duty command is negative or positive*/
+/*	if (duty_ < 0) setDirection(false);
+	else setDirection(true);*/
 
 	/* Set the pulse value for channel 1 */
-	sMotorConfig.Pulse = duty_;
+	sMotorConfig.Pulse = abs(duty_);
 	HAL_TIM_PWM_ConfigChannel(&TIM_HANDLE_, &sMotorConfig, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1);
 }
 
-int16_t Motor::getDuty(motor_id_t id)
-{
-	return duty_;
-}
+int16_t Motor::getDuty(motor_id_t id){return duty_;}
 
 void Motor::setDirection(bool direction)
 {
 	dir_ = direction;
-//	if(dir_) HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
-//	else HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);
+/*	if(dir_) HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
+	else HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);*/
 }
 
-bool Motor::getDirection(void)
-{
-	return(dir_);
-}
+bool Motor::getDirection(void){return(dir_);}
+
 void Motor::Error_Handler(void)
 {
 	/* Turn LED3 on */
