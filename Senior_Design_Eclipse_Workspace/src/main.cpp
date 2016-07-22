@@ -64,7 +64,9 @@ arm_pid_instance_f32 PID;
 static void SystemClock_Config(void);
 
 extern void MainTask(void);
-
+static void EXTI15_10_IRQHandler_Config(void);
+static void EXTI9_5_IRQHandler_Config(void);
+static void EXTI0_IRQHandler_Config(void);
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -73,17 +75,11 @@ extern void MainTask(void);
  * @retval None
  */
 int main(void) {
-	/* Enable the CPU Cache */
-	// CPU_CACHE_Enable();
-	/* STM32F7xx HAL library initialization:
-	 - Configure the Flash ART accelerator on ITCM interface
-	 - Configure the Systick to generate an interrupt each 1 msec
-	 - Set NVIC Group Priority to 4
-	 - Global MSP (MCU Support Package) initialization
-	 */
+	/* Initializes Hardware Abstraction Layer libraries,
+	also implements callback functions in hal_msp.cpp */
 	HAL_Init();
 
-	/* Configure the system clock to 200 MHz */
+	/* Configure the system clock to 216 MHz */
 	SystemClock_Config();
 
 	// Used to refresh the touch screen and to convert the STemWin screen info to HAL_GUI info
@@ -92,12 +88,18 @@ int main(void) {
 	/* Configure LED1 */
 	BSP_LED_Init(LED1);
 
+	/* Configure Interrupt GPIO lines for limit switches*/
+	EXTI15_10_IRQHandler_Config();
+	EXTI9_5_IRQHandler_Config();
+	EXTI0_IRQHandler_Config();
+
+	/* Initializes CMSIS ARM_Math PID function*/
 	PID.Kp = kp;
 	PID.Ki = ki;
 	PID.Kd = kd;
-
 	arm_pid_init_f32(&PID,1);
 
+	/* Initialization of TIM handles for motor PWM timers*/
 	motor.motorInit(Azimuthal_Motor);
 	motor.motorInit(Vertical_Motor);
 	motor.motorInit(Claw_Motor);
@@ -109,12 +111,13 @@ int main(void) {
 	TimHandle.Instance = TIM3;
 
 	/* Initialize TIM3 peripheral as follows:
-
-	 + Period = 500 - 1
-	 + Prescaler = ((SystemCoreClock/2)/10000) - 1
+	 + Period = 100 - 1
+	 + Prescaler = 500 - 1
 	 + TIM3 Clock is at 50 MHz
 	 + ClockDivision = 0
 	 + Counter Direction = Up
+	 + TIM3 frequency = TIM3 clock / (Period * Prescaler)
+	 + f = 50Mhz/100*500 = 1000Hz
 	 */
 	TimHandle.Init.Period = 99;
 	TimHandle.Init.Prescaler = 499;
@@ -131,8 +134,6 @@ int main(void) {
 		while (1) {
 		}
 	}
-
-
 
 	/***********************************************************/
 
@@ -159,20 +160,36 @@ float threshold = 0.01f;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	TouchUpdate();
 //	encoder.setDesiredPosition(Vertical_Encoder, -5.0f);
-	encoder.enableEncoder(Vertical_Encoder);
-	encoder.getPosition(Vertical_Encoder);
-	encoder.setPosError(Vertical_Encoder,(encoder.getPosition(Vertical_Encoder) - encoder.getDesiredPosition(Vertical_Encoder)));
-
-
-//	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
 //	motor.setDuty(Vertical_Motor, 100);
 
+	if(motor.getEnable(Azimuthal_Motor))
+	{
+		encoder.enableEncoder(Azimuthal_Encoder);
+		encoder.getPosition(Azimuthal_Encoder);
+		encoder.setPosError(Azimuthal_Encoder,(encoder.getPosition(Azimuthal_Encoder) - encoder.getDesiredPosition(Azimuthal_Encoder)));
 
-	if(encoder.getPosError(Vertical_Encoder) > threshold) motor.setDuty(Vertical_Motor, -100);
-	else if(encoder.getPosError(Vertical_Encoder) < -threshold) motor.setDuty(Vertical_Motor, 100);
-	else motor.setDuty(Vertical_Motor, 0);
+		if(encoder.getPosError(Azimuthal_Encoder) > threshold) motor.setDuty(Azimuthal_Motor, 100);
+		else if(encoder.getPosError(Azimuthal_Encoder) < -threshold) motor.setDuty(Azimuthal_Motor, -100);
+		else motor.setDuty(Azimuthal_Motor, 0);
+	}
+	else motor.setDuty(Azimuthal_Motor,0);
 
-/*
+
+	if(motor.getEnable(Vertical_Motor))
+	{
+		encoder.enableEncoder(Vertical_Encoder);
+		encoder.getPosition(Vertical_Encoder);
+		encoder.setPosError(Vertical_Encoder,(encoder.getPosition(Vertical_Encoder) - encoder.getDesiredPosition(Vertical_Encoder)));
+
+		if(encoder.getPosError(Vertical_Encoder) > threshold) motor.setDuty(Vertical_Motor, -100);
+		else if(encoder.getPosError(Vertical_Encoder) < -threshold) motor.setDuty(Vertical_Motor, 100);
+		else motor.setDuty(Vertical_Motor, 0);
+	}
+	else motor.setDuty(Vertical_Motor,0);
+
+
+
+	/*
 	if (EncoderEnable[0] == true) {
 		AzimuthalCount = encoder.getCount();
 		encoder.enableEncoder(Azimuthal_Encoder);
@@ -228,7 +245,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	}*/
 }
-
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if (HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_10))
+	{
+		BSP_LED_On(LED1);
+		motor.setEnable(Vertical_Motor, false);
+	}
+	else if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0))
+	{
+		BSP_LED_On(LED1);
+		motor.setEnable(Vertical_Motor, false);
+	}
+}
 /**
  * @brief  System Clock Configuration
  *         The system Clock is configured as follow :
@@ -294,7 +323,58 @@ static void SystemClock_Config(void) {
 		}
 	}
 }
+static void EXTI15_10_IRQHandler_Config(void)
+{
+  GPIO_InitTypeDef   GPIO_InitStructure;
 
+  /* Enable GPIOF clock */
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+
+  /* Configure PF.10 pin as input floating */
+  GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStructure.Pull = GPIO_PULLDOWN;
+  GPIO_InitStructure.Pin = GPIO_PIN_10;
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStructure);
+
+  /* Enable and set EXTI lines 15 to 10 Interrupt to the lowest priority */
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 2, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+}
+
+static void EXTI9_5_IRQHandler_Config(void)
+{
+  GPIO_InitTypeDef   GPIO_InitStructure;
+
+  /* Enable GPIOF clock */
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+
+  /* Configure PF.9 pin as input floating */
+  GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStructure.Pull = GPIO_PULLDOWN;
+  GPIO_InitStructure.Pin = GPIO_PIN_9;
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStructure);
+
+  /* Enable and set EXTI lines 9 to 5 Interrupt to the lowest priority */
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 2, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+}
+static void EXTI0_IRQHandler_Config(void)
+{
+  GPIO_InitTypeDef   GPIO_InitStructure;
+
+  /* Enable GPIOF clock */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /* Configure PF.9 pin as input floating */
+  GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStructure.Pull = GPIO_PULLDOWN;
+  GPIO_InitStructure.Pin = GPIO_PIN_0;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+  /* Enable and set EXTI lines 9 to 5 Interrupt to the lowest priority */
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+}
 #ifdef  USE_FULL_ASSERT
 /**
  * @brief  Reports the name of the source file and the source line number

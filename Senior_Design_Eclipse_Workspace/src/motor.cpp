@@ -15,13 +15,19 @@ TIM_OC_InitTypeDef sMotorConfig;
 /* GPIO Pins for Motor declaration */
 GPIO_InitTypeDef   GPIO_InitStruct;
 
+/* Using the encoder class to enable encoders when motors are enabled*/
+extern Encoder encoder;
+
 Motor::Motor(void)
 	:motor_id_(Azimuthal_Motor),
 	 duty_ (0),
 	 TIM_HANDLE_ (TimHandle_TIM10),
 	 dir_ (false),
 	 prescaler_ (99),
-	 period_ (99)
+	 period_ (99),
+	 enableA_ (false),
+	 enableV_ (false),
+	 enableC_ (false)
 {
 
 	/*Initalization of GPIO pin to control the motor's direction
@@ -126,7 +132,48 @@ void Motor::stop(motor_id_t id)
 	/* Start channel 1 */
 	HAL_TIM_PWM_Stop(&TIM_HANDLE_, TIM_CHANNEL_1);
 }
+void Motor::setEnable(motor_id_t id, bool enable)
+{
+	switch(id)
+	{
+	case Azimuthal_Motor:
+		enableA_ = enable;
+		//encoder.enableEncoder(Azimuthal_Encoder);
+		enableV_ = false;
+		enableC_ = false;
+		break;
+	case Vertical_Motor:
+		enableV_ = enable;
+		//encoder.enableEncoder(Vertical_Encoder);
+		enableA_ = false;
+		enableC_ = false;
+		break;
+	case Claw_Motor:
+		enableC_ = enable;
+		//encoder.enableEncoder(Claw_Encoder);
+		enableA_ = false;
+		enableV_ = false;
+		break;
+	}
+}
 
+bool Motor::getEnable(motor_id_t id)
+{
+	switch(id)
+	{
+	case Azimuthal_Motor:
+		return enableA_;
+		break;
+	case Vertical_Motor:
+		return enableV_;
+		break;
+	case Claw_Motor:
+		return enableC_;
+		break;
+	default:
+		return 0;
+	}
+}
 void Motor::setDuty(motor_id_t id, int16_t dutyInput)
 {
 //	duty_ = dutyInput;

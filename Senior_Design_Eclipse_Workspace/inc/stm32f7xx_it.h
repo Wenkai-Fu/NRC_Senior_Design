@@ -64,6 +64,7 @@ void LTDC_IRQHandler(void);
 void TIM3_IRQHandler(void);
 void EXTI0_IRQHandler(void);
 void EXTI9_5_IRQHandler(void);
+void EXTI0_IRQHandler(void);
 #ifdef __cplusplus
 }
 #endif

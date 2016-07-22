@@ -112,6 +112,15 @@
 								<inputType id="fr.ac6.managedbuild.tool.gnu.cross.cpp.compiler.input.s.1645553292" superClass="fr.ac6.managedbuild.tool.gnu.cross.cpp.compiler.input.s"/>
 							</tool>
 							<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.linker.1011068064" name="MCU GCC Linker" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.linker">
+								<option id="gnu.c.link.option.libs.1966308467" name="Libraries (-l)" superClass="gnu.c.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value=":STemWin528_CM7_GCC.a"/>
+									<listOptionValue builtIn="false" value=":libarm_cortexM7lfdp_math.a"/>
+									<listOptionValue builtIn="false" value=":libarm_cortexM7lfsp_math.a"/>
+								</option>
+								<option id="gnu.c.link.option.paths.81972934" name="Library search path (-L)" superClass="gnu.c.link.option.paths" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Senior_Design_Final_Iteration/CMSIS/Lib/GCC}&quot;"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.1093621838" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>

@@ -11,7 +11,7 @@
 Limit::Limit(void)
 	:switch_id_ (Top)
 {
-	GPIO_InitTypeDef GPIO_InitStruct;
+/*	GPIO_InitTypeDef GPIO_InitStruct;
 
 	// Enable GPIO Ports
 	__HAL_RCC_GPIOF_CLK_ENABLE();
@@ -25,7 +25,7 @@ Limit::Limit(void)
 	HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = GPIO_PIN_0;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);*/
 }
 
 bool Limit::getState(limit_id_t id)

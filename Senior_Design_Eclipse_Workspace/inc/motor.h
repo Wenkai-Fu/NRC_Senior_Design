@@ -25,6 +25,9 @@ public:
 	void start(motor_id_t id);
 	void stop(motor_id_t id);
 
+	void setEnable(motor_id_t id, bool enable);
+	bool getEnable(motor_id_t id);
+
 	void setDuty(motor_id_t id, int16_t dutyInput);
 	int16_t getDuty(motor_id_t id);
 
@@ -40,6 +43,9 @@ private:
 	bool dir_;
 	int16_t prescaler_;
 	int16_t period_;
+	bool enableA_;
+	bool enableV_;
+	bool enableC_;
 };
 
 

@@ -17,8 +17,11 @@ Encoder::Encoder(void)
   : prev_counter_(0),
 	overflows_ (0),
 	pos_ (0),
+	azimPos_ (0),
 	vertPos_ (0),
+	desiredAzimPos_ (0),
 	desiredVertPos_ (0),
+	desiredClawPos_ (0),
 	posError_ (0)
 {
 
@@ -145,8 +148,14 @@ void Encoder::setPosition(encoder_id_t encode, float pos)
 {
 	switch(encode)
 	{
+	case Azimuthal_Encoder:
+		azimPos_ = pos;
+		break;
 	case Vertical_Encoder:
 		vertPos_ = pos;
+		break;
+	case Claw_Encoder:
+		clawPos_ = pos;
 		break;
 	default:
 		break;
@@ -157,7 +166,13 @@ float Encoder::getPosError(encoder_id_t encode)
 {
 	switch(encode)
 	{
+	case Azimuthal_Encoder:
+		return posError_;
+		break;
 	case Vertical_Encoder:
+		return posError_;
+		break;
+	case Claw_Encoder:
 		return posError_;
 		break;
 	default:
@@ -170,11 +185,13 @@ void Encoder::setPosError(encoder_id_t encode, float posError)
 	switch(encode)
 	{
 	case Azimuthal_Encoder:
+		posError_ = posError;
 		break;
 	case Vertical_Encoder:
 		posError_ = posError;
 		break;
 	case Claw_Encoder:
+		posError_ = posError;
 		break;
 	}
 }
@@ -183,13 +200,13 @@ float Encoder::getDesiredPosition(encoder_id_t encode)
 	switch(encode)
 	{
 	case Azimuthal_Encoder:
-		return(0);
+		return(desiredAzimPos_);
 		break;
 	case Vertical_Encoder:
 		return(desiredVertPos_);
 		break;
 	case Claw_Encoder:
-		return(0);
+		return(desiredClawPos_);
 		break;
 	default:
 		return(0);
@@ -201,11 +218,13 @@ void Encoder::setDesiredPosition(encoder_id_t encode, float posDesired)
 	switch(encode)
 	{
 	case Azimuthal_Encoder:
+		desiredAzimPos_ = posDesired;
 		break;
 	case Vertical_Encoder:
 		desiredVertPos_ = posDesired;
 		break;
 	case Claw_Encoder:
+		desiredClawPos_ = posDesired;
 		break;
 	}
 }

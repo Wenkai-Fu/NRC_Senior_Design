@@ -26,6 +26,7 @@ class Encoder
 		bool getDirection(void);
 
 		void enableEncoder(encoder_id_t encode);
+
 		void Error_Handler(void);
 
 		float getRevolutions(encoder_id_t encode);
@@ -43,8 +44,12 @@ class Encoder
 		uint16_t prev_counter_;
 		int16_t overflows_;
 		float pos_;
+		float azimPos_;
 		float vertPos_;
+		float clawPos_;
+		float desiredAzimPos_;
 		float desiredVertPos_;
+		float desiredClawPos_;
 		float posError_;
 };
 
