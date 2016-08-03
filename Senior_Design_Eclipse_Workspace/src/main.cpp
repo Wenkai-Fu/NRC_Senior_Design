@@ -1,6 +1,5 @@
 // Adapted from  STemWin/STemWin_HelloWorld/Src/main.c.  See LICENSE.
 
-/* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stdlib.h"
 #include "arm_math.h"
@@ -24,6 +23,7 @@ static void EXTI15_10_IRQHandler_Config(void);
 static void EXTI9_5_IRQHandler_Config(void);
 static void EXTI0_IRQHandler_Config(void);
 
+//----------------------------------------------------------------------------//
 int main(void)
 {
 	/* Initializes Hardware Abstraction Layer libraries,
@@ -33,7 +33,8 @@ int main(void)
 	/* Configure the system clock to 216 MHz */
 	SystemClock_Config();
 
-	// Used to refresh the touch screen and to convert the STemWin screen info to HAL_GUI info
+	// Used to refresh the touch screen and to convert the
+	// STemWin screen info to HAL_GUI info
 	BspInit();
 
 	/* Configure LED1 */
@@ -45,12 +46,9 @@ int main(void)
 	EXTI0_IRQHandler_Config();
 
 	/* Initializes CMSIS ARM_Math PID function*/
-	PID.Kp = kp
-	;
-	PID.Ki = ki
-	;
-	PID.Kd = kd
-	;
+	PID.Kp = kp;
+	PID.Ki = ki;
+	PID.Kd = kd;
 	arm_pid_init_f32(&PID, 1);
 
 	/* Initialization of TIM handles for motor PWM timers*/
@@ -111,6 +109,7 @@ int main(void)
 	}
 }
 
+//----------------------------------------------------------------------------//
 /**
  * @brief  Period elapsed callback in non blocking mode
  * @param  htim: TIM handle
@@ -156,8 +155,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	}
 	else
 		motor.setDuty(Vertical_Motor, 0);
-
 }
+
+//----------------------------------------------------------------------------//
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
@@ -171,6 +171,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		motor.setEnable(Vertical_Motor, false);
 	}
 }
+
+//----------------------------------------------------------------------------//
 /**
  * @brief  System Clock Configuration
  *         The system Clock is configured as follow :
@@ -226,7 +228,8 @@ static void SystemClock_Config(void)
 		}
 	}
 
-	/* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers */
+	/* Select PLL as system clock source and configure the HCLK,
+	 * PCLK1 and PCLK2 clocks dividers */
 	RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK
 			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
@@ -243,6 +246,8 @@ static void SystemClock_Config(void)
 		}
 	}
 }
+
+//----------------------------------------------------------------------------//
 static void EXTI15_10_IRQHandler_Config(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -262,6 +267,7 @@ static void EXTI15_10_IRQHandler_Config(void)
 	HAL_NVIC_EnableIRQ (EXTI15_10_IRQn);
 }
 
+//----------------------------------------------------------------------------//
 static void EXTI9_5_IRQHandler_Config(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -280,6 +286,8 @@ static void EXTI9_5_IRQHandler_Config(void)
 	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 2, 0);
 	HAL_NVIC_EnableIRQ (EXTI9_5_IRQn);
 }
+
+//----------------------------------------------------------------------------//
 static void EXTI0_IRQHandler_Config(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -298,6 +306,7 @@ static void EXTI0_IRQHandler_Config(void)
 	HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 0);
 	HAL_NVIC_EnableIRQ (EXTI0_IRQn);
 }
+
 #ifdef  USE_FULL_ASSERT
 /**
  * @brief  Reports the name of the source file and the source line number
@@ -316,5 +325,3 @@ void assert_failed(uint8_t* file, uint32_t line)
 	{}
 }
 #endif
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
