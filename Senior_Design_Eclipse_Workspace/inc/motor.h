@@ -14,11 +14,9 @@ class Motor
 {
 public:
 
-	Motor(void);
+	Motor();
+	Motor(TIM_TypeDef *TIMX, const float counts_to_position);
 	void motorInit(motor_id_t id);
-
-	void start(motor_id_t id);
-	void stop(motor_id_t id);
 
 	void setEnable(motor_id_t id, bool enable);
 	bool getEnable(motor_id_t id);
@@ -41,6 +39,11 @@ private:
 	bool enableA_;
 	bool enableV_;
 	bool enableC_;
+
+	float counts_to_position_;
+	// Timer Output Compare Configuration Structure
+	TIM_OC_InitTypeDef sMotorConfig;
+
 };
 
 

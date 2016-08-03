@@ -25,16 +25,15 @@ class Encoder
 
 		void Error_Handler(void);
 
-		float getRevolutions(encoder_id_t encode);
-
 		float getPosition(encoder_id_t encode);
-		void setPosition(encoder_id_t encode, float pos);
 
 		float getDesiredPosition(encoder_id_t encode);
 		void setDesiredPosition(encoder_id_t encode, float posDesired);
 
-		float getPosError(encoder_id_t encode);
+		float getPosError();
+
 		void setPosError(encoder_id_t encode, float posError);
+
 	private:
 		encoder_id_t encoder_id_;
 		uint16_t prev_counter_;

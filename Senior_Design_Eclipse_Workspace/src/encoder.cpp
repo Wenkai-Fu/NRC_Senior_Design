@@ -98,29 +98,7 @@ int32_t Encoder::getCount(void)
 	return count32;
 }
 
-//----------------------------------------------------------------------------//
-float Encoder::getRevolutions(encoder_id_t encode)
-{
-	switch (encode)
-	{
-	case Azimuthal_Encoder:
-		return (-1.0f
-				* (getCount() / Pulses_Per_Revolution / Azimuthal_Gear_Ratio
-						/ Pinion_Spur_Gear_Ratio));
-		break;
-	case Vertical_Encoder:
-		return (-1.0f
-				* (getCount() / Pulses_Per_Revolution / Vertical_Gear_Ratio
-						/ Pinion_Spur_Gear_Ratio));
-		break;
-	case Claw_Encoder:
-		return (-1.0f * (getCount() / Pulses_Per_Revolution / Claw_Gear_Ratio));
-		break;
-	default:
-		return (0);
-		break;
-	}
-}
+
 
 //----------------------------------------------------------------------------//
 float Encoder::getPosition(encoder_id_t encode)
@@ -128,17 +106,25 @@ float Encoder::getPosition(encoder_id_t encode)
 	switch (encode)
 	{
 	case Azimuthal_Encoder:
-		return ((getRevolutions(Vertical_Encoder) / ThreadPitch)
-				* Inches_to_Centimeters);
+	{
+		float revs = (-1.0f * (getCount() / Pulses_Per_Revolution /
+				          Azimuthal_Gear_Ratio / Pinion_Spur_Gear_Ratio));
+		return ((revs / ThreadPitch) * Inches_to_Centimeters);
 		break;
+	}
 	case Vertical_Encoder:
-		return (-1.0f
-				* (getCount() / Pulses_Per_Revolution / Vertical_Gear_Ratio
+	{
+		return (-1.0f	* (getCount() / Pulses_Per_Revolution / Vertical_Gear_Ratio
 						/ Pinion_Spur_Gear_Ratio));
 		break;
+	}
 	case Claw_Encoder:
-		return ((getRevolutions(Claw_Encoder) / ThreadPitch) * Inches_to_Centimeters);
+	{
+		float revs = (-1.0f * (getCount() / Pulses_Per_Revolution /
+				          Claw_Gear_Ratio));
+		return ((revs / ThreadPitch) * Inches_to_Centimeters);
 		break;
+	}
 	default:
 		return (0);
 		break;
@@ -146,41 +132,9 @@ float Encoder::getPosition(encoder_id_t encode)
 }
 
 //----------------------------------------------------------------------------//
-void Encoder::setPosition(encoder_id_t encode, float pos)
+float Encoder::getPosError()
 {
-	switch (encode)
-	{
-	case Azimuthal_Encoder:
-		azimPos_ = pos;
-		break;
-	case Vertical_Encoder:
-		vertPos_ = pos;
-		break;
-	case Claw_Encoder:
-		clawPos_ = pos;
-		break;
-	default:
-		break;
-	}
-}
-
-//----------------------------------------------------------------------------//
-float Encoder::getPosError(encoder_id_t encode)
-{
-	switch (encode)
-	{
-	case Azimuthal_Encoder:
-		return posError_;
-		break;
-	case Vertical_Encoder:
-		return posError_;
-		break;
-	case Claw_Encoder:
-		return posError_;
-		break;
-	default:
-		return 0;
-	}
+	return posError_;
 }
 
 //----------------------------------------------------------------------------//

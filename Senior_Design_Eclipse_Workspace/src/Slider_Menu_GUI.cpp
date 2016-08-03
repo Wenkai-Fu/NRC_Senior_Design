@@ -7,7 +7,7 @@
 
 #define RECOMMENDED_MEMORY (1024L * 15)
 
-extern Motor motor;
+extern Motor motor, motor_azimuthal, motor_vertical, motor_claw;
 extern Encoder encoder;
 
 /*********************************************************************
@@ -38,7 +38,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 	{ BUTTON_CreateIndirect, "Azimuthal", GUI_ID_BUTTON0, 110, 200, 80, 40 },
 	{ BUTTON_CreateIndirect, "Vertical", GUI_ID_BUTTON1, 200, 200, 80, 40 },
 	{ BUTTON_CreateIndirect, "Claw", GUI_ID_BUTTON2, 290, 200, 80, 40 },
-	{ BUTTON_CreateIndirect, "Stop", GUI_ID_BUTTON3, 380, 200, 80, 40 },
+	{ BUTTON_CreateIndirect, "STOP!", GUI_ID_BUTTON3, 380, 200, 80, 40 },
 	{ BUTTON_CreateIndirect, "Azim Inc", GUI_ID_BUTTON6, 20, 100, 100, 40 },
 	{ BUTTON_CreateIndirect, "Vert Inc", GUI_ID_BUTTON7, 140, 100, 100, 40 },
 	{ PROGBAR_CreateIndirect, "", GUI_ID_PROGBAR0, 90, 160, 100, 18 },
@@ -224,18 +224,18 @@ void MainTask(void)
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
 		EDIT_SetFloatValue(hItem, encoder.getDesiredPosition(Vertical_Encoder));
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);
-		EDIT_SetFloatValue(hItem, encoder.getPosError(Vertical_Encoder));
+		EDIT_SetFloatValue(hItem, encoder.getPosError());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
 		EDIT_SetFloatValue(hItem, encoder.getDirection());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT4);
 		EDIT_SetFloatValue(hItem, motor.getDirection());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT5);
-		EDIT_SetFloatValue(hItem, encoder.getPosError(Vertical_Encoder));
+		EDIT_SetFloatValue(hItem, encoder.getPosError());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT6);
 		EDIT_SetFloatValue(hItem, encoder.getPosition(Azimuthal_Encoder));
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT7);
 		EDIT_SetFloatValue(hItem, encoder.getDesiredPosition(Azimuthal_Encoder));
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT8);
-		EDIT_SetFloatValue(hItem, encoder.getPosError(Azimuthal_Encoder));
+		EDIT_SetFloatValue(hItem, encoder.getPosError());
 	}
 }

@@ -13,9 +13,14 @@ TIM_HandleTypeDef MotorPWM;
 
 int32_t AzimuthalCount, VerticalCount, ClawCount, Divisor, DeltaVerticalCount;
 
-Motor motor;
+Motor motor(TIM10, 1.23);
 Encoder encoder;
 arm_pid_instance_f32 PID;
+
+
+Motor motor_azimuth(TIM10, 1.23);
+Motor motor_vertical(TIM11, 1.23);
+Motor motor_claw(TIM13, 1.23);
 
 static void SystemClock_Config(void);
 extern void MainTask(void);
@@ -127,9 +132,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				(encoder.getPosition(Azimuthal_Encoder)
 						- encoder.getDesiredPosition(Azimuthal_Encoder)));
 
-		if (encoder.getPosError(Azimuthal_Encoder) > threshold)
+		if (encoder.getPosError() > threshold)
 			motor.setDuty(Azimuthal_Motor, 100);
-		else if (encoder.getPosError(Azimuthal_Encoder) < -threshold)
+		else if (encoder.getPosError() < -threshold)
 			motor.setDuty(Azimuthal_Motor, -100);
 		else
 			motor.setDuty(Azimuthal_Motor, 0);
@@ -147,9 +152,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				(encoder.getPosition(Vertical_Encoder)
 						- encoder.getDesiredPosition(Vertical_Encoder)));
 
-		if (encoder.getPosError(Vertical_Encoder) > threshold)
+		if (encoder.getPosError() > threshold)
 			motor.setDuty(Vertical_Motor, -100);
-		else if (encoder.getPosError(Vertical_Encoder) < -threshold)
+		else if (encoder.getPosError() < -threshold)
 			motor.setDuty(Vertical_Motor, 100);
 		else
 			motor.setDuty(Vertical_Motor, 0);
