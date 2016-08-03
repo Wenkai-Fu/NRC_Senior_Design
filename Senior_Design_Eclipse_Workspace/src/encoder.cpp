@@ -18,16 +18,14 @@ Encoder::Encoder(void) :
 		posError_(0)
 {
 
-	/*Initialization of GPIO pins responsable for encoder
-	 selection with hardware multiplexer*/
+	/* Initialization of GPIO pins responsable for encoder
+	   selection with hardware multiplexer  */
 
 	GPIO_InitTypeDef GPIO_InitStruct;
 
 	// Enable GPIO Ports
-	__HAL_RCC_GPIOI_CLK_ENABLE()
-	;
-	__HAL_RCC_GPIOG_CLK_ENABLE()
-	;
+	__HAL_RCC_GPIOI_CLK_ENABLE();
+	__HAL_RCC_GPIOG_CLK_ENABLE();
 
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -89,7 +87,6 @@ int32_t Encoder::getCount(void)
 	{
 		overflows_ += 1; // overflow
 	}
-
 	else if ((prev_counter_ < 0x4000) && (counter > 0xc000))
 	{
 		overflows_ -= 1; // underflow

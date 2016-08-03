@@ -95,8 +95,7 @@ int main(void)
 
 	/* Init the STemWin GUI Library */
 	BSP_SDRAM_Init(); /* Initializes the SDRAM device */
-	__HAL_RCC_CRC_CLK_ENABLE()
-	; /* Enable the CRC Module */
+	__HAL_RCC_CRC_CLK_ENABLE(); /* Enable the CRC Module */
 	GUI_Init();
 	GUI_SelectLayer(0);
 	/* Activate the use of memory device feature */
@@ -136,7 +135,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			motor.setDuty(Azimuthal_Motor, 0);
 	}
 	else
+	{
 		motor.setDuty(Azimuthal_Motor, 0);
+	}
 
 	if (motor.getEnable(Vertical_Motor))
 	{
@@ -154,7 +155,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			motor.setDuty(Vertical_Motor, 0);
 	}
 	else
+	{
 		motor.setDuty(Vertical_Motor, 0);
+	}
 }
 
 //----------------------------------------------------------------------------//

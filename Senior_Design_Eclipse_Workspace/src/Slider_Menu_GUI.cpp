@@ -17,34 +17,33 @@ extern Encoder encoder;
  */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 {
-{ FRAMEWIN_CreateIndirect, "Motor Control", 0, 0, 0, 480, 272, 0 },
-{ TEXT_CreateIndirect, "Position", 0, 250, 20, 80, 20, TEXT_CF_LEFT },
-{ TEXT_CreateIndirect, "Desired Position", 0, 250, 40, 80, 20, TEXT_CF_LEFT },
-{ TEXT_CreateIndirect, "Pos Error", 0, 250, 60, 80, 20, TEXT_CF_LEFT },
-{ TEXT_CreateIndirect, "Encoder Dir", 0, 250, 80, 80, 20, TEXT_CF_LEFT },
-{ TEXT_CreateIndirect, "Motor Dir", 0, 250, 100, 80, 20, TEXT_CF_LEFT },
-{ TEXT_CreateIndirect, "Pos Error", 0, 250, 120, 80, 20, TEXT_CF_LEFT },
-{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT0, 410, 20, 45, 20, 0, 0 },
-{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT1, 410, 40, 45, 20, 0, 3 },
-{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT2, 410, 60, 45, 20, 0, 3 },
-{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT3, 410, 80, 45, 20, 0, 3 },
-{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT4, 410, 100, 45, 20, 0, 3 },
-{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT5, 410, 120, 45, 20, 0, 3 },
-{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT6, 360, 20, 45, 20, 0, 3 },
-{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT7, 360, 40, 45, 20, 0, 3 },
-{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT8, 360, 60, 45, 20, 0, 3 },
-{ BUTTON_CreateIndirect, "Forward", GUI_ID_BUTTON4, 10, 170, 80, 30 },
-{ BUTTON_CreateIndirect, "Reverse", GUI_ID_BUTTON5, 10, 210, 80, 30 },
-{ BUTTON_CreateIndirect, "Azimuthal", GUI_ID_BUTTON0, 110, 200, 80, 40 },
-{ BUTTON_CreateIndirect, "Vertical", GUI_ID_BUTTON1, 200, 200, 80, 40 },
-{ BUTTON_CreateIndirect, "Claw", GUI_ID_BUTTON2, 290, 200, 80, 40 },
-{ BUTTON_CreateIndirect, "Stop", GUI_ID_BUTTON3, 380, 200, 80, 40 },
-{ BUTTON_CreateIndirect, "Azim Inc", GUI_ID_BUTTON6, 20, 100, 100, 40 },
-{ BUTTON_CreateIndirect, "Vert Inc", GUI_ID_BUTTON7, 140, 100, 100, 40 },
-{ PROGBAR_CreateIndirect, "", GUI_ID_PROGBAR0, 90, 160, 100, 18 },
-{ SPINBOX_CreateIndirect, NULL, GUI_ID_SPINBOX0, 20, 25, 100, 60, 0, 0, 0 },
-{ SPINBOX_CreateIndirect, NULL, GUI_ID_SPINBOX1, 140, 25, 100, 60, 0, 0, 0 },
-
+	{ FRAMEWIN_CreateIndirect, "Motor Control", 0, 0, 0, 480, 272, 0 },
+	{ TEXT_CreateIndirect, "Position", 0, 250, 20, 80, 20, TEXT_CF_LEFT },
+	{ TEXT_CreateIndirect, "Desired Position", 0, 250, 40, 80, 20, TEXT_CF_LEFT },
+	{ TEXT_CreateIndirect, "Pos Error", 0, 250, 60, 80, 20, TEXT_CF_LEFT },
+	{ TEXT_CreateIndirect, "Encoder Dir", 0, 250, 80, 80, 20, TEXT_CF_LEFT },
+	{ TEXT_CreateIndirect, "Motor Dir", 0, 250, 100, 80, 20, TEXT_CF_LEFT },
+	{ TEXT_CreateIndirect, "Pos Error", 0, 250, 120, 80, 20, TEXT_CF_LEFT },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT0, 410, 20, 45, 20, 0, 0 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT1, 410, 40, 45, 20, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT2, 410, 60, 45, 20, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT3, 410, 80, 45, 20, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT4, 410, 100, 45, 20, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT5, 410, 120, 45, 20, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT6, 360, 20, 45, 20, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT7, 360, 40, 45, 20, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT8, 360, 60, 45, 20, 0, 3 },
+	{ BUTTON_CreateIndirect, "Forward", GUI_ID_BUTTON4, 10, 170, 80, 30 },
+	{ BUTTON_CreateIndirect, "Reverse", GUI_ID_BUTTON5, 10, 210, 80, 30 },
+	{ BUTTON_CreateIndirect, "Azimuthal", GUI_ID_BUTTON0, 110, 200, 80, 40 },
+	{ BUTTON_CreateIndirect, "Vertical", GUI_ID_BUTTON1, 200, 200, 80, 40 },
+	{ BUTTON_CreateIndirect, "Claw", GUI_ID_BUTTON2, 290, 200, 80, 40 },
+	{ BUTTON_CreateIndirect, "Stop", GUI_ID_BUTTON3, 380, 200, 80, 40 },
+	{ BUTTON_CreateIndirect, "Azim Inc", GUI_ID_BUTTON6, 20, 100, 100, 40 },
+	{ BUTTON_CreateIndirect, "Vert Inc", GUI_ID_BUTTON7, 140, 100, 100, 40 },
+	{ PROGBAR_CreateIndirect, "", GUI_ID_PROGBAR0, 90, 160, 100, 18 },
+	{ SPINBOX_CreateIndirect, NULL, GUI_ID_SPINBOX0, 20, 25, 100, 60, 0, 0, 0 },
+	{ SPINBOX_CreateIndirect, NULL, GUI_ID_SPINBOX1, 140, 25, 100, 60, 0, 0, 0 },
 };
 
 // Dialog handles
@@ -70,6 +69,7 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 	hDlg = pMsg->hWin;
 	switch (pMsg->MsgId)
 	{
+
 	case WM_INIT_DIALOG:
 
 		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX0);
@@ -82,19 +82,12 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		hEdit = SPINBOX_GetEditHandle(hItem);
 		EDIT_SetFloatMode(hEdit, 5.0, -100.0, 100.0, 0, 0);
 
-		/*      SPINBOX_SetEditMode(hItem, SPINBOX_EM_EDIT);
-		 SPINBOX_SetRange(hItem, 0, 100);*/
-
-		//
 		// Init progress bars
-		//
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_PROGBAR0);
 		WIDGET_SetEffect(hItem, &WIDGET_Effect_3D);
 		_SetProgbarValue(GUI_ID_PROGBAR0, 0);
 
-		//
 		// Init edit widgets
-		//
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT0);
 		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT1);
@@ -113,8 +106,8 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT8);
 		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
-
 		break;
+
 	case WM_KEY:
 		switch (((WM_KEY_INFO*) (pMsg->Data.p))->Key)
 		{
@@ -126,54 +119,58 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 			break;
 		}
 		break;
+
 	case WM_NOTIFY_PARENT:
 		Id = WM_GetId(pMsg->hWinSrc);      // Id of widget
 		NCode = pMsg->Data.v;                 // Notification code
 
 		switch (NCode)
 		{
+
 		case WM_NOTIFICATION_RELEASED:      // React only if released
 			if (Id == GUI_ID_OK)
 			{            // OK Button
 				GUI_EndDialog(hDlg, 0);
 			}
-			if (Id == GUI_ID_BUTTON3)
-			{        // Stop Button
+			if (Id == GUI_ID_BUTTON3) // Stop Button
+			{
 				motor.setDuty(Azimuthal_Motor, 0);
 				motor.setDuty(Vertical_Motor, 0);
 				motor.setDuty(Claw_Motor, 0);
 
 			}
-			if (Id == GUI_ID_BUTTON0)
-			{       // Azimuthal Button
+			if (Id == GUI_ID_BUTTON0) // Azimuthal Button
+			{
 				motor.setEnable(Azimuthal_Motor, true);
-				encoder.setCount(encoder.getCount());	// Resets the count to 0 everytime
+				// Resets the count to 0 everytime
+				// JAR why is this desirable?
+				encoder.setCount(encoder.getCount());
 			}
-			if (Id == GUI_ID_BUTTON1)
-			{        // Vertical Button
+			if (Id == GUI_ID_BUTTON1) // Vertical Button
+			{
 				motor.setEnable(Vertical_Motor, true);
 				encoder.setCount(VerticalCount);
 				DeltaVerticalCount = VerticalCount;
 			}
-			if (Id == GUI_ID_BUTTON2)
-			{        // Claw Button
+			if (Id == GUI_ID_BUTTON2) // Claw Button
+			{
 				motor.setEnable(Claw_Motor, true);
 				encoder.setCount(ClawCount);
 			}
-			if (Id == GUI_ID_BUTTON4)
-			{        // Forward Button
+			if (Id == GUI_ID_BUTTON4) // Forward Button
+			{
 				motor.setDirection(false);
 			}
-			if (Id == GUI_ID_BUTTON5)
-			{        // Reverse Button
+			if (Id == GUI_ID_BUTTON5)// Reverse Button
+			{
 				motor.setDirection(true);
 			}
-			if (Id == GUI_ID_BUTTON6)
-			{        // Azimuthal Inc Button
+			if (Id == GUI_ID_BUTTON6) // Azimuthal Inc Button
+			{
 				motor.setEnable(Azimuthal_Motor, true);
 			}
-			if (Id == GUI_ID_BUTTON7)
-			{        // Vertical Inc Button
+			if (Id == GUI_ID_BUTTON7) // Vertical Inc Button
+			{
 				motor.setEnable(Vertical_Motor, true);
 			}
 			break;
