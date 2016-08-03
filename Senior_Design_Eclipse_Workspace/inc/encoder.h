@@ -1,12 +1,8 @@
-/*
- * encoder.h
- *
- *  Created on: Feb 29, 2016
- *      Author: smith
- */
-
 #ifndef ENCODER_H_
 #define ENCODER_H_
+
+#include "stm32746g_discovery.h"
+#include "System_Variable_Settings.h"
 
 typedef enum
 {

@@ -1,11 +1,5 @@
-/*
- * encoder.cpp
- *
- *  Created on: Feb 29, 2016
- *      Author: smith
- */
+#include "encoder.h"
 
-#include "main.h"
 
 	/* Timer handler declaration */
 	TIM_HandleTypeDef    Encoder_Handle;

@@ -5,12 +5,12 @@
  *      Author: smith
  */
 
-#include "limit_switches.h"
-#include "stm32f7xx_hal.h"
-
-Limit::Limit(void)
-	:switch_id_ (Top)
-{
+//#include "limit_switches.h"
+//#include "stm32f7xx_hal.h"
+//
+//Limit::Limit(void)
+//	:switch_id_ (Top)
+//{
 /*	GPIO_InitTypeDef GPIO_InitStruct;
 
 	// Enable GPIO Ports
@@ -26,22 +26,22 @@ Limit::Limit(void)
 
 	GPIO_InitStruct.Pin = GPIO_PIN_0;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);*/
-}
+//}
 
-bool Limit::getState(limit_id_t id)
-{
-	switch (id)
-	{
-	case Top:
-		return HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0);
-		break;
-	case Bottom:
-		return HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_10);
-		break;
-	case Claw:
-		return HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_9);
-		break;
-	default:
-		return 0;
-	}
-}
+//bool Limit::getState(limit_id_t id)
+//{
+//	switch (id)
+//	{
+//	case Top:
+//		return HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0);
+//		break;
+//	case Bottom:
+//		return HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_10);
+//		break;
+//	case Claw:
+//		return HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_9);
+//		break;
+//	default:
+//		return 0;
+//	}
+//}

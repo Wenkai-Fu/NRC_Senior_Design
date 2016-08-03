@@ -1,12 +1,7 @@
-/*
- * pwm.h
- *
- *  Created on: Feb 25, 2016
- *      Author: smith
- */
-
 #ifndef MOTOR_H_
 #define MOTOR_H_
+
+#include "stm32746g_discovery.h"
 
 typedef enum
 {

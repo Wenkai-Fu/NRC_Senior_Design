@@ -27,7 +27,12 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "bsp.h"
-
+#include "stm32f7xx_hal.h"
+#include "stm32746g_discovery_ts.h"
+#include "stm32746g_discovery_lcd.h"
+#include "stm32746g_discovery_qspi.h"
+#include "WM.h"
+#include "BUTTON.h"
 /** @addtogroup CORE
   * @{
   */
@@ -64,10 +69,10 @@ void BspInit(void)
   BSP_TS_Init(420, 272);
 
   /* Enable CRC to Unlock GUI */
- __HAL_RCC_CRC_CLK_ENABLE();
+  __HAL_RCC_CRC_CLK_ENABLE();
   
- /* Enable Back up SRAM */
-__HAL_RCC_BKPSRAM_CLK_ENABLE();
+  /* Enable Back up SRAM */
+  __HAL_RCC_BKPSRAM_CLK_ENABLE();
   
 }
 
@@ -116,13 +121,3 @@ void TouchUpdate(void)
     }
   }
 }
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

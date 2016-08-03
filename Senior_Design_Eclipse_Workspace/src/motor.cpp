@@ -1,8 +1,5 @@
-#include "stdlib.h"
-#include "stm32f7xx_hal.h"
-#include "stm32746g_discovery.h"
 #include "motor.h"
-#include "main.h"
+#include "stdlib.h"
 
 /* Timer handler declaration*/
 TIM_HandleTypeDef    TimHandle_TIM10;
@@ -15,19 +12,17 @@ TIM_OC_InitTypeDef sMotorConfig;
 /* GPIO Pins for Motor declaration */
 GPIO_InitTypeDef   GPIO_InitStruct;
 
-/* Using the encoder class to enable encoders when motors are enabled*/
-extern Encoder encoder;
 
 Motor::Motor(void)
-	:motor_id_(Azimuthal_Motor),
-	 duty_ (0),
-	 TIM_HANDLE_ (TimHandle_TIM10),
-	 dir_ (false),
-	 prescaler_ (99),
-	 period_ (99),
-	 enableA_ (false),
-	 enableV_ (false),
-	 enableC_ (false)
+:motor_id_(Azimuthal_Motor),
+ duty_ (0),
+ TIM_HANDLE_ (TimHandle_TIM10),
+ dir_ (false),
+ prescaler_ (99),
+ period_ (99),
+ enableA_ (false),
+ enableV_ (false),
+ enableC_ (false)
 {
 
 	/*Initalization of GPIO pin to control the motor's direction
@@ -70,8 +65,8 @@ void Motor::motorInit(motor_id_t id)
 	TIM_HANDLE_.Init.RepetitionCounter = 0;
 	if (HAL_TIM_PWM_Init(&TIM_HANDLE_) != HAL_OK)
 	{
-	/* Initialization Error */
-	Error_Handler();
+		/* Initialization Error */
+		Error_Handler();
 	}
 
 	/*##-2- Configure the PWM channels #########################################*/
@@ -176,7 +171,7 @@ bool Motor::getEnable(motor_id_t id)
 }
 void Motor::setDuty(motor_id_t id, int16_t dutyInput)
 {
-//	duty_ = dutyInput;
+	//	duty_ = dutyInput;
 	switch (id)
 	{
 	case Azimuthal_Motor:
@@ -209,7 +204,10 @@ void Motor::setDuty(motor_id_t id, int16_t dutyInput)
 	HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1);
 }
 
-int16_t Motor::getDuty(motor_id_t id){return duty_;}
+int16_t Motor::getDuty(motor_id_t id)
+{
+	return duty_;
+}
 
 void Motor::setDirection(bool direction)
 {
@@ -218,7 +216,10 @@ void Motor::setDirection(bool direction)
 	else HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_SET);
 }
 
-bool Motor::getDirection(void){return(dir_);}
+bool Motor::getDirection(void)
+{
+	return(dir_);
+}
 
 void Motor::Error_Handler(void)
 {

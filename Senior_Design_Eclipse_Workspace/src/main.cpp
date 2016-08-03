@@ -1,82 +1,33 @@
-/**
- ******************************************************************************
- * @file    STemWin/STemWin_HelloWorld/Src/main.c
- * @author  MCD Application Team
- * @version V1.0.2
- * @date    18-November-2015
- * @brief   This file provides main program functions
- ******************************************************************************
- * @attention
- *
- * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *   1. Redistributions of source code must retain the above copyright notice,
- *      this list of conditions and the following disclaimer.
- *   2. Redistributions in binary form must reproduce the above copyright notice,
- *      this list of conditions and the following disclaimer in the documentation
- *      and/or other materials provided with the distribution.
- *   3. Neither the name of STMicroelectronics nor the names of its contributors
- *      may be used to endorse or promote products derived from this software
- *      without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- ******************************************************************************
- */
+// Adapted from  STemWin/STemWin_HelloWorld/Src/main.c.  See LICENSE.
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stdlib.h"
 #include "arm_math.h"
 
-/* Private typedef -----------------------------------------------------------*/
 TIM_HandleTypeDef TimHandle;
 TIM_HandleTypeDef MotorPWM;
-/* Private define ------------------------------------------------------------*/
+
 #define kp 2.0f;
 #define ki 0.005f;
 #define kd 0.005f;
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-float AzimuthalRevolutions, VerticalRevolutions, ClawRevolutions;
-float AzimuthalSpeed, VerticalSpeed, ClawSpeed;
-float AzimuthalDistance, VerticalDistance, ClawDistance;
+
 int32_t AzimuthalCount, VerticalCount, ClawCount, Divisor, DeltaVerticalCount;
-
-
 
 Motor motor;
 Encoder encoder;
 arm_pid_instance_f32 PID;
 
-/* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
-
 extern void MainTask(void);
 static void EXTI15_10_IRQHandler_Config(void);
 static void EXTI9_5_IRQHandler_Config(void);
 static void EXTI0_IRQHandler_Config(void);
-/* Private functions ---------------------------------------------------------*/
 
-/**
- * @brief  Main program
- * @param  None
- * @retval None
- */
-int main(void) {
+int main(void)
+{
 	/* Initializes Hardware Abstraction Layer libraries,
-	also implements callback functions in hal_msp.cpp */
+	 also implements callback functions in hal_msp.cpp */
 	HAL_Init();
 
 	/* Configure the system clock to 216 MHz */
@@ -94,10 +45,13 @@ int main(void) {
 	EXTI0_IRQHandler_Config();
 
 	/* Initializes CMSIS ARM_Math PID function*/
-	PID.Kp = kp;
-	PID.Ki = ki;
-	PID.Kd = kd;
-	arm_pid_init_f32(&PID,1);
+	PID.Kp = kp
+	;
+	PID.Ki = ki
+	;
+	PID.Kd = kd
+	;
+	arm_pid_init_f32(&PID, 1);
 
 	/* Initialization of TIM handles for motor PWM timers*/
 	motor.motorInit(Azimuthal_Motor);
@@ -123,15 +77,19 @@ int main(void) {
 	TimHandle.Init.Prescaler = 499;
 	TimHandle.Init.ClockDivision = 0;
 	TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
-	if (HAL_TIM_Base_Init(&TimHandle) != HAL_OK) {
-		while (1) {
+	if (HAL_TIM_Base_Init(&TimHandle) != HAL_OK)
+	{
+		while (1)
+		{
 		}
 	}
 	/*##-2- Start the TIM Base generation in interrupt mode ####################*/
 	/* Start Channel1 */
 
-	if (HAL_TIM_Base_Start_IT(&TimHandle) != HAL_OK) {
-		while (1) {
+	if (HAL_TIM_Base_Start_IT(&TimHandle) != HAL_OK)
+	{
+		while (1)
+		{
 		}
 	}
 
@@ -139,13 +97,15 @@ int main(void) {
 
 	/* Init the STemWin GUI Library */
 	BSP_SDRAM_Init(); /* Initializes the SDRAM device */
-	__HAL_RCC_CRC_CLK_ENABLE(); /* Enable the CRC Module */
+	__HAL_RCC_CRC_CLK_ENABLE()
+	; /* Enable the CRC Module */
 	GUI_Init();
 	GUI_SelectLayer(0);
 	/* Activate the use of memory device feature */
 	WM_SetCreateFlags(WM_CF_MEMDEV);
 
-	while (1) {
+	while (1)
+	{
 		// Starts the MainTask() Function which is in an External .c file
 		MainTask();
 	}
@@ -157,102 +117,55 @@ int main(void) {
  * @retval None
  */
 float threshold = 0.01f;
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
 	TouchUpdate();
-//	encoder.setDesiredPosition(Vertical_Encoder, -5.0f);
-//	motor.setDuty(Vertical_Motor, 100);
 
-	if(motor.getEnable(Azimuthal_Motor))
+	if (motor.getEnable(Azimuthal_Motor))
 	{
 		encoder.enableEncoder(Azimuthal_Encoder);
 		encoder.getPosition(Azimuthal_Encoder);
-		encoder.setPosError(Azimuthal_Encoder,(encoder.getPosition(Azimuthal_Encoder) - encoder.getDesiredPosition(Azimuthal_Encoder)));
+		encoder.setPosError(Azimuthal_Encoder,
+				(encoder.getPosition(Azimuthal_Encoder)
+						- encoder.getDesiredPosition(Azimuthal_Encoder)));
 
-		if(encoder.getPosError(Azimuthal_Encoder) > threshold) motor.setDuty(Azimuthal_Motor, 100);
-		else if(encoder.getPosError(Azimuthal_Encoder) < -threshold) motor.setDuty(Azimuthal_Motor, -100);
-		else motor.setDuty(Azimuthal_Motor, 0);
+		if (encoder.getPosError(Azimuthal_Encoder) > threshold)
+			motor.setDuty(Azimuthal_Motor, 100);
+		else if (encoder.getPosError(Azimuthal_Encoder) < -threshold)
+			motor.setDuty(Azimuthal_Motor, -100);
+		else
+			motor.setDuty(Azimuthal_Motor, 0);
 	}
-	else motor.setDuty(Azimuthal_Motor,0);
+	else
+		motor.setDuty(Azimuthal_Motor, 0);
 
-
-	if(motor.getEnable(Vertical_Motor))
+	if (motor.getEnable(Vertical_Motor))
 	{
 		encoder.enableEncoder(Vertical_Encoder);
 		encoder.getPosition(Vertical_Encoder);
-		encoder.setPosError(Vertical_Encoder,(encoder.getPosition(Vertical_Encoder) - encoder.getDesiredPosition(Vertical_Encoder)));
+		encoder.setPosError(Vertical_Encoder,
+				(encoder.getPosition(Vertical_Encoder)
+						- encoder.getDesiredPosition(Vertical_Encoder)));
 
-		if(encoder.getPosError(Vertical_Encoder) > threshold) motor.setDuty(Vertical_Motor, -100);
-		else if(encoder.getPosError(Vertical_Encoder) < -threshold) motor.setDuty(Vertical_Motor, 100);
-		else motor.setDuty(Vertical_Motor, 0);
-	}
-	else motor.setDuty(Vertical_Motor,0);
-
-
-
-	/*
-	if (EncoderEnable[0] == true) {
-		AzimuthalCount = encoder.getCount();
-		encoder.enableEncoder(Azimuthal_Encoder);
-
-		if (abs(encoder.getRevolutions(Azimuthal_Encoder)) > 0.2f) motor.setDuty(Azimuthal_Motor, 0);
-	}
-
-	if (EncoderEnable[1] == true) {
-		float DeltaRevolutions, DeltaDistance;
-
-		VerticalCount = encoder.getCount();
-
-		VerticalRevolutions = encoder.getRevolutions(Vertical_Encoder);
-		DeltaRevolutions = -1.0f
-				* (DeltaVerticalCount / Pulses_Per_Revolution
-						/ Vertical_Gear_Ratio / Pinion_Spur_Gear_Ratio);
-
-		VerticalDistance = (VerticalRevolutions / ThreadPitch)
-				* Inches_to_Centimeters;
-		DeltaDistance = (DeltaRevolutions / ThreadPitch)
-				* Inches_to_Centimeters;
-
-		encoder.enableEncoder(Vertical_Encoder);
-
-		float Limit = 47.5f;
-		if (abs(VerticalDistance - DeltaDistance) > Limit) motor.setDuty(Vertical_Motor, 0);
-		else if ((motor.getDirection()) && ((HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET))) {
+		if (encoder.getPosError(Vertical_Encoder) > threshold)
+			motor.setDuty(Vertical_Motor, -100);
+		else if (encoder.getPosError(Vertical_Encoder) < -threshold)
+			motor.setDuty(Vertical_Motor, 100);
+		else
 			motor.setDuty(Vertical_Motor, 0);
-		} else if ((!motor.getDirection()) && ((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10) == GPIO_PIN_SET))) {
-			motor.setDuty(Vertical_Motor, 0);
-		}
 	}
+	else
+		motor.setDuty(Vertical_Motor, 0);
 
-	if (EncoderEnable[2] == true) {
-
-		ClawCount = encoder.getCount();
-		ClawRevolutions = encoder.getRevolutions(Claw_Encoder);
-		ClawDistance = ClawRevolutions / ThreadPitch;
-
-		encoder.enableEncoder(Claw_Encoder);
-
-		float Limit = 0.25f;
-		if (((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_9)) == GPIO_PIN_SET) //Limit Engaged
-		&& (motor.getDirection())) //Moving Reverse or Opening
-				{
-			motor.setDuty(Claw_Motor, 0);
-			encoder.setCount(0);
-		} else if (((HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_9)) == GPIO_PIN_RESET) && ((abs(ClawDistance) > Limit))) //NO Limit
-				{
-			motor.setDuty(Claw_Motor, 0);
-			encoder.setCount(0);
-		}
-
-	}*/
 }
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	if (HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_10))
+	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
 	{
 		BSP_LED_On(LED1);
 		motor.setEnable(Vertical_Motor, false);
 	}
-	else if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0))
+	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
 	{
 		BSP_LED_On(LED1);
 		motor.setEnable(Vertical_Motor, false);
@@ -278,7 +191,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  * @param  None
  * @retval None
  */
-static void SystemClock_Config(void) {
+static void SystemClock_Config(void)
+{
 	RCC_ClkInitTypeDef RCC_ClkInitStruct;
 	RCC_OscInitTypeDef RCC_OscInitStruct;
 	HAL_StatusTypeDef ret = HAL_OK;
@@ -294,16 +208,20 @@ static void SystemClock_Config(void) {
 	RCC_OscInitStruct.PLL.PLLQ = 8;
 
 	ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
-	if (ret != HAL_OK) {
-		while (1) {
+	if (ret != HAL_OK)
+	{
+		while (1)
+		{
 			;
 		}
 	}
 
 	/* Activate the OverDrive to reach the 200 MHz Frequency */
 	ret = HAL_PWREx_EnableOverDrive();
-	if (ret != HAL_OK) {
-		while (1) {
+	if (ret != HAL_OK)
+	{
+		while (1)
+		{
 			;
 		}
 	}
@@ -317,63 +235,68 @@ static void SystemClock_Config(void) {
 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
 	ret = HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_6);
-	if (ret != HAL_OK) {
-		while (1) {
+	if (ret != HAL_OK)
+	{
+		while (1)
+		{
 			;
 		}
 	}
 }
 static void EXTI15_10_IRQHandler_Config(void)
 {
-  GPIO_InitTypeDef   GPIO_InitStructure;
+	GPIO_InitTypeDef GPIO_InitStructure;
 
-  /* Enable GPIOF clock */
-  __HAL_RCC_GPIOF_CLK_ENABLE();
+	/* Enable GPIOF clock */
+	__HAL_RCC_GPIOF_CLK_ENABLE()
+	;
 
-  /* Configure PF.10 pin as input floating */
-  GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
-  GPIO_InitStructure.Pull = GPIO_PULLDOWN;
-  GPIO_InitStructure.Pin = GPIO_PIN_10;
-  HAL_GPIO_Init(GPIOF, &GPIO_InitStructure);
+	/* Configure PF.10 pin as input floating */
+	GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
+	GPIO_InitStructure.Pull = GPIO_PULLDOWN;
+	GPIO_InitStructure.Pin = GPIO_PIN_10;
+	HAL_GPIO_Init(GPIOF, &GPIO_InitStructure);
 
-  /* Enable and set EXTI lines 15 to 10 Interrupt to the lowest priority */
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 2, 0);
-  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+	/* Enable and set EXTI lines 15 to 10 Interrupt to the lowest priority */
+	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 2, 0);
+	HAL_NVIC_EnableIRQ (EXTI15_10_IRQn);
 }
 
 static void EXTI9_5_IRQHandler_Config(void)
 {
-  GPIO_InitTypeDef   GPIO_InitStructure;
+	GPIO_InitTypeDef GPIO_InitStructure;
 
-  /* Enable GPIOF clock */
-  __HAL_RCC_GPIOF_CLK_ENABLE();
+	/* Enable GPIOF clock */
+	__HAL_RCC_GPIOF_CLK_ENABLE()
+	;
 
-  /* Configure PF.9 pin as input floating */
-  GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
-  GPIO_InitStructure.Pull = GPIO_PULLDOWN;
-  GPIO_InitStructure.Pin = GPIO_PIN_9;
-  HAL_GPIO_Init(GPIOF, &GPIO_InitStructure);
+	/* Configure PF.9 pin as input floating */
+	GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
+	GPIO_InitStructure.Pull = GPIO_PULLDOWN;
+	GPIO_InitStructure.Pin = GPIO_PIN_9;
+	HAL_GPIO_Init(GPIOF, &GPIO_InitStructure);
 
-  /* Enable and set EXTI lines 9 to 5 Interrupt to the lowest priority */
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 2, 0);
-  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+	/* Enable and set EXTI lines 9 to 5 Interrupt to the lowest priority */
+	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 2, 0);
+	HAL_NVIC_EnableIRQ (EXTI9_5_IRQn);
 }
 static void EXTI0_IRQHandler_Config(void)
 {
-  GPIO_InitTypeDef   GPIO_InitStructure;
+	GPIO_InitTypeDef GPIO_InitStructure;
 
-  /* Enable GPIOF clock */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
+	/* Enable GPIOF clock */
+	__HAL_RCC_GPIOA_CLK_ENABLE()
+	;
 
-  /* Configure PF.9 pin as input floating */
-  GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
-  GPIO_InitStructure.Pull = GPIO_PULLDOWN;
-  GPIO_InitStructure.Pin = GPIO_PIN_0;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
+	/* Configure PF.9 pin as input floating */
+	GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
+	GPIO_InitStructure.Pull = GPIO_PULLDOWN;
+	GPIO_InitStructure.Pin = GPIO_PIN_0;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-  /* Enable and set EXTI lines 9 to 5 Interrupt to the lowest priority */
-  HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 0);
-  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+	/* Enable and set EXTI lines 9 to 5 Interrupt to the lowest priority */
+	HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 0);
+	HAL_NVIC_EnableIRQ (EXTI0_IRQn);
 }
 #ifdef  USE_FULL_ASSERT
 /**
