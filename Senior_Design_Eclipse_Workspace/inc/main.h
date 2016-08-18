@@ -22,4 +22,4 @@
 
 #endif /* __MAIN_H */
 
-extern int32_t VerticalCount, ClawCount, DeltaVerticalCount;
+extern int32_t VerticalCount, ClawCount;//, DeltaVerticalCount;

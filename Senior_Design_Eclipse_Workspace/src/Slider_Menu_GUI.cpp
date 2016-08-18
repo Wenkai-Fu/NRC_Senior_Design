@@ -7,7 +7,7 @@
 
 #define RECOMMENDED_MEMORY (1024L * 15)
 
-extern Motor motor, motor_azimuthal, motor_vertical, motor_claw;
+extern Motor *motor, motor_azimuth, motor_vertical, motor_claw;
 extern Encoder encoder;
 
 /*********************************************************************
@@ -122,71 +122,82 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 
 	case WM_NOTIFY_PARENT:
 		Id = WM_GetId(pMsg->hWinSrc);      // Id of widget
-		NCode = pMsg->Data.v;                 // Notification code
+		NCode = pMsg->Data.v;              // Notification code
 
 		switch (NCode)
 		{
 
 		case WM_NOTIFICATION_RELEASED:      // React only if released
 			if (Id == GUI_ID_OK)
-			{            // OK Button
+			{
+                // OK Button
 				GUI_EndDialog(hDlg, 0);
 			}
-			if (Id == GUI_ID_BUTTON3) // Stop Button
+			// Stop Button
+			if (Id == GUI_ID_BUTTON3)
 			{
-				motor.setDuty(Azimuthal_Motor, 0);
-				motor.setDuty(Vertical_Motor, 0);
-				motor.setDuty(Claw_Motor, 0);
+				motor_azimuth.setDuty(0);
+				motor_vertical.setDuty(0);
+				motor_claw.setDuty(0);
 			}
-			if (Id == GUI_ID_BUTTON0) // Azimuthal Button
+			// Azimuthal Button
+			if (Id == GUI_ID_BUTTON0)
 			{
-				motor.setEnable(Azimuthal_Motor, true);
+				motor = &motor_azimuth;
+				//motor.setEnable(Azimuthal_Motor, true);
 				// Resets the count to 0 everytime
 				// JAR why is this desirable?
 				encoder.setCount(encoder.getCount());
 			}
-			if (Id == GUI_ID_BUTTON1) // Vertical Button
+			// Vertical Button
+			if (Id == GUI_ID_BUTTON1)
 			{
-				motor.setEnable(Vertical_Motor, true);
-				encoder.setCount(VerticalCount);
-				DeltaVerticalCount = VerticalCount;
+				motor = &motor_vertical;
 			}
-			if (Id == GUI_ID_BUTTON2) // Claw Button
+			// Claw Button
+			if (Id == GUI_ID_BUTTON2)
 			{
-				motor.setEnable(Claw_Motor, true);
-				encoder.setCount(ClawCount);
+				motor = &motor_claw;
 			}
-			if (Id == GUI_ID_BUTTON4) // Forward Button
+			// Forward Button
+			if (Id == GUI_ID_BUTTON4)
 			{
-				motor.setDirection(false);
+				motor->setDirection(false);
 			}
-			if (Id == GUI_ID_BUTTON5)// Reverse Button
+			// Reverse Button
+			if (Id == GUI_ID_BUTTON5)
 			{
-				motor.setDirection(true);
+				motor->setDirection(true);
 			}
-			if (Id == GUI_ID_BUTTON6) // Azimuthal Inc Button
+			// Azimuthal Inc Button
+			if (Id == GUI_ID_BUTTON6)
 			{
-				motor.setEnable(Azimuthal_Motor, true);
+				//motor.setEnable(Azimuthal_Motor, true);
 			}
-			if (Id == GUI_ID_BUTTON7) // Vertical Inc Button
+			// Vertical Inc Button
+			if (Id == GUI_ID_BUTTON7)
 			{
-				motor.setEnable(Vertical_Motor, true);
+				//motor.setEnable(Vertical_Motor, true);
 			}
 			break;
+
 		case WM_NOTIFICATION_VALUE_CHANGED: // Value has changed
+			float val = SPINBOX_GetValue(pMsg->hWinSrc);
 			if (Id == GUI_ID_SPINBOX0)
 			{
-				encoder.setDesiredPosition(Azimuthal_Encoder,
-						SPINBOX_GetValue(pMsg->hWinSrc));
+				motor_azimuth.setDesiredPosition(val);
+				// TODO: why is hItem needed?
 				hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX0);
 			}
-			if (Id == GUI_ID_SPINBOX1)
+			else if (Id == GUI_ID_SPINBOX1)
 			{
-				encoder.setDesiredPosition(Vertical_Encoder,
-						SPINBOX_GetValue(pMsg->hWinSrc));
+				motor_vertical.setDesiredPosition(val);
 				hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX1);
 			}
-
+			else
+			{
+				// other choices
+			}
 			break;
 		}
 		break;
@@ -220,20 +231,28 @@ void MainTask(void)
 
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT0);
 		EDIT_SetFloatValue(hItem, encoder.getPosition(Vertical_Encoder));
+
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
 		EDIT_SetFloatValue(hItem, encoder.getDesiredPosition(Vertical_Encoder));
+
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);
 		EDIT_SetFloatValue(hItem, encoder.getPosError());
+
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
 		EDIT_SetFloatValue(hItem, encoder.getDirection());
+
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT4);
-		EDIT_SetFloatValue(hItem, motor.getDirection());
+		EDIT_SetFloatValue(hItem, motor->getDirection());
+
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT5);
 		EDIT_SetFloatValue(hItem, encoder.getPosError());
+
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT6);
 		EDIT_SetFloatValue(hItem, encoder.getPosition(Azimuthal_Encoder));
+
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT7);
 		EDIT_SetFloatValue(hItem, encoder.getDesiredPosition(Azimuthal_Encoder));
+
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT8);
 		EDIT_SetFloatValue(hItem, encoder.getPosError());
 	}

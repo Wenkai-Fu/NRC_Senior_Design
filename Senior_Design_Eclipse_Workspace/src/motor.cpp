@@ -233,6 +233,31 @@ void Motor::setDuty(motor_id_t id, int16_t dutyInput)
 }
 
 //----------------------------------------------------------------------------//
+void Motor::setDuty(int16_t dutyInput)
+{
+	/* Overflow protection of duty cycle. Duty cycle cannot be
+	 * higher than the timer period length*/
+	int16_t maxLimit = period_ + 1;
+	if (dutyInput < -maxLimit)
+		duty_ = -maxLimit;
+	else if (dutyInput > maxLimit)
+		duty_ = maxLimit;
+	else
+		duty_ = dutyInput;
+
+	/*Sets motor direction depending on if the duty command is negative or positive*/
+	if (duty_ < 0)
+		setDirection(false);
+	else
+		setDirection(true);
+
+	/* Set the pulse value for channel 1 */
+	sMotorConfig.Pulse = abs(duty_);
+	HAL_TIM_PWM_ConfigChannel(&TIM_HANDLE_, &sMotorConfig, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1);
+}
+
+//----------------------------------------------------------------------------//
 void Motor::setDirection(bool direction)
 {
 	dir_ = direction;

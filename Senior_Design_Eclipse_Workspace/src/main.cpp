@@ -13,14 +13,20 @@ TIM_HandleTypeDef MotorPWM;
 
 int32_t AzimuthalCount, VerticalCount, ClawCount, Divisor, DeltaVerticalCount;
 
-Motor motor(TIM10, 1.23);
+//Motor motor(TIM10, 1.23);
 Encoder encoder;
 arm_pid_instance_f32 PID;
 
+// Constants for counts to position
+float c2p_azumith = -Inches_to_Centimeters/
+                    (Pulses_Per_Revolution*Azimuthal_Gear_Ratio*
+                    		      Pinion_Spur_Gear_Ratio*ThreadPitch);
 
-Motor motor_azimuth(TIM10, 1.23);
-Motor motor_vertical(TIM11, 1.23);
-Motor motor_claw(TIM13, 1.23);
+// TODO: the constants must be defined!!
+Motor motor_azimuth(TIM10, c2p_azumith, 1);
+Motor motor_vertical(TIM11, 1.23, 2);
+Motor motor_claw(TIM13, 1.23, 3);
+Motor *motor = &motor_vertical;
 
 static void SystemClock_Config(void);
 extern void MainTask(void);
@@ -55,11 +61,6 @@ int main(void)
 	PID.Ki = ki;
 	PID.Kd = kd;
 	arm_pid_init_f32(&PID, 1);
-
-	/* Initialization of TIM handles for motor PWM timers*/
-	motor.motorInit(Azimuthal_Motor);
-	motor.motorInit(Vertical_Motor);
-	motor.motorInit(Claw_Motor);
 
 	/***********************************************************/
 
@@ -114,69 +115,40 @@ int main(void)
 }
 
 //----------------------------------------------------------------------------//
-/**
- * @brief  Period elapsed callback in non blocking mode
- * @param  htim: TIM handle
- * @retval None
- */
-float threshold = 0.01f;
+// Period elapsed callback in non blocking mode
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
+	const float threshold = 0.01f;
+
 	TouchUpdate();
 
-	if (motor.getEnable(Azimuthal_Motor))
-	{
-		encoder.enableEncoder(Azimuthal_Encoder);
-		encoder.getPosition(Azimuthal_Encoder);
-		encoder.setPosError(Azimuthal_Encoder,
-				(encoder.getPosition(Azimuthal_Encoder)
-						- encoder.getDesiredPosition(Azimuthal_Encoder)));
+	// stop all motors until further instruction
+	motor_azimuth.setDuty(0);
+	motor_vertical.setDuty(0);
+	motor_claw.setDuty(0);
 
-		if (encoder.getPosError() > threshold)
-			motor.setDuty(Azimuthal_Motor, 100);
-		else if (encoder.getPosError() < -threshold)
-			motor.setDuty(Azimuthal_Motor, -100);
-		else
-			motor.setDuty(Azimuthal_Motor, 0);
-	}
+	// set duty for active motor
+	if (motor->getPosError() > threshold)
+		motor->setDuty(100);
+	else if (motor->getPosError() < -threshold)
+		motor->setDuty(-100);
 	else
-	{
-		motor.setDuty(Azimuthal_Motor, 0);
-	}
-
-	if (motor.getEnable(Vertical_Motor))
-	{
-		encoder.enableEncoder(Vertical_Encoder);
-		encoder.getPosition(Vertical_Encoder);
-		encoder.setPosError(Vertical_Encoder,
-				(encoder.getPosition(Vertical_Encoder)
-						- encoder.getDesiredPosition(Vertical_Encoder)));
-
-		if (encoder.getPosError() > threshold)
-			motor.setDuty(Vertical_Motor, -100);
-		else if (encoder.getPosError() < -threshold)
-			motor.setDuty(Vertical_Motor, 100);
-		else
-			motor.setDuty(Vertical_Motor, 0);
-	}
-	else
-	{
-		motor.setDuty(Vertical_Motor, 0);
-	}
+		motor->setDuty(0);
 }
 
 //----------------------------------------------------------------------------//
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
+	// jar: what is this function for?
 	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
 	{
 		BSP_LED_On(LED1);
-		motor.setEnable(Vertical_Motor, false);
+		//motor.setEnable(Vertical_Motor, false);
 	}
 	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
 	{
 		BSP_LED_On(LED1);
-		motor.setEnable(Vertical_Motor, false);
+		//motor.setEnable(Vertical_Motor, false);
 	}
 }
 
@@ -250,7 +222,7 @@ static void SystemClock_Config(void)
 	{
 		while (1)
 		{
-			;
+			/* ... */
 		}
 	}
 }
@@ -261,8 +233,7 @@ static void EXTI15_10_IRQHandler_Config(void)
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	/* Enable GPIOF clock */
-	__HAL_RCC_GPIOF_CLK_ENABLE()
-	;
+	__HAL_RCC_GPIOF_CLK_ENABLE();
 
 	/* Configure PF.10 pin as input floating */
 	GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
@@ -281,8 +252,7 @@ static void EXTI9_5_IRQHandler_Config(void)
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	/* Enable GPIOF clock */
-	__HAL_RCC_GPIOF_CLK_ENABLE()
-	;
+	__HAL_RCC_GPIOF_CLK_ENABLE();
 
 	/* Configure PF.9 pin as input floating */
 	GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
@@ -301,8 +271,7 @@ static void EXTI0_IRQHandler_Config(void)
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	/* Enable GPIOF clock */
-	__HAL_RCC_GPIOA_CLK_ENABLE()
-	;
+	__HAL_RCC_GPIOA_CLK_ENABLE();
 
 	/* Configure PF.9 pin as input floating */
 	GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
