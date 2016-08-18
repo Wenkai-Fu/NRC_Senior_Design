@@ -1,5 +1,13 @@
 #include "encoder.h"
 
+/*
+ *  JAR notes
+ *  It seems that __HAL_TIM_GET_COUNTER and __HAL_TIM_SET_COUNTER
+ *  must be used because there is only one interface to the three
+ *  encoders.
+ *
+ */
+
 /* Timer handler declaration */
 TIM_HandleTypeDef Encoder_Handle;
 /* Timer Encoder Configuration Structure declaration */
@@ -219,6 +227,7 @@ void Encoder::setCount(int32_t count32)
 //----------------------------------------------------------------------------//
 void Encoder::enableEncoder(encoder_id_t encode)
 {
+	// the binary combinations of the pin commands eg set give 3 unique values
 	switch (encode)
 	{
 	case Azimuthal_Encoder:

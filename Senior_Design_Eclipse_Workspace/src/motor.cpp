@@ -1,6 +1,8 @@
 #include "motor.h"
 #include "stdlib.h"
 
+
+
 //----------------------------------------------------------------------------//
 Motor::Motor(void) :
 		motor_id_(Azimuthal_Motor),
@@ -11,7 +13,11 @@ Motor::Motor(void) :
 		enableA_(false),
 		enableV_(false),
 		enableC_(false),
-		counts_to_position_(0.0)
+		counts_to_position_(0.0),
+		overflows_(0),
+		prev_counter_(0),
+		encoder_bit_A(GPIO_PIN_RESET),
+		encoder_bit_B(GPIO_PIN_RESET)
 {
 
 	/* Initalization of GPIO pin to control the motor's direction
@@ -30,7 +36,7 @@ Motor::Motor(void) :
 }
 
 //----------------------------------------------------------------------------//
-Motor::Motor(TIM_TypeDef *TIMX, const float counts_to_position) :
+Motor::Motor(TIM_TypeDef *TIMX, const float counts_to_position, const int encoder_bits) :
 		motor_id_(Azimuthal_Motor),
 		duty_(0),
 		dir_(false),
@@ -39,7 +45,9 @@ Motor::Motor(TIM_TypeDef *TIMX, const float counts_to_position) :
 		enableA_(false),
 		enableV_(false),
 		enableC_(false),
-		counts_to_position_(counts_to_position)
+		counts_to_position_(counts_to_position),
+		overflows_(0),
+		prev_counter_(0)
 {
 
 	/* Initalization of GPIO pin to control the motor's direction
@@ -84,6 +92,11 @@ Motor::Motor(TIM_TypeDef *TIMX, const float counts_to_position) :
 	/* Start channel 1 */
 	sMotorConfig.Pulse = 0;
 	HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1);
+
+	if (encoder_bits % 2)
+		encoder_bit_A = GPIO_PIN_SET;
+	if ((encoder_bits/2) % 2)
+		encoder_bit_B = GPIO_PIN_SET;
 }
 
 //----------------------------------------------------------------------------//
@@ -153,6 +166,15 @@ void Motor::setEnable(motor_id_t id, bool enable)
 }
 
 //----------------------------------------------------------------------------//
+void Motor::setEnable()
+{
+	// 3 unique pairs of A and B define which encoder is fed through
+	// the multiplexer to the STM32.
+	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, encoder_bit_A);
+	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, encoder_bit_B);
+}
+
+//----------------------------------------------------------------------------//
 bool Motor::getEnable(motor_id_t id)
 {
 	switch (id)
@@ -211,12 +233,6 @@ void Motor::setDuty(motor_id_t id, int16_t dutyInput)
 }
 
 //----------------------------------------------------------------------------//
-int16_t Motor::getDuty(motor_id_t id)
-{
-	return duty_;
-}
-
-//----------------------------------------------------------------------------//
 void Motor::setDirection(bool direction)
 {
 	dir_ = direction;
@@ -230,7 +246,10 @@ void Motor::setDirection(bool direction)
 bool Motor::getDirection(void)
 {
 	return (dir_);
+	// jar: do these need separate values?
+	//return (__HAL_TIM_IS_TIM_COUNTING_DOWN(&Encoder_Handle));
 }
+
 
 //----------------------------------------------------------------------------//
 void Motor::Error_Handler(void)
@@ -240,4 +259,73 @@ void Motor::Error_Handler(void)
 	while (1)
 	{
 	}
+}
+
+//----------------------------------------------------------------------------//
+int32_t Motor::getCount(void)
+{
+	uint16_t counter; // 16 bit counter of timer
+	int32_t count32;  // 32 bit counter which accounts for timer overflows
+
+	counter = __HAL_TIM_GET_COUNTER(&Encoder_Handle);
+
+	// The following assumes this function is called frequently enough that
+	// the encoder cannot change more 0x8000 counts between calls, and that
+	// the counter overflows from 0xffff to 0 and underflows from 0 to 0xffff
+	if ((prev_counter_ > 0xc000) && (counter < 0x4000))
+	{
+		overflows_ += 1; // overflow
+	}
+	else if ((prev_counter_ < 0x4000) && (counter > 0xc000))
+	{
+		overflows_ -= 1; // underflow
+	}
+
+	count32 = overflows_ * 0x10000 + counter;
+	prev_counter_ = counter;
+
+	return count32;
+}
+
+//----------------------------------------------------------------------------//
+void Motor::setCount(int32_t count32)
+{
+	if (count32 < 0)
+	{
+		overflows_ = count32 / ((int32_t) 0x10000) - 1;
+	}
+	else
+	{
+		overflows_ = count32 / ((int32_t) 0x10000);
+	}
+
+	uint16_t counter = (uint16_t) (count32 - overflows_ * 0x10000);
+	prev_counter_ = counter;
+
+	__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter);
+}
+
+//----------------------------------------------------------------------------//
+float Motor::getPosition()
+{
+	// either set or ensure that we're set to the right encoder
+	return getCount() * counts_to_position_;
+}
+
+//----------------------------------------------------------------------------//
+float Motor::getDesiredPosition()
+{
+	return desiredPos_;
+}
+
+//----------------------------------------------------------------------------//
+void Motor::setDesiredPosition(float desiredPos)
+{
+	desiredPos_ = desiredPos;
+}
+
+//----------------------------------------------------------------------------//
+float Motor::getPosError()
+{
+	return getPosition() - getDesiredPosition();
 }

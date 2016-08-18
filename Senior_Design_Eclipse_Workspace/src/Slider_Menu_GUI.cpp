@@ -38,7 +38,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 	{ BUTTON_CreateIndirect, "Azimuthal", GUI_ID_BUTTON0, 110, 200, 80, 40 },
 	{ BUTTON_CreateIndirect, "Vertical", GUI_ID_BUTTON1, 200, 200, 80, 40 },
 	{ BUTTON_CreateIndirect, "Claw", GUI_ID_BUTTON2, 290, 200, 80, 40 },
-	{ BUTTON_CreateIndirect, "STOP!", GUI_ID_BUTTON3, 380, 200, 80, 40 },
+	{ BUTTON_CreateIndirect, "Stop", GUI_ID_BUTTON3, 380, 200, 80, 40 },
 	{ BUTTON_CreateIndirect, "Azim Inc", GUI_ID_BUTTON6, 20, 100, 100, 40 },
 	{ BUTTON_CreateIndirect, "Vert Inc", GUI_ID_BUTTON7, 140, 100, 100, 40 },
 	{ PROGBAR_CreateIndirect, "", GUI_ID_PROGBAR0, 90, 160, 100, 18 },
@@ -137,7 +137,6 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 				motor.setDuty(Azimuthal_Motor, 0);
 				motor.setDuty(Vertical_Motor, 0);
 				motor.setDuty(Claw_Motor, 0);
-
 			}
 			if (Id == GUI_ID_BUTTON0) // Azimuthal Button
 			{

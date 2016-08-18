@@ -136,6 +136,7 @@
 									<listOptionValue builtIn="false" value="&quot;C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Senior_Design_Final_Iteration/CMSIS/Lib/GCC}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/robertsj/Research/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Lib"/>
+									<listOptionValue builtIn="false" value="/Users/robertsj/Documents/Research/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Lib"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1787783496" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

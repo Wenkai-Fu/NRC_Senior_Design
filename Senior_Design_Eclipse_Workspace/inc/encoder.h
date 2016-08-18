@@ -14,24 +14,17 @@ typedef enum
 class Encoder
 {
 	public:
-		Encoder(void);
 
+		Encoder(void);
 		int32_t getCount(void);
 		void setCount(int32_t count32);
-
 		bool getDirection(void);
-
 		void enableEncoder(encoder_id_t encode);
-
 		void Error_Handler(void);
-
 		float getPosition(encoder_id_t encode);
-
 		float getDesiredPosition(encoder_id_t encode);
 		void setDesiredPosition(encoder_id_t encode, float posDesired);
-
 		float getPosError();
-
 		void setPosError(encoder_id_t encode, float posError);
 
 	private:
