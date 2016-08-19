@@ -175,7 +175,8 @@ void Motor::setEnable()
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, encoder_bit_B);
 
 	// TODO: is there any reason why we need to save previous counts?
-	//setCount(getCount());
+	__HAL_TIM_SET_COUNTER(&Encoder_Handle, prev_counter_);
+	//setCounts(_count32);
 }
 
 //----------------------------------------------------------------------------//
@@ -282,7 +283,7 @@ int32_t Motor::getCount(void)
 
 	return count32;
 }
-
+// setCount(getCount());
 //----------------------------------------------------------------------------//
 void Motor::setCount(int32_t count32)
 {

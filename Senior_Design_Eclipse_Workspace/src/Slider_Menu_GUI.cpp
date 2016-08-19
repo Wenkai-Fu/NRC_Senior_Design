@@ -8,7 +8,7 @@
 #define RECOMMENDED_MEMORY (1024L * 15)
 
 extern Motor *motor, motor_azimuthal, motor_vertical, motor_claw;
-extern Encoder encoder;
+//extern Encoder encoder;
 
 /*********************************************************************
  * Function description
@@ -127,50 +127,58 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		switch (NCode)
 		{
 
-		case WM_NOTIFICATION_RELEASED:      // React only if released
+		case WM_NOTIFICATION_RELEASED:
 			if (Id == GUI_ID_OK)
-			{            // OK Button
+			{
+				// OK Button
 				GUI_EndDialog(hDlg, 0);
 			}
-			if (Id == GUI_ID_BUTTON3) // Stop Button
+			if (Id == GUI_ID_BUTTON3)
 			{
+				// Stop Button
+				BSP_LED_On(LED1);
 				motor_vertical.setDuty(0);
 				motor_azimuthal.setDuty(0);
 				motor_claw.setDuty(0);
 			}
-			if (Id == GUI_ID_BUTTON0) // Azimuthal Button
+			if (Id == GUI_ID_BUTTON0)
 			{
-				motor->setEnable(Azimuthal_Motor, true);
-				// Resets the count to 0 everytime
-				// JAR why is this desirable?
-				//encoder.setCount(encoder.getCount());
+				// Azimuthal Button
+				BSP_LED_Off(LED1);
+				motor = &motor_azimuthal;
+				motor->setEnable();
 			}
-			if (Id == GUI_ID_BUTTON1) // Vertical Button
+			if (Id == GUI_ID_BUTTON1)
 			{
-				motor->setEnable(Vertical_Motor, true);
-				//encoder.setCount(VerticalCount);
-				//DeltaVerticalCount = VerticalCount;
+				// Vertical Button
+				motor = &motor_vertical;
+				motor->setEnable();
 			}
-			if (Id == GUI_ID_BUTTON2) // Claw Button
+			if (Id == GUI_ID_BUTTON2)
 			{
-				motor->setEnable(Claw_Motor, true);
-				//encoder.setCount(ClawCount);
+				// Claw Button
+				motor = &motor_claw;
+				motor->setEnable();
 			}
-			if (Id == GUI_ID_BUTTON4) // Forward Button
+			if (Id == GUI_ID_BUTTON4)
 			{
+				// Forward Button TODO: delete
 				motor->setDirection(false);
 			}
-			if (Id == GUI_ID_BUTTON5)// Reverse Button
+			if (Id == GUI_ID_BUTTON5)
 			{
+				// Reverse Button TODO: delete
 				motor->setDirection(true);
 			}
 			if (Id == GUI_ID_BUTTON6) // Azimuthal Inc Button
 			{
-				motor->setEnable(Azimuthal_Motor, true);
+				motor = &motor_azimuthal;
+				motor->setEnable();
 			}
 			if (Id == GUI_ID_BUTTON7) // Vertical Inc Button
 			{
-				motor->setEnable(Vertical_Motor, true);
+				motor = &motor_vertical;
+				motor->setEnable();
 			}
 			break;
 		case WM_NOTIFICATION_VALUE_CHANGED: // Value has changed
