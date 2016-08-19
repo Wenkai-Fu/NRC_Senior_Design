@@ -11,10 +11,6 @@ TIM_HandleTypeDef MotorPWM;
 #define ki 0.005f;
 #define kd 0.005f;
 
-int32_t AzimuthalCount, VerticalCount, ClawCount, Divisor, DeltaVerticalCount;
-
-//Motor motor(TIM10, 1.23);
-Encoder encoder;
 arm_pid_instance_f32 PID;
 
 // counts-to-position

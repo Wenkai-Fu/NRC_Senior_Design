@@ -7,9 +7,7 @@
 
 #define RECOMMENDED_MEMORY (1024L * 15)
 
-
 extern Motor *motor, motor_azimuthal, motor_vertical, motor_claw;
-//extern Encoder encoder;
 
 /*********************************************************************
  * Function description
@@ -166,21 +164,20 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 				// Forward Button TODO: delete
 				motor->setDirection(false);
 			}
-			// Reverse Button
 			if (Id == GUI_ID_BUTTON5)
 			{
 				// Reverse Button TODO: delete
 				motor->setDirection(true);
 			}
-			// Azimuthal Inc Button
 			if (Id == GUI_ID_BUTTON6)
 			{
+				// Azimuthal Inc Button
 				motor = &motor_azimuthal;
 				motor->setEnable();
 			}
-			// Vertical Inc Button
 			if (Id == GUI_ID_BUTTON7)
 			{
+				// Vertical Inc Button
 				motor = &motor_vertical;
 				motor->setEnable();
 			}
@@ -229,6 +226,7 @@ void MainTask(void)
 	{
 		GUI_Delay(10);
 		// TODO: redundant values displayed
+		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT0);
 		EDIT_SetFloatValue(hItem, motor_vertical.getPosition());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
 		EDIT_SetFloatValue(hItem, motor_vertical.getDesiredPosition());
