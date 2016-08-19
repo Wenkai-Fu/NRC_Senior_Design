@@ -17,15 +17,17 @@ int32_t AzimuthalCount, VerticalCount, ClawCount, Divisor, DeltaVerticalCount;
 Encoder encoder;
 arm_pid_instance_f32 PID;
 
-// Constants for counts to position
-float c2p_azumith = -Inches_to_Centimeters/
-                    (Pulses_Per_Revolution*Azimuthal_Gear_Ratio*
-                    		      Pinion_Spur_Gear_Ratio*ThreadPitch);
+// counts-to-position
+float c2p_azimuthal = -float(Inches_to_Centimeters)/float(Pulses_Per_Revolution*
+                      Azimuthal_Gear_Ratio * Pinion_Spur_Gear_Ratio * ThreadPitch);
+float c2p_vertical = -1.0/float(Pulses_Per_Revolution*Vertical_Gear_Ratio*
+		              Pinion_Spur_Gear_Ratio);
+float c2p_claw =  -float(Inches_to_Centimeters)/
+		          float(Pulses_Per_Revolution*Claw_Gear_Ratio*ThreadPitch);
 
-// TODO: the constants must be defined!!
-Motor motor_azimuth(TIM10, c2p_azumith, 1);
-Motor motor_vertical(TIM11, 1.23, 2);
-Motor motor_claw(TIM13, 1.23, 3);
+Motor motor_azimuthal(TIM10, c2p_azimuthal, 1);
+Motor motor_vertical(TIM11, c2p_vertical, 2);
+Motor motor_claw(TIM13, c2p_claw, 3);
 Motor *motor = &motor_vertical;
 
 static void SystemClock_Config(void);
@@ -61,6 +63,7 @@ int main(void)
 	PID.Ki = ki;
 	PID.Kd = kd;
 	arm_pid_init_f32(&PID, 1);
+
 
 	/***********************************************************/
 
@@ -123,7 +126,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	TouchUpdate();
 
 	// stop all motors until further instruction
-	motor_azimuth.setDuty(0);
+	motor_azimuthal.setDuty(0);
 	motor_vertical.setDuty(0);
 	motor_claw.setDuty(0);
 
@@ -139,16 +142,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 //----------------------------------------------------------------------------//
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	// jar: what is this function for?
+	// TODO: Why is the vertical motor shut
 	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
 	{
 		BSP_LED_On(LED1);
-		//motor.setEnable(Vertical_Motor, false);
+		//motor->setEnable(Vertical_Motor, false);
 	}
 	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
 	{
 		BSP_LED_On(LED1);
-		//motor.setEnable(Vertical_Motor, false);
+		//motor->setEnable(Vertical_Motor, false);
 	}
 }
 

@@ -7,7 +7,8 @@
 
 #define RECOMMENDED_MEMORY (1024L * 15)
 
-extern Motor *motor, motor_azimuth, motor_vertical, motor_claw;
+
+extern Motor *motor, motor_azimuthal, motor_vertical, motor_claw;
 extern Encoder encoder;
 
 /*********************************************************************
@@ -136,28 +137,32 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 			// Stop Button
 			if (Id == GUI_ID_BUTTON3)
 			{
-				motor_azimuth.setDuty(0);
 				motor_vertical.setDuty(0);
+				motor_azimuthal.setDuty(0);
 				motor_claw.setDuty(0);
 			}
 			// Azimuthal Button
 			if (Id == GUI_ID_BUTTON0)
 			{
-				motor = &motor_azimuth;
-				//motor.setEnable(Azimuthal_Motor, true);
+				motor = &motor_azimuthal;
+				motor->setEnable();
 				// Resets the count to 0 everytime
-				// JAR why is this desirable?
-				encoder.setCount(encoder.getCount());
+				// TODO: why is this desirable?
+				//encoder.setCount(encoder.getCount());
 			}
 			// Vertical Button
 			if (Id == GUI_ID_BUTTON1)
 			{
 				motor = &motor_vertical;
+				motor->setEnable();
+				//encoder.setCount(VerticalCount);
+				//DeltaVerticalCount = VerticalCount;
 			}
 			// Claw Button
 			if (Id == GUI_ID_BUTTON2)
 			{
 				motor = &motor_claw;
+				motor->setEnable();
 			}
 			// Forward Button
 			if (Id == GUI_ID_BUTTON4)
@@ -172,31 +177,28 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 			// Azimuthal Inc Button
 			if (Id == GUI_ID_BUTTON6)
 			{
-				//motor.setEnable(Azimuthal_Motor, true);
+				motor = &motor_azimuthal;
+				motor->setEnable();
 			}
 			// Vertical Inc Button
 			if (Id == GUI_ID_BUTTON7)
 			{
-				//motor.setEnable(Vertical_Motor, true);
+				motor = &motor_vertical;
+				motor->setEnable();
 			}
 			break;
 
 		case WM_NOTIFICATION_VALUE_CHANGED: // Value has changed
-			float val = SPINBOX_GetValue(pMsg->hWinSrc);
+			// TODO: what's hItem needed for?
 			if (Id == GUI_ID_SPINBOX0)
 			{
-				motor_azimuth.setDesiredPosition(val);
-				// TODO: why is hItem needed?
+				motor->setDesiredPosition(SPINBOX_GetValue(pMsg->hWinSrc));
 				hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX0);
 			}
-			else if (Id == GUI_ID_SPINBOX1)
+			if (Id == GUI_ID_SPINBOX1)
 			{
-				motor_vertical.setDesiredPosition(val);
+				motor->setDesiredPosition(SPINBOX_GetValue(pMsg->hWinSrc));
 				hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX1);
-			}
-			else
-			{
-				// other choices
 			}
 			break;
 		}
@@ -228,32 +230,23 @@ void MainTask(void)
 	while (1)
 	{
 		GUI_Delay(10);
-
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT0);
-		EDIT_SetFloatValue(hItem, encoder.getPosition(Vertical_Encoder));
-
+		// TODO: redundant values displayed
+		EDIT_SetFloatValue(hItem, motor_vertical.getPosition());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
-		EDIT_SetFloatValue(hItem, encoder.getDesiredPosition(Vertical_Encoder));
-
+		EDIT_SetFloatValue(hItem, motor_vertical.getDesiredPosition());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);
-		EDIT_SetFloatValue(hItem, encoder.getPosError());
-
+		EDIT_SetFloatValue(hItem, motor_vertical.getPosError());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
-		EDIT_SetFloatValue(hItem, encoder.getDirection());
-
+		EDIT_SetFloatValue(hItem, motor->getDirection());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT4);
 		EDIT_SetFloatValue(hItem, motor->getDirection());
-
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT5);
-		EDIT_SetFloatValue(hItem, encoder.getPosError());
-
+		EDIT_SetFloatValue(hItem, 1.2345);
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT6);
-		EDIT_SetFloatValue(hItem, encoder.getPosition(Azimuthal_Encoder));
-
+		EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT7);
-		EDIT_SetFloatValue(hItem, encoder.getDesiredPosition(Azimuthal_Encoder));
-
+		EDIT_SetFloatValue(hItem, motor_azimuthal.getDesiredPosition());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT8);
-		EDIT_SetFloatValue(hItem, encoder.getPosError());
+		EDIT_SetFloatValue(hItem, motor_azimuthal.getPosError());
 	}
 }
