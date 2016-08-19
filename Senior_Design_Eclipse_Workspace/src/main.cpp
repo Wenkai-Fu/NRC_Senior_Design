@@ -142,16 +142,24 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 //----------------------------------------------------------------------------//
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	// TODO: Why is the vertical motor shut
+	// bottom limit
 	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
 	{
 		BSP_LED_On(LED1);
-		//motor->setEnable(Vertical_Motor, false);
+		motor_vertical.setDuty(0);
+		// TODO: possibly do a reset or something
 	}
 	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
 	{
 		BSP_LED_On(LED1);
-		//motor->setEnable(Vertical_Motor, false);
+		motor_vertical.setDuty(0);
+		// possibly do a reset or something
+	}
+	else if (HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_9))
+	{
+		BSP_LED_On(LED1);
+		motor_claw.setDuty(0);
+		// possibly do a reset or something
 	}
 }
 

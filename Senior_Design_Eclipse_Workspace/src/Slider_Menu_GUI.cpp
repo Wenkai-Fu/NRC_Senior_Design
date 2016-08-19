@@ -9,7 +9,7 @@
 
 
 extern Motor *motor, motor_azimuthal, motor_vertical, motor_claw;
-extern Encoder encoder;
+//extern Encoder encoder;
 
 /*********************************************************************
  * Function description
@@ -128,50 +128,48 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		switch (NCode)
 		{
 
-		case WM_NOTIFICATION_RELEASED:      // React only if released
+		case WM_NOTIFICATION_RELEASED:
 			if (Id == GUI_ID_OK)
 			{
-                // OK Button
+				// OK Button
 				GUI_EndDialog(hDlg, 0);
 			}
-			// Stop Button
 			if (Id == GUI_ID_BUTTON3)
 			{
+				// Stop Button
+				BSP_LED_On(LED1);
 				motor_vertical.setDuty(0);
 				motor_azimuthal.setDuty(0);
 				motor_claw.setDuty(0);
 			}
-			// Azimuthal Button
 			if (Id == GUI_ID_BUTTON0)
 			{
+				// Azimuthal Button
+				BSP_LED_Off(LED1);
 				motor = &motor_azimuthal;
 				motor->setEnable();
-				// Resets the count to 0 everytime
-				// TODO: why is this desirable?
-				//encoder.setCount(encoder.getCount());
 			}
-			// Vertical Button
 			if (Id == GUI_ID_BUTTON1)
 			{
+				// Vertical Button
 				motor = &motor_vertical;
 				motor->setEnable();
-				//encoder.setCount(VerticalCount);
-				//DeltaVerticalCount = VerticalCount;
 			}
-			// Claw Button
 			if (Id == GUI_ID_BUTTON2)
 			{
+				// Claw Button
 				motor = &motor_claw;
 				motor->setEnable();
 			}
-			// Forward Button
 			if (Id == GUI_ID_BUTTON4)
 			{
+				// Forward Button TODO: delete
 				motor->setDirection(false);
 			}
 			// Reverse Button
 			if (Id == GUI_ID_BUTTON5)
 			{
+				// Reverse Button TODO: delete
 				motor->setDirection(true);
 			}
 			// Azimuthal Inc Button
