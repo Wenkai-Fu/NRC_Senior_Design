@@ -21,7 +21,7 @@ public:
 	void setEnable(motor_id_t id, bool enable);
 	void setEnable();
 	bool getEnable(motor_id_t id);
-	void setDuty(motor_id_t id, int16_t dutyInput);
+	void setDuty(int16_t dutyInput);
 	void setDirection(bool direction);
 	bool getDirection(void);
 	void Error_Handler(void);

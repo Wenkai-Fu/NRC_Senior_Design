@@ -13,14 +13,22 @@ TIM_HandleTypeDef MotorPWM;
 
 int32_t AzimuthalCount, VerticalCount, ClawCount, Divisor, DeltaVerticalCount;
 
-Motor motor(TIM10, 1.23);
+//Motor motor(TIM10, 1.23);
 Encoder encoder;
 arm_pid_instance_f32 PID;
 
+// counts-to-position
+float c2p_azimuthal = -float(Inches_to_Centimeters)/float(Pulses_Per_Revolution*
+                      Azimuthal_Gear_Ratio * Pinion_Spur_Gear_Ratio * ThreadPitch);
+float c2p_vertical = -1.0/float(Pulses_Per_Revolution*Vertical_Gear_Ratio*
+		              Pinion_Spur_Gear_Ratio);
+float c2p_claw =  -float(Inches_to_Centimeters)/
+		          float(Pulses_Per_Revolution*Claw_Gear_Ratio*ThreadPitch);
 
-Motor motor_azimuth(TIM10, 1.23);
-Motor motor_vertical(TIM11, 1.23);
-Motor motor_claw(TIM13, 1.23);
+Motor motor_azimuthal(TIM10, c2p_azimuthal, 1);
+Motor motor_vertical(TIM11, c2p_vertical, 2);
+Motor motor_claw(TIM13, c2p_claw, 3);
+Motor *motor = &motor_vertical;
 
 static void SystemClock_Config(void);
 extern void MainTask(void);
@@ -57,9 +65,9 @@ int main(void)
 	arm_pid_init_f32(&PID, 1);
 
 	/* Initialization of TIM handles for motor PWM timers*/
-	motor.motorInit(Azimuthal_Motor);
-	motor.motorInit(Vertical_Motor);
-	motor.motorInit(Claw_Motor);
+//	motor.motorInit(Azimuthal_Motor);
+//	motor.motorInit(Vertical_Motor);
+//	motor.motorInit(Claw_Motor);
 
 	/***********************************************************/
 
@@ -114,69 +122,40 @@ int main(void)
 }
 
 //----------------------------------------------------------------------------//
-/**
- * @brief  Period elapsed callback in non blocking mode
- * @param  htim: TIM handle
- * @retval None
- */
-float threshold = 0.01f;
+// Period elapsed callback in non blocking mode
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
+	const float threshold = 0.01f;
+
 	TouchUpdate();
 
-	if (motor.getEnable(Azimuthal_Motor))
-	{
-		encoder.enableEncoder(Azimuthal_Encoder);
-		encoder.getPosition(Azimuthal_Encoder);
-		encoder.setPosError(Azimuthal_Encoder,
-				(encoder.getPosition(Azimuthal_Encoder)
-						- encoder.getDesiredPosition(Azimuthal_Encoder)));
+	// stop all motors until further instruction
+	motor_azimuthal.setDuty(0);
+	motor_vertical.setDuty(0);
+	motor_claw.setDuty(0);
 
-		if (encoder.getPosError() > threshold)
-			motor.setDuty(Azimuthal_Motor, 100);
-		else if (encoder.getPosError() < -threshold)
-			motor.setDuty(Azimuthal_Motor, -100);
-		else
-			motor.setDuty(Azimuthal_Motor, 0);
-	}
+	// set duty for active motor
+	if (motor->getPosError() > threshold)
+		motor->setDuty(100);
+	else if (motor->getPosError() < -threshold)
+		motor->setDuty(-100);
 	else
-	{
-		motor.setDuty(Azimuthal_Motor, 0);
-	}
-
-	if (motor.getEnable(Vertical_Motor))
-	{
-		encoder.enableEncoder(Vertical_Encoder);
-		encoder.getPosition(Vertical_Encoder);
-		encoder.setPosError(Vertical_Encoder,
-				(encoder.getPosition(Vertical_Encoder)
-						- encoder.getDesiredPosition(Vertical_Encoder)));
-
-		if (encoder.getPosError() > threshold)
-			motor.setDuty(Vertical_Motor, -100);
-		else if (encoder.getPosError() < -threshold)
-			motor.setDuty(Vertical_Motor, 100);
-		else
-			motor.setDuty(Vertical_Motor, 0);
-	}
-	else
-	{
-		motor.setDuty(Vertical_Motor, 0);
-	}
+		motor->setDuty(0);
 }
 
 //----------------------------------------------------------------------------//
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
+	// TODO: Why is the vertical motor shut
 	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
 	{
 		BSP_LED_On(LED1);
-		motor.setEnable(Vertical_Motor, false);
+		//motor->setEnable(Vertical_Motor, false);
 	}
 	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
 	{
 		BSP_LED_On(LED1);
-		motor.setEnable(Vertical_Motor, false);
+		//motor->setEnable(Vertical_Motor, false);
 	}
 }
 

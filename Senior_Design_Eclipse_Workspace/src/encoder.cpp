@@ -90,7 +90,7 @@ int32_t Encoder::getCount(void)
 
 	// The following assumes this function is called frequently enough that
 	// the encoder cannot change more 0x8000 counts between calls, and that
-	// the counter overflows from 0xffff to 0 and underflows from 0 to 0xffff
+	// the counter overflowso5y,, from 0xffff to 0 and underflows from 0 to 0xffff
 	if ((prev_counter_ > 0xc000) && (counter < 0x4000))
 	{
 		overflows_ += 1; // overflow
@@ -106,7 +106,23 @@ int32_t Encoder::getCount(void)
 	return count32;
 }
 
+//----------------------------------------------------------------------------//
+void Encoder::setCount(int32_t count32)
+{
+	if (count32 < 0)
+	{
+		overflows_ = count32 / ((int32_t) 0x10000) - 1;
+	}
+	else
+	{
+		overflows_ = count32 / ((int32_t) 0x10000);
+	}
 
+	uint16_t counter = (uint16_t) (count32 - overflows_ * 0x10000);
+	prev_counter_ = counter;
+
+	__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter);
+}
 
 //----------------------------------------------------------------------------//
 float Encoder::getPosition(encoder_id_t encode)
@@ -206,23 +222,7 @@ bool Encoder::getDirection(void)
 	return (__HAL_TIM_IS_TIM_COUNTING_DOWN(&Encoder_Handle));
 }
 
-//----------------------------------------------------------------------------//
-void Encoder::setCount(int32_t count32)
-{
-	if (count32 < 0)
-	{
-		overflows_ = count32 / ((int32_t) 0x10000) - 1;
-	}
-	else
-	{
-		overflows_ = count32 / ((int32_t) 0x10000);
-	}
 
-	uint16_t counter = (uint16_t) (count32 - overflows_ * 0x10000);
-	prev_counter_ = counter;
-
-	__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter);
-}
 
 //----------------------------------------------------------------------------//
 void Encoder::enableEncoder(encoder_id_t encode)

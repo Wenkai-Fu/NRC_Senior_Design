@@ -168,10 +168,14 @@ void Motor::setEnable(motor_id_t id, bool enable)
 //----------------------------------------------------------------------------//
 void Motor::setEnable()
 {
+	// connect to the correct encoder.
 	// 3 unique pairs of A and B define which encoder is fed through
 	// the multiplexer to the STM32.
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, encoder_bit_A);
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, encoder_bit_B);
+
+	// TODO: is there any reason why we need to save previous counts?
+	//setCount(getCount());
 }
 
 //----------------------------------------------------------------------------//
@@ -194,22 +198,9 @@ bool Motor::getEnable(motor_id_t id)
 }
 
 //----------------------------------------------------------------------------//
-void Motor::setDuty(motor_id_t id, int16_t dutyInput)
+void Motor::setDuty(int16_t dutyInput)
 {
 	//	duty_ = dutyInput;
-	switch (id)
-	{
-	case Azimuthal_Motor:
-		TIM_HANDLE_.Instance = TIM10;
-		break;
-	case Vertical_Motor:
-		TIM_HANDLE_.Instance = TIM11;
-		break;
-	case Claw_Motor:
-		TIM_HANDLE_.Instance = TIM13;
-		break;
-	}
-
 	/* Overflow protection of duty cycle. Duty cycle cannot be
 	 * higher than the timer period length*/
 	int16_t maxLimit = period_ + 1;
@@ -235,6 +226,8 @@ void Motor::setDuty(motor_id_t id, int16_t dutyInput)
 //----------------------------------------------------------------------------//
 void Motor::setDirection(bool direction)
 {
+	// TODO: Should direction be based on encoder?  or duty? or what?
+	//     encoder used return (__HAL_TIM_IS_TIM_COUNTING_DOWN(&Encoder_Handle));
 	dir_ = direction;
 	if (dir_)
 		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_3, GPIO_PIN_RESET);
@@ -264,6 +257,9 @@ void Motor::Error_Handler(void)
 //----------------------------------------------------------------------------//
 int32_t Motor::getCount(void)
 {
+	// TODO: We could set the pin here and not have the enable function
+	//       at all, right?
+
 	uint16_t counter; // 16 bit counter of timer
 	int32_t count32;  // 32 bit counter which accounts for timer overflows
 
@@ -290,6 +286,8 @@ int32_t Motor::getCount(void)
 //----------------------------------------------------------------------------//
 void Motor::setCount(int32_t count32)
 {
+	// TODO: is this function ever needed?  why wouldn't the encoder know
+	//       its own count?
 	if (count32 < 0)
 	{
 		overflows_ = count32 / ((int32_t) 0x10000) - 1;
