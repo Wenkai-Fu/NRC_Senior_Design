@@ -21,10 +21,12 @@ float c2p_vertical = -1.0/float(Pulses_Per_Revolution*Vertical_Gear_Ratio*
 float c2p_claw =  -float(Inches_to_Centimeters)/
 		          float(Pulses_Per_Revolution*Claw_Gear_Ratio*ThreadPitch);
 
-Motor motor_azimuthal(TIM10, c2p_azimuthal, 1);
-Motor motor_vertical(TIM11, c2p_vertical, 2);
-Motor motor_claw(TIM13, c2p_claw, 3);
+Motor motor_azimuthal(TIM10, c2p_azimuthal, 1, 5.0);
+Motor motor_vertical(TIM11, c2p_vertical, 2, 1.0);
+Motor motor_claw(TIM13, c2p_claw, 3, 1.0);
 Motor *motor = &motor_vertical;
+
+bool limit_switch = false;
 
 static void SystemClock_Config(void);
 extern void MainTask(void);
@@ -138,25 +140,30 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 //----------------------------------------------------------------------------//
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
+	limit_switch = false;
 	// bottom limit
 	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
 	{
 		BSP_LED_On(LED1);
 		motor_vertical.setDuty(0);
+		limit_switch = true;
 		// TODO: possibly do a reset or something
 	}
 	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
 	{
 		BSP_LED_On(LED1);
 		motor_vertical.setDuty(0);
+		limit_switch = true;
 		// possibly do a reset or something
 	}
 	else if (HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_9))
 	{
 		BSP_LED_On(LED1);
 		motor_claw.setDuty(0);
+		limit_switch = true;
 		// possibly do a reset or something
 	}
+
 }
 
 //----------------------------------------------------------------------------//

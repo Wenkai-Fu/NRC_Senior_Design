@@ -8,6 +8,7 @@
 #define RECOMMENDED_MEMORY (1024L * 15)
 
 extern Motor *motor, motor_azimuthal, motor_vertical, motor_claw;
+extern bool limit_switch;
 
 /*********************************************************************
  * Function description
@@ -17,50 +18,51 @@ extern Motor *motor, motor_azimuthal, motor_vertical, motor_claw;
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 {
 	{ FRAMEWIN_CreateIndirect, "Motor Control", 0, 0, 0, 480, 272, 0 },
-	{ TEXT_CreateIndirect, "Position", 0, 250, 20, 80, 20, TEXT_CF_LEFT },
-	{ TEXT_CreateIndirect, "Desired Position", 0, 250, 40, 80, 20, TEXT_CF_LEFT },
-	{ TEXT_CreateIndirect, "Pos Error", 0, 250, 60, 80, 20, TEXT_CF_LEFT },
-	{ TEXT_CreateIndirect, "Encoder Dir", 0, 250, 80, 80, 20, TEXT_CF_LEFT },
-	{ TEXT_CreateIndirect, "Motor Dir", 0, 250, 100, 80, 20, TEXT_CF_LEFT },
-	{ TEXT_CreateIndirect, "Pos Error", 0, 250, 120, 80, 20, TEXT_CF_LEFT },
-	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT0, 410, 20, 45, 20, 0, 0 },
-	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT1, 410, 40, 45, 20, 0, 3 },
-	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT2, 410, 60, 45, 20, 0, 3 },
-	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT3, 410, 80, 45, 20, 0, 3 },
-	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT4, 410, 100, 45, 20, 0, 3 },
-	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT5, 410, 120, 45, 20, 0, 3 },
-	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT6, 360, 20, 45, 20, 0, 3 },
-	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT7, 360, 40, 45, 20, 0, 3 },
-	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT8, 360, 60, 45, 20, 0, 3 },
-	{ BUTTON_CreateIndirect, "Forward", GUI_ID_BUTTON4, 10, 170, 80, 30 },
-	{ BUTTON_CreateIndirect, "Reverse", GUI_ID_BUTTON5, 10, 210, 80, 30 },
-	{ BUTTON_CreateIndirect, "Azimuthal", GUI_ID_BUTTON0, 110, 200, 80, 40 },
-	{ BUTTON_CreateIndirect, "Vertical", GUI_ID_BUTTON1, 200, 200, 80, 40 },
-	{ BUTTON_CreateIndirect, "Claw", GUI_ID_BUTTON2, 290, 200, 80, 40 },
-	{ BUTTON_CreateIndirect, "Stop", GUI_ID_BUTTON3, 380, 200, 80, 40 },
-	{ BUTTON_CreateIndirect, "Azim Inc", GUI_ID_BUTTON6, 20, 100, 100, 40 },
-	{ BUTTON_CreateIndirect, "Vert Inc", GUI_ID_BUTTON7, 140, 100, 100, 40 },
-	{ PROGBAR_CreateIndirect, "", GUI_ID_PROGBAR0, 90, 160, 100, 18 },
-	{ SPINBOX_CreateIndirect, NULL, GUI_ID_SPINBOX0, 20, 25, 100, 60, 0, 0, 0 },
-	{ SPINBOX_CreateIndirect, NULL, GUI_ID_SPINBOX1, 140, 25, 100, 60, 0, 0, 0 },
+	//
+	// TEXT BOXES
+	{ TEXT_CreateIndirect, "Desired", GUI_ID_TEXT0, 240,  30, 120, 40, TEXT_CF_LEFT },
+	{ TEXT_CreateIndirect, "Current", GUI_ID_TEXT1, 360,  30, 120, 40, TEXT_CF_LEFT },
+	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT2,  20, 221, 220, 30, TEXT_CF_LEFT },
+	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT3, 260, 221, 200, 30, TEXT_CF_RIGHT },
+    //
+	// EDIT BOXES
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT0, 240,  60, 100, 30, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT1, 360,  60, 100, 30, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT2, 240, 100, 100, 30, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT3, 360, 100, 100, 30, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT4, 240, 140, 100, 30, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT5, 360, 140, 100, 30, 0, 3 },
+	//
+	// BUTTONS
+	{ BUTTON_CreateIndirect, "Azimuthal", GUI_ID_BUTTON0, 120,  60, 100, 30 },
+	{ BUTTON_CreateIndirect, "Vertical",  GUI_ID_BUTTON1, 120, 100, 100, 30 },
+	{ BUTTON_CreateIndirect, "Claw",      GUI_ID_BUTTON2, 120, 140, 100, 30 },
+	{ BUTTON_CreateIndirect, "Stop",      GUI_ID_BUTTON3, 120, 180, 340, 30 },
+	{ BUTTON_CreateIndirect, "+",         GUI_ID_BUTTON4,  20,  41,  80, 80 },
+	{ BUTTON_CreateIndirect, "-",         GUI_ID_BUTTON5,  20, 131,  80, 80 },
 };
 
 // Dialog handles
 WM_HWIN _hDialogMain;
 
-//----------------------------------------------------------------------------//
-static void _SetProgbarValue(int Id, I32 Value)
+const int VERTICAL = 0, AZIMUTHAL = 1, CLAW = 2;
+static void set_motor(const int key)
 {
-	WM_HWIN hItem;
-	hItem = WM_GetDialogItem(_hDialogMain, Id);
-	PROGBAR_SetValue(hItem, Value);
+	if (key == VERTICAL)
+		motor = &motor_vertical;
+	else if (key == AZIMUTHAL)
+		motor = &motor_azimuthal;
+	else if (key == CLAW)
+		motor = &motor_claw;
+	else
+		;
+	motor->setEnable();
 }
 
 //----------------------------------------------------------------------------//
 static void _cbCallback(WM_MESSAGE * pMsg)
 {
 	WM_HWIN hDlg;
-	EDIT_Handle hEdit;
 	WM_HWIN hItem;
 	int NCode;
 	int Id;
@@ -71,40 +73,37 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 
 	case WM_INIT_DIALOG:
 
-		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX0);
-		SPINBOX_SetSkin(hItem, SPINBOX_SKIN_FLEX);
-		hEdit = SPINBOX_GetEditHandle(hItem);
-		EDIT_SetFloatMode(hEdit, 5.0, -100.0, 100.0, 0, 0);
+		// Buttons
+		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_BUTTON4);
+		BUTTON_SetFont(hItem, &GUI_FontD36x48);
+		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_BUTTON5);
+		BUTTON_SetFont(hItem, &GUI_FontD36x48);
 
-		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX1);
-		SPINBOX_SetSkin(hItem, SPINBOX_SKIN_FLEX);
-		hEdit = SPINBOX_GetEditHandle(hItem);
-		EDIT_SetFloatMode(hEdit, 5.0, -100.0, 100.0, 0, 0);
-
-		// Init progress bars
-		hItem = WM_GetDialogItem(hDlg, GUI_ID_PROGBAR0);
-		WIDGET_SetEffect(hItem, &WIDGET_Effect_3D);
-		_SetProgbarValue(GUI_ID_PROGBAR0, 0);
-
-		// Init edit widgets
+		// Edits
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT0);
-		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,  0.0, 360.0, 2, 0);
+		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT1);
-		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,  0.0, 360.0, 2, 0);
+		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
+
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT2);
-		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,  0.0, 45.0, 2, 0);
+		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT3);
-		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,  0.0, 45.0, 2, 0);
+		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
+
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT4);
-		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,  0.0, 1.0, 2, 0);
+		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT5);
-		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
-		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT6);
-		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
-		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT7);
-		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
-		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT8);
-		EDIT_SetFloatMode(hItem, 0.0, -999.0, 999.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,  0.0, 1.0, 2, 0);
+		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
+
+		hItem = WM_GetDialogItem(hDlg, GUI_ID_TEXT3);
+		TEXT_SetTextColor(hItem, GUI_RED);
+
 		break;
 
 	case WM_KEY:
@@ -127,6 +126,7 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		{
 
 		case WM_NOTIFICATION_RELEASED:
+			hItem = WM_GetDialogItem(hDlg, GUI_ID_TEXT2);
 			if (Id == GUI_ID_OK)
 			{
 				// OK Button
@@ -139,61 +139,31 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 				motor_vertical.setDuty(0);
 				motor_azimuthal.setDuty(0);
 				motor_claw.setDuty(0);
+				TEXT_SetText(hItem, "Stopped.");
 			}
 			if (Id == GUI_ID_BUTTON0)
 			{
-				// Azimuthal Button
 				BSP_LED_Off(LED1);
-				motor = &motor_azimuthal;
-				motor->setEnable();
+				set_motor(AZIMUTHAL);
+				TEXT_SetText(hItem, "Azimuthal enabled.");
 			}
 			if (Id == GUI_ID_BUTTON1)
 			{
-				// Vertical Button
-				motor = &motor_vertical;
-				motor->setEnable();
+				set_motor(VERTICAL);
+				TEXT_SetText(hItem, "Vertical enabled.");
 			}
 			if (Id == GUI_ID_BUTTON2)
 			{
-				// Claw Button
-				motor = &motor_claw;
-				motor->setEnable();
+				set_motor(CLAW);
+				TEXT_SetText(hItem, "Claw enabled.");
 			}
 			if (Id == GUI_ID_BUTTON4)
 			{
-				// Forward Button TODO: delete
-				motor->setDirection(false);
+				motor->increase();
 			}
 			if (Id == GUI_ID_BUTTON5)
 			{
-				// Reverse Button TODO: delete
-				motor->setDirection(true);
-			}
-			if (Id == GUI_ID_BUTTON6)
-			{
-				// Azimuthal Inc Button
-				motor = &motor_azimuthal;
-				motor->setEnable();
-			}
-			if (Id == GUI_ID_BUTTON7)
-			{
-				// Vertical Inc Button
-				motor = &motor_vertical;
-				motor->setEnable();
-			}
-			break;
-
-		case WM_NOTIFICATION_VALUE_CHANGED: // Value has changed
-			// TODO: what's hItem needed for?
-			if (Id == GUI_ID_SPINBOX0)
-			{
-				motor->setDesiredPosition(SPINBOX_GetValue(pMsg->hWinSrc));
-				hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX0);
-			}
-			if (Id == GUI_ID_SPINBOX1)
-			{
-				motor->setDesiredPosition(SPINBOX_GetValue(pMsg->hWinSrc));
-				hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_SPINBOX1);
+				motor->decrease();
 			}
 			break;
 		}
@@ -211,6 +181,19 @@ void MainTask(void)
 
 	// Use memory devices on all windows to avoid flicker
 	WM_SetCreateFlags(WM_CF_MEMDEV);
+
+	// Set the font.  Built-in fonts are listed here:
+	//    https://www.segger.com/emwin-fonts.html
+	// It seems that fonts must be set for each widget type.
+	//GUI_SetDefaultFont(&GUI_FontComic18B_ASCII);
+
+	BUTTON_SetDefaultFont(&GUI_Font20B_ASCII);
+	EDIT_SetDefaultFont(&GUI_Font20B_ASCII);
+	TEXT_SetDefaultFont(&GUI_Font20B_ASCII);
+
+	// Set text alignment
+	EDIT_SetDefaultTextAlign(GUI_TA_VCENTER);
+
 	GUI_Init();
 
 	// Check if recommended memory for the sample is available
@@ -225,24 +208,29 @@ void MainTask(void)
 	while (1)
 	{
 		GUI_Delay(10);
-		// TODO: redundant values displayed
+
+		// azimuthal
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT0);
-		EDIT_SetFloatValue(hItem, motor_vertical.getPosition());
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
-		EDIT_SetFloatValue(hItem, motor_vertical.getDesiredPosition());
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);
-		EDIT_SetFloatValue(hItem, motor_vertical.getPosError());
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
-		EDIT_SetFloatValue(hItem, motor->getDirection());
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT4);
-		EDIT_SetFloatValue(hItem, motor->getDirection());
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT5);
-		EDIT_SetFloatValue(hItem, 1.2345);
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT6);
-		EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition());
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT7);
 		EDIT_SetFloatValue(hItem, motor_azimuthal.getDesiredPosition());
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT8);
-		EDIT_SetFloatValue(hItem, motor_azimuthal.getPosError());
+		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
+		EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition());
+
+		// vertical
+		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);
+		EDIT_SetFloatValue(hItem, motor_vertical.getDesiredPosition());
+		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
+		EDIT_SetFloatValue(hItem, motor_vertical.getPosition());
+
+		// claw
+		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT4);
+		EDIT_SetFloatValue(hItem, motor_claw.getDesiredPosition());
+		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT5);
+		EDIT_SetFloatValue(hItem, motor_claw.getPosition());
+
+		if (limit_switch)
+		{
+			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT5);
+			TEXT_SetText(hItem, "Limit switch engaged!");
+		}
 	}
 }
