@@ -45,9 +45,18 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 // Dialog handles
 WM_HWIN _hDialogMain;
 
+
+static void disable_all()
+{
+	motor_vertical.disable();
+	motor_azimuthal.disable();
+	motor_claw.disable();
+}
+
 const int VERTICAL = 0, AZIMUTHAL = 1, CLAW = 2;
 static void set_motor(const int key)
 {
+	disable_all();
 	if (key == VERTICAL)
 		motor = &motor_vertical;
 	else if (key == AZIMUTHAL)
@@ -56,7 +65,7 @@ static void set_motor(const int key)
 		motor = &motor_claw;
 	else
 		;
-	motor->setEnable();
+	motor->enable();
 }
 
 //----------------------------------------------------------------------------//
@@ -136,9 +145,7 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 			{
 				// Stop Button
 				BSP_LED_On(LED1);
-				motor_vertical.setDuty(0);
-				motor_azimuthal.setDuty(0);
-				motor_claw.setDuty(0);
+				disable_all();
 				TEXT_SetText(hItem, "Stopped.");
 			}
 			if (Id == GUI_ID_BUTTON0)
@@ -225,12 +232,15 @@ void MainTask(void)
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT4);
 		EDIT_SetFloatValue(hItem, motor_claw.getDesiredPosition());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT5);
-		EDIT_SetFloatValue(hItem, motor_claw.getPosition());
+		EDIT_SetFloatValue(hItem, motor_claw.getPosError());
 
+		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT3);
+		TEXT_SetText(hItem, "");
 		if (limit_switch)
 		{
-			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT5);
 			TEXT_SetText(hItem, "Limit switch engaged!");
 		}
+		// + other warnings, etc.
+
 	}
 }

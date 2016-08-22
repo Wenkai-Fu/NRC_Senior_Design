@@ -14,7 +14,9 @@ Motor::Motor(TIM_TypeDef *TIMX,
 		counter32_(0),
 		overflows_(0),
 		counter16_(0),
-		increment_(increment)
+		increment_(increment),
+		desiredPos_(0.0),
+		enable_(false)
 {
 
 	/* Initalization of GPIO pin to control the motor's direction
@@ -64,11 +66,15 @@ Motor::Motor(TIM_TypeDef *TIMX,
 		encoder_bit_A = GPIO_PIN_SET;
 	if ((encoder_bits/2) % 2)
 		encoder_bit_B = GPIO_PIN_SET;
+
+	// set the count to the last saved count.
+	setCount();
 }
 
 //----------------------------------------------------------------------------//
-void Motor::setEnable()
+void Motor::enable()
 {
+	enable_ = true;
 	// connect to the correct encoder. the 3 unique pairs of A and B define
 	// which encoder is fed through the multiplexer to the STM32.
 	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, encoder_bit_A);

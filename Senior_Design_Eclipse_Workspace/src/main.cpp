@@ -24,7 +24,7 @@ float c2p_claw =  -float(Inches_to_Centimeters)/
 Motor motor_azimuthal(TIM10, c2p_azimuthal, 1, 5.0);
 Motor motor_vertical(TIM11, c2p_vertical, 2, 1.0);
 Motor motor_claw(TIM13, c2p_claw, 3, 1.0);
-Motor *motor = &motor_vertical;
+Motor *motor = &motor_claw;
 
 bool limit_switch = false;
 
@@ -129,37 +129,42 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	motor_claw.setDuty(0);
 
 	// set duty for active motor
-	if (motor->getPosError() > threshold)
-		motor->setDuty(100);
-	else if (motor->getPosError() < -threshold)
-		motor->setDuty(-100);
-	else
-		motor->setDuty(0);
+	if (motor->enabled())
+	{
+		if (motor->getPosError() > threshold)
+			motor->setDuty(100);
+		else if (motor->getPosError() < -threshold)
+			motor->setDuty(-100);
+		else
+			motor->setDuty(0);
+	}
 }
 
 //----------------------------------------------------------------------------//
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	limit_switch = false;
+	BSP_LED_Off(LED1);
 	// bottom limit
 	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
 	{
 		BSP_LED_On(LED1);
-		motor_vertical.setDuty(0);
+		motor_vertical.disable();
 		limit_switch = true;
 		// TODO: possibly do a reset or something
+		// TODO: problably store the limit in the motor
 	}
 	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
 	{
 		BSP_LED_On(LED1);
-		motor_vertical.setDuty(0);
+		motor_vertical.disable();
 		limit_switch = true;
 		// possibly do a reset or something
 	}
 	else if (HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_9))
 	{
 		BSP_LED_On(LED1);
-		motor_claw.setDuty(0);
+		motor_claw.disable();
 		limit_switch = true;
 		// possibly do a reset or something
 	}

@@ -11,7 +11,7 @@ public:
 
 	Motor(TIM_TypeDef *TIMX, const float counts_to_position,
 		  const int encoder_bits, const float increment);
-	void setEnable();
+	void enable();
 	void setDesiredPosition(float desiredPos);
 	void setDuty(int16_t dutyInput);
 	bool getDirection();
@@ -20,11 +20,22 @@ public:
     float getPosError();
     bool increase();
     bool decrease();
+    int32_t getCount(void);
+    float getDuty(){return (float)duty_;}
+    // TODO: create
+    void disable()
+    {
+    	enable_ = false;
+    	duty_ = 0;
+    }
+    bool enabled()
+    {
+    	return enable_;
+    }
 
 private:
 
 	void Error_Handler(void);
-	int32_t getCount(void);
 	void setCount();
 
 	int16_t duty_;
@@ -49,6 +60,7 @@ private:
 	GPIO_PinState encoder_bit_B;
 	//
 	float increment_;
+	bool enable_;
 };
 
 #endif /* MOTOR_H_ */
