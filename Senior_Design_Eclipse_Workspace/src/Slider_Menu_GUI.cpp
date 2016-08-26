@@ -34,12 +34,14 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT5, 360, 140, 100, 30, 0, 3 },
 	//
 	// BUTTONS
-	{ BUTTON_CreateIndirect, "Azimuthal", GUI_ID_BUTTON0, 120,  60, 100, 30 },
-	{ BUTTON_CreateIndirect, "Vertical",  GUI_ID_BUTTON1, 120, 100, 100, 30 },
+	{ BUTTON_CreateIndirect, "Vertical",  GUI_ID_BUTTON0, 120,  60, 100, 30 },
+	{ BUTTON_CreateIndirect, "Azimuthal", GUI_ID_BUTTON1, 120, 100, 100, 30 },
 	{ BUTTON_CreateIndirect, "Claw",      GUI_ID_BUTTON2, 120, 140, 100, 30 },
 	{ BUTTON_CreateIndirect, "Stop",      GUI_ID_BUTTON3, 120, 180, 340, 30 },
 	{ BUTTON_CreateIndirect, "+",         GUI_ID_BUTTON4,  20,  41,  80, 80 },
 	{ BUTTON_CreateIndirect, "-",         GUI_ID_BUTTON5,  20, 131,  80, 80 },
+	{ BUTTON_CreateIndirect, "Home",      GUI_ID_BUTTON6, 120,  20,  45, 30 },
+	{ BUTTON_CreateIndirect, "Fuel",      GUI_ID_BUTTON7, 170,  20,  45, 30 }
 };
 
 // Dialog handles
@@ -87,27 +89,31 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		BUTTON_SetFont(hItem, &GUI_FontD36x48);
 		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_BUTTON5);
 		BUTTON_SetFont(hItem, &GUI_FontD36x48);
+		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_BUTTON6);
+		BUTTON_SetFont(hItem, &GUI_Font16_ASCII);
+		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_BUTTON7);
+		BUTTON_SetFont(hItem, &GUI_Font16_ASCII);
 
 		// Edits
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT0);
-		EDIT_SetFloatMode(hItem, 0.0,  0.0, 360.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT1);
-		EDIT_SetFloatMode(hItem, 0.0,  0.0, 360.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT2);
-		EDIT_SetFloatMode(hItem, 0.0,  0.0, 45.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT3);
-		EDIT_SetFloatMode(hItem, 0.0,  0.0, 45.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT4);
-		EDIT_SetFloatMode(hItem, 0.0,  0.0, 1.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT5);
-		EDIT_SetFloatMode(hItem, 0.0,  0.0, 1.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_TEXT3);
@@ -148,16 +154,28 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 				disable_all();
 				TEXT_SetText(hItem, "Stopped.");
 			}
-			if (Id == GUI_ID_BUTTON0)
+			if (Id == GUI_ID_BUTTON1)
 			{
 				BSP_LED_Off(LED1);
 				set_motor(AZIMUTHAL);
 				TEXT_SetText(hItem, "Azimuthal enabled.");
 			}
-			if (Id == GUI_ID_BUTTON1)
+			if (Id == GUI_ID_BUTTON0)
 			{
 				set_motor(VERTICAL);
 				TEXT_SetText(hItem, "Vertical enabled.");
+			}
+			if (Id == GUI_ID_BUTTON6)
+			{
+				set_motor(VERTICAL);
+				TEXT_SetText(hItem, "Going home.");
+				motor->setDesiredPosition(0.0);
+			}
+			if (Id == GUI_ID_BUTTON7)
+			{
+				set_motor(VERTICAL);
+				TEXT_SetText(hItem, "Going to fuel.");
+				motor->setDesiredPosition(42.5);
 			}
 			if (Id == GUI_ID_BUTTON2)
 			{
@@ -216,17 +234,23 @@ void MainTask(void)
 	{
 		GUI_Delay(10);
 
-		// azimuthal
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT0);
-		EDIT_SetFloatValue(hItem, motor_azimuthal.getDesiredPosition());
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
-		EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition());
-
 		// vertical
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);
+		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT0);
+		EDIT_SetTextColor(hItem, EDIT_CI_DISABLED, GUI_RED);
+//		if (motor_vertical.enabled())
+//			EDIT_SetTextColor(hItem, EDIT_CI_DISABLED, GUI_RED);
+//		else
+//			EDIT_SetTextColor(hItem, EDIT_CI_DISABLED, GUI_RED);
+
 		EDIT_SetFloatValue(hItem, motor_vertical.getDesiredPosition());
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
+		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
 		EDIT_SetFloatValue(hItem, motor_vertical.getPosition());
+
+		// azimuthal
+		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);
+		EDIT_SetFloatValue(hItem, motor_azimuthal.getDesiredPosition());
+		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
+		EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition());
 
 		// claw
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT4);

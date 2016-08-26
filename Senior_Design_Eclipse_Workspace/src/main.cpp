@@ -15,7 +15,7 @@ arm_pid_instance_f32 PID;
 
 // counts-to-position
 float c2p_azimuthal = -float(Inches_to_Centimeters)/float(Pulses_Per_Revolution*
-                      Azimuthal_Gear_Ratio * Pinion_Spur_Gear_Ratio * ThreadPitch);
+                      Azimuthal_Gear_Ratio * Pinion_Spur_Gear_Ratio * ThreadPitch *360.);
 float c2p_vertical = -1.0/float(Pulses_Per_Revolution*Vertical_Gear_Ratio*
 		              Pinion_Spur_Gear_Ratio);
 float c2p_claw =  -float(Inches_to_Centimeters)/
