@@ -99,7 +99,7 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT1);
-		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-0.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT2);
@@ -236,14 +236,9 @@ void MainTask(void)
 
 		// vertical
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT0);
-		EDIT_SetTextColor(hItem, EDIT_CI_DISABLED, GUI_RED);
-//		if (motor_vertical.enabled())
-//			EDIT_SetTextColor(hItem, EDIT_CI_DISABLED, GUI_RED);
-//		else
-//			EDIT_SetTextColor(hItem, EDIT_CI_DISABLED, GUI_RED);
-
 		EDIT_SetFloatValue(hItem, motor_vertical.getDesiredPosition());
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
+		//EDIT_SetFloatValue(hItem, motor_vertical.getPosition());
 		EDIT_SetFloatValue(hItem, motor_vertical.getPosition());
 
 		// azimuthal

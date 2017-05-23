@@ -81,170 +81,50 @@ Encoder::Encoder(void) :
 }
 
 //----------------------------------------------------------------------------//
-int32_t Encoder::getCount(void)
+uint16_t Encoder::getCount(void)
 {
-	uint16_t counter; // 16 bit counter of timer
-	int32_t count32;  // 32 bit counter which accounts for timer overflows
-
+	uint16_t counter;
 	counter = __HAL_TIM_GET_COUNTER(&Encoder_Handle);
-
-	// The following assumes this function is called frequently enough that
-	// the encoder cannot change more 0x8000 counts between calls, and that
-	// the counter overflowso5y,, from 0xffff to 0 and underflows from 0 to 0xffff
-	if ((prev_counter_ > 0xc000) && (counter < 0x4000))
-	{
-		overflows_ += 1; // overflow
-	}
-	else if ((prev_counter_ < 0x4000) && (counter > 0xc000))
-	{
-		overflows_ -= 1; // underflow
-	}
-
-	count32 = overflows_ * 0x10000 + counter;
-	prev_counter_ = counter;
-
-	return count32;
+	return counter;
 }
 
 //----------------------------------------------------------------------------//
-void Encoder::setCount(int32_t count32)
+void Encoder::setCount(uint16_t counter)
 {
-	if (count32 < 0)
-	{
-		overflows_ = count32 / ((int32_t) 0x10000) - 1;
-	}
-	else
-	{
-		overflows_ = count32 / ((int32_t) 0x10000);
-	}
-
-	uint16_t counter = (uint16_t) (count32 - overflows_ * 0x10000);
-	prev_counter_ = counter;
-
 	__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter);
 }
 
-//----------------------------------------------------------------------------//
-float Encoder::getPosition(encoder_id_t encode)
-{
-	switch (encode)
-	{
-	case Azimuthal_Encoder:
-	{
-		float revs = (-1.0f * (getCount() / Pulses_Per_Revolution /
-				          Azimuthal_Gear_Ratio / Pinion_Spur_Gear_Ratio));
-		return ((revs / ThreadPitch) * Inches_to_Centimeters);
-		break;
-	}
-	case Vertical_Encoder:
-	{
-		return (-1.0f	* (getCount() / Pulses_Per_Revolution / Vertical_Gear_Ratio
-						/ Pinion_Spur_Gear_Ratio));
-		break;
-	}
-	case Claw_Encoder:
-	{
-		float revs = (-1.0f * (getCount() / Pulses_Per_Revolution /
-				          Claw_Gear_Ratio));
-		return ((revs / ThreadPitch) * Inches_to_Centimeters);
-		break;
-	}
-	default:
-		return (0);
-		break;
-	}
-}
-
-//----------------------------------------------------------------------------//
-float Encoder::getPosError()
-{
-	return posError_;
-}
-
-//----------------------------------------------------------------------------//
-void Encoder::setPosError(encoder_id_t encode, float posError)
-{
-	switch (encode)
-	{
-	case Azimuthal_Encoder:
-		posError_ = posError;
-		break;
-	case Vertical_Encoder:
-		posError_ = posError;
-		break;
-	case Claw_Encoder:
-		posError_ = posError;
-		break;
-	}
-}
-
-//----------------------------------------------------------------------------//
-float Encoder::getDesiredPosition(encoder_id_t encode)
-{
-	switch (encode)
-	{
-	case Azimuthal_Encoder:
-		return (desiredAzimPos_);
-		break;
-	case Vertical_Encoder:
-		return (desiredVertPos_);
-		break;
-	case Claw_Encoder:
-		return (desiredClawPos_);
-		break;
-	default:
-		return (0);
-		break;
-	}
-}
-
-//----------------------------------------------------------------------------//
-void Encoder::setDesiredPosition(encoder_id_t encode, float posDesired)
-{
-	switch (encode)
-	{
-	case Azimuthal_Encoder:
-		desiredAzimPos_ = posDesired;
-		break;
-	case Vertical_Encoder:
-		desiredVertPos_ = posDesired;
-		break;
-	case Claw_Encoder:
-		desiredClawPos_ = posDesired;
-		break;
-	}
-}
-
-//----------------------------------------------------------------------------//
-bool Encoder::getDirection(void)
-{
-	/* Get the current direction */
-	return (__HAL_TIM_IS_TIM_COUNTING_DOWN(&Encoder_Handle));
-}
-
-
-
-//----------------------------------------------------------------------------//
-void Encoder::enableEncoder(encoder_id_t encode)
-{
-	// the binary combinations of the pin commands eg set give 3 unique values
-	switch (encode)
-	{
-	case Azimuthal_Encoder:
-		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_RESET);  // Channel B
-		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
-		break;
-	case Vertical_Encoder:
-		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
-		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_RESET);  // Channel A
-		break;
-	case Claw_Encoder:
-		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
-		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
-		break;
-	}
-}
-
+//
+////----------------------------------------------------------------------------//
+//bool Encoder::getDirection(void)
+//{
+//	/* Get the current direction */
+//	return (__HAL_TIM_IS_TIM_COUNTING_DOWN(&Encoder_Handle));
+//}
+//
+//
+//
+////----------------------------------------------------------------------------//
+//void Encoder::enableEncoder(encoder_id_t encode)
+//{
+//	// the binary combinations of the pin commands eg set give 3 unique values
+//	switch (encode)
+//	{
+//	case Azimuthal_Encoder:
+//		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_RESET);  // Channel B
+//		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
+//		break;
+//	case Vertical_Encoder:
+//		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
+//		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_RESET);  // Channel A
+//		break;
+//	case Claw_Encoder:
+//		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, GPIO_PIN_SET);    // Channel B
+//		HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, GPIO_PIN_SET);    // Channel A
+//		break;
+//	}
+//}
+//
 //----------------------------------------------------------------------------//
 void Encoder::Error_Handler(void)
 {

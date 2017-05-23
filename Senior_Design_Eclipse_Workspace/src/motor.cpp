@@ -1,11 +1,14 @@
 #include "motor.h"
 #include "stdlib.h"
 
+
+
 //----------------------------------------------------------------------------//
 Motor::Motor(TIM_TypeDef *TIMX,
 		     const float counts_to_position,
 			 const int encoder_bits,
-			 const float increment) :
+			 const float increment,
+			 Encoder *encoder) :
 		duty_(0),
 		dir_(false),
 		prescaler_(99),
@@ -16,15 +19,12 @@ Motor::Motor(TIM_TypeDef *TIMX,
 		counter16_(0),
 		increment_(increment),
 		desiredPos_(0.0),
-		enable_(false)
+		enable_(false),
+		encoder_(encoder)
 {
-
 	/* Initalization of GPIO pin to control the motor's direction
 	   through the direction pin of the h-bridge  */
 	GPIO_InitTypeDef GPIO_InitStruct;
-
-	// Enable GPIO Ports
-	__HAL_RCC_GPIOI_CLK_ENABLE();
 
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -68,6 +68,7 @@ Motor::Motor(TIM_TypeDef *TIMX,
 		encoder_bit_B = GPIO_PIN_SET;
 
 	// set the count to the last saved count.
+	//counter32_ = encoder_bits + 100;
 	setCount();
 }
 
@@ -182,7 +183,8 @@ void Motor::Error_Handler(void)
 int32_t Motor::getCount()
 {
 	// 16-bit counter of timer
-	uint16_t counter = __HAL_TIM_GET_COUNTER(&Encoder_Handle);
+	uint16_t counter = encoder_->getCount();// __HAL_TIM_GET_COUNTER(&Encoder_Handle);
+
 	// The following assumes this function is called frequently enough that
 	// the encoder cannot change more 0x8000 counts between calls, and that
 	// the counter overflows from 0xffff to 0 and underflows from 0 to 0xffff
@@ -201,5 +203,6 @@ void Motor::setCount()
 	overflows_ = counter32_ / ((int32_t) 0x10000);
 	if (counter32_ < 0) overflows_--;
 	counter16_ = (uint16_t) (counter32_ - overflows_ * 0x10000);
-	__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter16_);
+	encoder_->setCount(counter16_);
+	//__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter16_);
 }

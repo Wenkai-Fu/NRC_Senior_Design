@@ -1,5 +1,6 @@
 // Adapted from  STemWin/STemWin_HelloWorld/Src/main.c.  See LICENSE.
 
+#include "motor.h"
 #include "main.h"
 #include "stdlib.h"
 #include "arm_math.h"
@@ -14,16 +15,22 @@ TIM_HandleTypeDef MotorPWM;
 arm_pid_instance_f32 PID;
 
 // counts-to-position
-float c2p_azimuthal = -float(Inches_to_Centimeters)/float(Pulses_Per_Revolution*
-                      Azimuthal_Gear_Ratio * Pinion_Spur_Gear_Ratio * ThreadPitch *360.);
-float c2p_vertical = -1.0/float(Pulses_Per_Revolution*Vertical_Gear_Ratio*
-		              Pinion_Spur_Gear_Ratio);
-float c2p_claw =  -float(Inches_to_Centimeters)/
-		          float(Pulses_Per_Revolution*Claw_Gear_Ratio*ThreadPitch);
+//float c2p_azimuthal = -float(Inches_to_Centimeters)/float(Pulses_Per_Revolution*
+//                      Azimuthal_Gear_Ratio * Pinion_Spur_Gear_Ratio * ThreadPitch *360.);
+//float c2p_vertical = -1.0/float(Pulses_Per_Revolution*Vertical_Gear_Ratio*
+//		              Pinion_Spur_Gear_Ratio);
+//float c2p_claw =  -float(Inches_to_Centimeters)/
+//		          float(Pulses_Per_Revolution*Claw_Gear_Ratio*ThreadPitch);
 
-Motor motor_azimuthal(TIM10, c2p_azimuthal, 1, 5.0);
-Motor motor_vertical(TIM11, c2p_vertical, 2, 1.0);
-Motor motor_claw(TIM13, c2p_claw, 3, 1.0);
+float c2p_azimuthal = 1.0;
+float c2p_vertical = 1.0;
+float c2p_claw = 1.0;
+
+
+Encoder encoder;
+Motor motor_azimuthal(TIM10, c2p_azimuthal, 1, 5.0, &encoder);
+Motor motor_vertical(TIM11, c2p_vertical, 2, 1.0, &encoder);
+Motor motor_claw(TIM13, c2p_claw, 3, 1.0, &encoder);
 Motor *motor = &motor_claw;
 
 bool limit_switch = false;
@@ -145,9 +152,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	limit_switch = false;
 	BSP_LED_Off(LED1);
-	// bottom limit
 	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
 	{
+		// bottom limit
 		BSP_LED_On(LED1);
 		motor_vertical.disable();
 		limit_switch = true;
@@ -156,6 +163,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	}
 	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
 	{
+		// top limit
 		BSP_LED_On(LED1);
 		motor_vertical.disable();
 		limit_switch = true;
@@ -163,6 +171,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	}
 	else if (HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_9))
 	{
+		// claw limit
 		BSP_LED_On(LED1);
 		motor_claw.disable();
 		limit_switch = true;
