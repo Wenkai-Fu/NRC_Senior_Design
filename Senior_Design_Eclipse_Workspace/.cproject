@@ -132,8 +132,9 @@
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value=":libarm_cortexM7lfdp_math.a"/>
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value=":libarm_cortexM7lfsp_math.a"/>
 								</option>
-								<option id="gnu.cpp.link.option.paths.364668170" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+								<option id="gnu.cpp.link.option.paths.364668170" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" useByScannerDiscovery="false" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;C:\Users\smith\Documents\GitHub\NRC_Senior_Design\Senior_Design_Eclipse_Workspace\Middlewares\ST\STemWin\Lib&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Middlewares/ST/STemWin/Lib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Senior_Design_Final_Iteration/CMSIS/Lib/GCC}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/robertsj/Research/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Lib"/>
 									<listOptionValue builtIn="false" value="/Users/robertsj/Documents/Research/NRC_Senior_Design/Senior_Design_Eclipse_Workspace/Middlewares/ST/STemWin/Lib"/>
