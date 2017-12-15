@@ -184,15 +184,18 @@ void LTDC_IRQHandler(void)
 void EXTI15_10_IRQHandler(void)
 {
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
+	//for vertical bottom limit switch.  Program never actually gets here... -DC
 }
 
 void EXTI9_5_IRQHandler(void)
 {
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_9);
+	// for claw limit switch
 }
 
 void EXTI0_IRQHandler(void)
 {
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+	// for vertical top limit switch
 }
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

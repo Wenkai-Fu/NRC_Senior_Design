@@ -1,5 +1,6 @@
 #include "motor.h"
 #include "stdlib.h"
+#include "main.h"
 
 //----------------------------------------------------------------------------//
 Motor::Motor(TIM_TypeDef *TIMX,
@@ -22,6 +23,42 @@ Motor::Motor(TIM_TypeDef *TIMX,
 	/* Initalization of GPIO pin to control the motor's direction
 	   through the direction pin of the h-bridge  */
 	GPIO_InitTypeDef GPIO_InitStruct;
+
+	/* -1- Initialize TIM1 to handle the encoder sensor */
+	  /* Initialize TIM1 peripheral as follows:
+	       + Period = 65535
+	       + Prescaler = 0
+	       + ClockDivision = 0
+	       + Counter direction = Up
+	  */
+	  Encoder_Handle.Instance = TIM8;
+
+	  Encoder_Handle.Init.Period            = 65535;
+	  Encoder_Handle.Init.Prescaler         = 0;
+	  Encoder_Handle.Init.ClockDivision     = 0;
+	  Encoder_Handle.Init.CounterMode       = TIM_COUNTERMODE_UP;
+	  Encoder_Handle.Init.RepetitionCounter = 0;
+
+	  sEncoderConfig.EncoderMode        = TIM_ENCODERMODE_TI12;
+
+	  sEncoderConfig.IC1Polarity        = TIM_ICPOLARITY_RISING;
+	  sEncoderConfig.IC1Selection       = TIM_ICSELECTION_DIRECTTI;
+	  sEncoderConfig.IC1Prescaler       = TIM_ICPSC_DIV1;
+	  sEncoderConfig.IC1Filter          = 0;
+
+	  sEncoderConfig.IC2Polarity        = TIM_ICPOLARITY_RISING;
+	  sEncoderConfig.IC2Selection       = TIM_ICSELECTION_DIRECTTI;
+	  sEncoderConfig.IC2Prescaler       = TIM_ICPSC_DIV1;
+	  sEncoderConfig.IC2Filter          = 0;
+
+	  if(HAL_TIM_Encoder_Init(&Encoder_Handle, &sEncoderConfig) != HAL_OK)
+	  {
+	    /* Initialization Error */
+	    Error_Handler();
+	  }
+
+	/* Start the encoder interface */
+	HAL_TIM_Encoder_Start(&Encoder_Handle, TIM_CHANNEL_ALL); 
 
 	// Enable GPIO Ports
 	__HAL_RCC_GPIOI_CLK_ENABLE();
@@ -62,6 +99,9 @@ Motor::Motor(TIM_TypeDef *TIMX,
 	sMotorConfig.Pulse = 0;
 	HAL_TIM_PWM_Start(&TIM_HANDLE_, TIM_CHANNEL_1);
 
+	encoder_bit_A = GPIO_PIN_RESET;
+	encoder_bit_B = GPIO_PIN_RESET;
+
 	if (encoder_bits % 2)
 		encoder_bit_A = GPIO_PIN_SET;
 	if ((encoder_bits/2) % 2)
@@ -74,11 +114,12 @@ Motor::Motor(TIM_TypeDef *TIMX,
 //----------------------------------------------------------------------------//
 void Motor::enable()
 {
+
 	enable_ = true;
 	// connect to the correct encoder. the 3 unique pairs of A and B define
 	// which encoder is fed through the multiplexer to the STM32.
-	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, encoder_bit_A);
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_7, encoder_bit_B);
+	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_0, encoder_bit_A);
 
 	// set the count to the last saved count.
 	setCount();
@@ -182,7 +223,10 @@ void Motor::Error_Handler(void)
 int32_t Motor::getCount()
 {
 	// 16-bit counter of timer
-	uint16_t counter = __HAL_TIM_GET_COUNTER(&Encoder_Handle);
+	uint16_t counter = __HAL_TIM_GET_COUNTER(&Encoder_Handle);  
+	//Encoder_Handle is the same for all motors since they share the encoder
+	// pins on the board
+
 	// The following assumes this function is called frequently enough that
 	// the encoder cannot change more 0x8000 counts between calls, and that
 	// the counter overflows from 0xffff to 0 and underflows from 0 to 0xffff
@@ -199,7 +243,8 @@ int32_t Motor::getCount()
 void Motor::setCount()
 {
 	overflows_ = counter32_ / ((int32_t) 0x10000);
-	if (counter32_ < 0) overflows_--;
-	counter16_ = (uint16_t) (counter32_ - overflows_ * 0x10000);
+	if (counter32_ < 0)
+		overflows_--;
+	counter16_ = (uint16_t) (counter32_ - (overflows_ * 0x10000));
 	__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter16_);
 }

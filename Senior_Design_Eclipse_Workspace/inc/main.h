@@ -17,7 +17,7 @@
 #include "stm32746g_discovery_sdram.h"
 #include "bsp.h"
 #include "motor.h"
-#include "encoder.h"
+//#include "encoder.h"
 #include "System_Variable_Settings.h"
 
 #endif /* __MAIN_H */

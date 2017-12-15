@@ -7,6 +7,7 @@
 TIM_HandleTypeDef TimHandle;
 TIM_HandleTypeDef MotorPWM;
 
+
 #define kp 2.0f;
 #define ki 0.005f;
 #define kd 0.005f;
@@ -15,16 +16,17 @@ arm_pid_instance_f32 PID;
 
 // counts-to-position
 float c2p_azimuthal = -float(Inches_to_Centimeters)/float(Pulses_Per_Revolution*
-                      Azimuthal_Gear_Ratio * Pinion_Spur_Gear_Ratio * ThreadPitch *360.);
+                      Azimuthal_Gear_Ratio);// * Pinion_Spur_Gear_Ratio);//ThreadPitch* 360
 float c2p_vertical = -1.0/float(Pulses_Per_Revolution*Vertical_Gear_Ratio*
-		              Pinion_Spur_Gear_Ratio);
+		              Pinion_Spur_Gear_Ratio*ThreadPitch);
 float c2p_claw =  -float(Inches_to_Centimeters)/
 		          float(Pulses_Per_Revolution*Claw_Gear_Ratio*ThreadPitch);
 
 Motor motor_azimuthal(TIM10, c2p_azimuthal, 1, 5.0);
 Motor motor_vertical(TIM11, c2p_vertical, 2, 1.0);
 Motor motor_claw(TIM13, c2p_claw, 3, 1.0);
-Motor *motor = &motor_claw;
+Motor *motor=&motor_claw;	//Initialize pointer to select which motor is enabled, read encoders, ect.
+
 
 bool limit_switch = false;
 
@@ -60,7 +62,7 @@ int main(void)
 	PID.Kp = kp;
 	PID.Ki = ki;
 	PID.Kd = kd;
-	arm_pid_init_f32(&PID, 1);
+	//arm_pid_init_f32(&PID, 1);
 
 
 	/***********************************************************/
@@ -97,6 +99,22 @@ int main(void)
 		{
 		}
 	}
+	/***Required initialization of pins before you can manipulate them***/
+	GPIO_InitTypeDef GPIO_InitStruct;
+
+	// Enable GPIO Ports
+	__HAL_RCC_GPIOI_CLK_ENABLE();
+	__HAL_RCC_GPIOG_CLK_ENABLE();
+
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+
+	GPIO_InitStruct.Pin = GPIO_PIN_0;
+	HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = GPIO_PIN_7;
+	HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
 	/***********************************************************/
 
@@ -124,17 +142,28 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	TouchUpdate();
 
 	// stop all motors until further instruction
-	motor_azimuthal.setDuty(0);
-	motor_vertical.setDuty(0);
-	motor_claw.setDuty(0);
+	// if motor is not enabled, stop it.
+	if (!(motor_azimuthal.enabled()))
+		motor_azimuthal.setDuty(0);
+	if (!(motor_vertical.enabled()))
+		motor_vertical.setDuty(0);
+	if (!(motor_claw.enabled()))
+		motor_claw.setDuty(0);
 
 	// set duty for active motor
 	if (motor->enabled())
 	{
+		//Azmuthal rotates less than others so it needs a smaller duty
+		int duty_command = 100;
+		//it appears that a lower duty command (~90) interferes with the 
+		// encoder's ability to distinguish direction but only when
+		// sending a negative duty command. But not for the claw... -DC
+/*		if (motor_azimuthal.enabled())
+				main_duty_command = 50; */
 		if (motor->getPosError() > threshold)
-			motor->setDuty(100);
+			motor->setDuty(-duty_command);
 		else if (motor->getPosError() < -threshold)
-			motor->setDuty(-100);
+			motor->setDuty(duty_command);
 		else
 			motor->setDuty(0);
 	}
@@ -152,8 +181,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		motor_vertical.disable();
 		limit_switch = true;
 		// TODO: possibly do a reset or something
-		// TODO: problably store the limit in the motor
+		// TODO: probably store the limit in the motor
 	}
+	// top limit
 	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
 	{
 		BSP_LED_On(LED1);
@@ -254,11 +284,12 @@ static void EXTI15_10_IRQHandler_Config(void)
 	/* Enable GPIOF clock */
 	__HAL_RCC_GPIOF_CLK_ENABLE();
 
-	/* Configure PF.10 pin as input floating */
+	/* Configure PF.10 pin as input floating (Vertical bottom limit switch)*/
 	GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
 	GPIO_InitStructure.Pull = GPIO_PULLDOWN;
+	GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
 	GPIO_InitStructure.Pin = GPIO_PIN_10;
-	HAL_GPIO_Init(GPIOF, &GPIO_InitStructure);
+	//HAL_GPIO_Init(GPIOF, &GPIO_InitStructure);
 
 	/* Enable and set EXTI lines 15 to 10 Interrupt to the lowest priority */
 	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 2, 0);
@@ -273,7 +304,7 @@ static void EXTI9_5_IRQHandler_Config(void)
 	/* Enable GPIOF clock */
 	__HAL_RCC_GPIOF_CLK_ENABLE();
 
-	/* Configure PF.9 pin as input floating */
+	/* Configure PF.9 pin as input floating (claw limit switch)*/ 
 	GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
 	GPIO_InitStructure.Pull = GPIO_PULLDOWN;
 	GPIO_InitStructure.Pin = GPIO_PIN_9;
@@ -292,7 +323,7 @@ static void EXTI0_IRQHandler_Config(void)
 	/* Enable GPIOF clock */
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 
-	/* Configure PF.9 pin as input floating */
+	/* Configure PF.9 pin as input floating (Vertical top limit switch)*/
 	GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING_FALLING;
 	GPIO_InitStructure.Pull = GPIO_PULLDOWN;
 	GPIO_InitStructure.Pin = GPIO_PIN_0;

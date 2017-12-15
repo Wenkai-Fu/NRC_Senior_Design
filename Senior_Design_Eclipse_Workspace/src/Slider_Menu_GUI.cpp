@@ -78,6 +78,8 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 	int NCode;
 	int Id;
 
+	//motor count not getting updated enough? -DC
+	motor->getCount();
 	hDlg = pMsg->hWin;
 	switch (pMsg->MsgId)
 	{
@@ -175,7 +177,7 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 			{
 				set_motor(VERTICAL);
 				TEXT_SetText(hItem, "Going to fuel.");
-				motor->setDesiredPosition(42.5);
+				motor->setDesiredPosition(23.0);  //changed from 42.5 -DC
 			}
 			if (Id == GUI_ID_BUTTON2)
 			{
@@ -234,30 +236,42 @@ void MainTask(void)
 	{
 		GUI_Delay(10);
 
-		// vertical
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT0);
-		EDIT_SetTextColor(hItem, EDIT_CI_DISABLED, GUI_RED);
-//		if (motor_vertical.enabled())
-//			EDIT_SetTextColor(hItem, EDIT_CI_DISABLED, GUI_RED);
-//		else
-//			EDIT_SetTextColor(hItem, EDIT_CI_DISABLED, GUI_RED);
+		/* Since each motor encoder shares the same pins on the board,
+		 * all motor encoders cannot update at the same time.  They can only
+		 * update when their motor is enabled.
+		 */
+		if (motor_vertical.enabled())
+		{
+			// vertical
+			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT0);
+/*			EDIT_SetTextColor(hItem, EDIT_CI_DISABLED, GUI_RED);
+			if (motor_vertical.enabled())
+				EDIT_SetTextColor(hItem, EDIT_CI_DISABLED, GUI_RED);
+			else
+				EDIT_SetTextColor(hItem, EDIT_CI_DISABLED, GUI_RED);
+*/
+			EDIT_SetFloatValue(hItem, motor_vertical.getDesiredPosition());
+			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
+			EDIT_SetFloatValue(hItem, motor_vertical.getPosition());
+		}
 
-		EDIT_SetFloatValue(hItem, motor_vertical.getDesiredPosition());
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
-		EDIT_SetFloatValue(hItem, motor_vertical.getPosition());
+		else if (motor_azimuthal.enabled())
+		{
+			// azimuthal
+			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);
+			EDIT_SetFloatValue(hItem, motor_azimuthal.getDesiredPosition());
+			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
+			EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition());
+		}
 
-		// azimuthal
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);
-		EDIT_SetFloatValue(hItem, motor_azimuthal.getDesiredPosition());
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
-		EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition());
-
-		// claw
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT4);
-		EDIT_SetFloatValue(hItem, motor_claw.getDesiredPosition());
-		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT5);
-		EDIT_SetFloatValue(hItem, motor_claw.getPosError());
-
+		else if (motor_claw.enabled())
+		{
+			// claw
+			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT4);
+			EDIT_SetFloatValue(hItem, motor_claw.getDesiredPosition());
+			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT5);
+			EDIT_SetFloatValue(hItem, motor_claw.getPosition());
+		}
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT3);
 		TEXT_SetText(hItem, "");
 		if (limit_switch)
