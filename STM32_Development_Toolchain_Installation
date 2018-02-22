@@ -1,0 +1,58 @@
+This installation procedure was performed on Linux Mint Rose 17.3
+
+1. Insure Java version 1.8 is installed on the machine
+
+2. If not run the following commands to add a repository to the offical Oracle development of JAVA 8 
+
+Optional: Remove the current OpenJDK that is installed with every Mint distro
+	sudo apt-get remove opdenjdk*
+
+Required: Commands to add repository to offical Oracle development
+	sudo add-apt-repository ppa:webupd8team/java
+	sudo apt-get update
+	sudo apt-get install oracle-java8-installer
+
+Check to see what version of java is installed "java -version", this must be above 1.8 for eclipse-neon(or current version) to work
+
+3. Download the latest verion of eclipse with the built in installer. This is for Neon 64bit and it should be a tar.gz file format
+https://www.eclipse.org/downloads/download.php?file=/oomph/epp/neon/R/eclipse-inst-linux64.tar.gz&mirror_id=272
+
+	Navigate to the downloaded .tar.gz file
+	Extract it using "tar -zxvf name-of-file.tar.gz"
+	Navigate through the extracted files and run the "eclipse-inst" executable. In terminal its "./eclipse-inst"
+	An installer window should appear.
+		For STM32 you need C/C++ eclipse
+		Note: If a box is prompting for the location for "Java VM 1.8+" the installer cannot find where Java8 is installed
+
+4. Open Eclipse and install "System Workbench for STM32" (This is a development package addon which will give us the tools we need to program and debug STMicroelectronic hardware)
+
+	Start by opening "Help>>Install New Software", This opens "Available Software" dialog
+	Click the "Add" button at the top right corner
+	Under name: "System Workbench for STM32 - Bare Machine edition"
+	Under Location: http://www.openstm32.org/Eclipse-updates/org.openstm32.system-workbench.site
+	Install all the tools it prompts for and restart eclipse when asked
+
+	Note: If any of this fails or the links are broken find this information on "openstm32.org" everything is free, don't worry 
+		if you have to create an account.
+
+5. STLink driver
+	
+	For linux debian systems the ST-Link/V2-1 is supported by libusb (which is natively installed on the system) however the 
+	device needs a special name with a "udev" rule
+
+	A. Download is tarball containing 49-stlinkv2.rule
+		http://www.openstm32.org/dl160
+	B. Extract the tarball into /etc/udev/rules.d under root permission using
+		sudo tar -xf stlink_udev_rule.tar.bz2 -C /etc/udev/rules.d
+
+	NOTE: If these links are broken, again find this information at openstm32.org or more specifically
+		http://www.openstm32.org/Installing+System+Workbench+for+STM32+from+Eclipse 
+		the link above contains all the information above, listing how to install the System Workbench Software. STLink driver
+
+	Finally: Install 32-bit binaries and ncurses5. The eclipse program might run properly without this step. I haven't tested it
+		sudo apt-get install lib32ncurses5
+
+
+This should be everything needed to build STM32 projects and burn them to the microcontroller in eclipse
+
+You can start a project from scratch "File>>New>>C/C++ Project", but ensure you are using the "Ac6 STM32 MCU GCC toolchain"
