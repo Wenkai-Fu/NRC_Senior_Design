@@ -34,7 +34,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT5, 360, 140, 100, 30, 0, 3 },
 	//
 	// BUTTONS
-	{ BUTTON_CreateIndirect, "Vertical",  GUI_ID_BUTTON0, 120,  60, 100, 30 },
+	{ BUTTON_CreateIndirect, "z (cm)",  GUI_ID_BUTTON0, 120,  60, 100, 30 },
 	{ BUTTON_CreateIndirect, "Azimuthal", GUI_ID_BUTTON1, 120, 100, 100, 30 },
 	{ BUTTON_CreateIndirect, "Claw",      GUI_ID_BUTTON2, 120, 140, 100, 30 },
 	{ BUTTON_CreateIndirect, "Stop",      GUI_ID_BUTTON3, 120, 180, 340, 30 },

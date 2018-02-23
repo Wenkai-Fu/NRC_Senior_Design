@@ -17,15 +17,25 @@ arm_pid_instance_f32 PID;
 // counts-to-position
 float c2p_azimuthal = -float(Inches_to_Centimeters)/float(Pulses_Per_Revolution*
                       Azimuthal_Gear_Ratio);// * Pinion_Spur_Gear_Ratio);//ThreadPitch* 360
-float c2p_vertical = -1.0/float(Pulses_Per_Revolution*Vertical_Gear_Ratio*
-		              Pinion_Spur_Gear_Ratio*ThreadPitch);
+// Original in inch, divide the value in the parentheses by 2.54 to
+// convert to cm
+float c2p_vertical = -1.0 / float(Pulses_Per_Revolution *
+		                          Vertical_Gear_Ratio *
+		                          Pinion_Spur_Gear_Ratio *
+								  ThreadPitch /
+								  2.54);
+
 float c2p_claw =  -float(Inches_to_Centimeters)/
 		          float(Pulses_Per_Revolution*Claw_Gear_Ratio*ThreadPitch);
 
 Motor motor_azimuthal(TIM10, c2p_azimuthal, 1, 5.0);
+
 Motor motor_vertical(TIM11, c2p_vertical, 2, 1.0);
+
 Motor motor_claw(TIM13, c2p_claw, 3, 1.0);
-Motor *motor=&motor_claw;	//Initialize pointer to select which motor is enabled, read encoders, ect.
+
+//Initialize pointer to select which motor is enabled, read encoders, ect.
+Motor *motor = &motor_claw;
 
 
 bool limit_switch = false;
