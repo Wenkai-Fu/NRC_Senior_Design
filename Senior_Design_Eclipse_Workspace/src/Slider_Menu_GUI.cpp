@@ -172,6 +172,7 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 				set_motor(VERTICAL);
 				TEXT_SetText(hItem, "Going home.");
 				motor->setDesiredPosition(0.0);
+//				motor -> gohome();
 			}
 			if (Id == GUI_ID_BUTTON7)
 			{

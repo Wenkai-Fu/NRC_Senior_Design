@@ -20,6 +20,8 @@ public:
     float getPosError();
     bool increase();
     bool decrease();
+    bool gohome();
+
     int32_t getCount(void);
     float getDuty(){return (float)duty_;}
     // TODO: create

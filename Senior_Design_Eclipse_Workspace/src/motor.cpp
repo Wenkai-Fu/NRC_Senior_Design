@@ -204,6 +204,12 @@ bool Motor::decrease()
 	return true;
 }
 
+bool Motor::gohome(){
+	__HAL_TIM_SET_COUNTER(&Encoder_Handle, 10);
+	desiredPos_ = getPosition();
+	return true;
+}
+
 
 //============================================================================//
 // PRIVATE
