@@ -8,9 +8,9 @@ TIM_HandleTypeDef TimHandle;
 TIM_HandleTypeDef MotorPWM;
 
 
-#define kp 2.0f;
-#define ki 0.005f;
-#define kd 0.005f;
+#define kp 0.1f;
+#define ki 0.000f;
+#define kd 0.5f;
 
 arm_pid_instance_f32 PID;
 
@@ -72,7 +72,7 @@ int main(void)
 	PID.Kp = kp;
 	PID.Ki = ki;
 	PID.Kd = kd;
-	//arm_pid_init_f32(&PID, 1);
+	arm_pid_init_f32(&PID, 1);
 
 
 	/***********************************************************/

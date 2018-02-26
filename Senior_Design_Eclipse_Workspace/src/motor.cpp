@@ -205,8 +205,7 @@ bool Motor::decrease()
 }
 
 bool Motor::gohome(){
-	__HAL_TIM_SET_COUNTER(&Encoder_Handle, 10);
-	desiredPos_ = getPosition();
+	desiredPos_ -= getPosition();
 	return true;
 }
 
