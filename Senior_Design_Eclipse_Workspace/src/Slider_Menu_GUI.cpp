@@ -4,11 +4,12 @@
 #include "GUI.h"
 #include "DIALOG.h"
 #include "main.h"
+#include <string>
 
 #define RECOMMENDED_MEMORY (1024L * 15)
 
 extern Motor *motor, motor_azimuthal, motor_vertical, motor_claw;
-extern bool limit_switch;
+extern bool bot_limit_switch, top_limit_switch, claw_limit_switch;
 
 /*********************************************************************
  * Function description
@@ -22,8 +23,8 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 	// TEXT BOXES
 	{ TEXT_CreateIndirect, "Desired", GUI_ID_TEXT0, 240,  30, 120, 40, TEXT_CF_LEFT },
 	{ TEXT_CreateIndirect, "Current", GUI_ID_TEXT1, 360,  30, 120, 40, TEXT_CF_LEFT },
-	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT2,  20, 221, 220, 30, TEXT_CF_LEFT },
-	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT3, 260, 221, 200, 30, TEXT_CF_RIGHT },
+	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT2,  20, 221, 200, 30, TEXT_CF_LEFT },
+	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT3, 230, 221, 250, 30, TEXT_CF_LEFT},
     //
 	// EDIT BOXES
 	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT0, 240,  60, 100, 30, 0, 3 },
@@ -38,8 +39,8 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 	{ BUTTON_CreateIndirect, "Azimuthal", GUI_ID_BUTTON1, 120, 100, 100, 30 },
 	{ BUTTON_CreateIndirect, "Claw",      GUI_ID_BUTTON2, 120, 140, 100, 30 },
 	{ BUTTON_CreateIndirect, "Stop",      GUI_ID_BUTTON3, 120, 180, 340, 30 },
-	{ BUTTON_CreateIndirect, "+",         GUI_ID_BUTTON4,  20,  41,  80, 80 },
-	{ BUTTON_CreateIndirect, "-",         GUI_ID_BUTTON5,  20, 131,  80, 80 },
+	{ BUTTON_CreateIndirect, "down",         GUI_ID_BUTTON4,  20,  41,  80, 80 },
+	{ BUTTON_CreateIndirect, "up",         GUI_ID_BUTTON5,  20, 131,  80, 80 },
 	{ BUTTON_CreateIndirect, "Home",      GUI_ID_BUTTON6, 120,  20,  45, 30 },
 	{ BUTTON_CreateIndirect, "Fuel",      GUI_ID_BUTTON7, 170,  20,  45, 30 }
 };
@@ -88,9 +89,9 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 
 		// Buttons
 		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_BUTTON4);
-		BUTTON_SetFont(hItem, &GUI_FontD36x48);
+		BUTTON_SetFont(hItem, &GUI_Font24_ASCII);
 		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_BUTTON5);
-		BUTTON_SetFont(hItem, &GUI_FontD36x48);
+		BUTTON_SetFont(hItem, &GUI_Font24_ASCII);
 		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_BUTTON6);
 		BUTTON_SetFont(hItem, &GUI_Font16_ASCII);
 		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_BUTTON7);
@@ -275,10 +276,12 @@ void MainTask(void)
 		}
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT3);
 		TEXT_SetText(hItem, "");
-		if (limit_switch)
-		{
-			TEXT_SetText(hItem, "Limit switch engaged!");
-		}
+		if (bot_limit_switch)
+			TEXT_SetText(hItem, "bottom limit switch!");
+		else if (top_limit_switch)
+			TEXT_SetText(hItem, "top limit switch!");
+		else if (claw_limit_switch)
+			TEXT_SetText(hItem, "claw limit switch!");
 		// + other warnings, etc.
 
 	}

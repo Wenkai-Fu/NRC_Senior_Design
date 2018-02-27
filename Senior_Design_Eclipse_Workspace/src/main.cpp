@@ -38,7 +38,8 @@ Motor motor_claw(TIM13, c2p_claw, 3, 1.0);
 Motor *motor = &motor_claw;
 
 
-bool limit_switch = false;
+bool bot_limit_switch = false, top_limit_switch = false,
+		claw_limit_switch = false;
 
 static void SystemClock_Config(void);
 extern void MainTask(void);
@@ -182,30 +183,32 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 //----------------------------------------------------------------------------//
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	limit_switch = false;
+	bot_limit_switch = false;
+	top_limit_switch = false;
 	BSP_LED_Off(LED1);
-	// bottom limit
+	// switch limit at the bottom
 	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
 	{
 		BSP_LED_On(LED1);
 		motor_vertical.disable();
-		limit_switch = true;
+		bot_limit_switch = true;
 		// TODO: possibly do a reset or something
 		// TODO: probably store the limit in the motor
 	}
-	// top limit
+	// switch limit at the top
 	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
 	{
 		BSP_LED_On(LED1);
 		motor_vertical.disable();
-		limit_switch = true;
+		top_limit_switch = true;
 		// possibly do a reset or something
 	}
 	else if (HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_9))
 	{
+		// claw switch limit
 		BSP_LED_On(LED1);
 		motor_claw.disable();
-		limit_switch = true;
+		claw_limit_switch = true;
 		// possibly do a reset or something
 	}
 

@@ -109,6 +109,7 @@ Motor::Motor(TIM_TypeDef *TIMX,
 
 	// set the count to the last saved count.
 	setCount();
+
 }
 
 //----------------------------------------------------------------------------//
