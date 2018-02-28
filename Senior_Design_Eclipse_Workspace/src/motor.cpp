@@ -14,6 +14,7 @@ Motor::Motor(TIM_TypeDef *TIMX,
 		counts_to_position_(counts_to_position),
 		counter32_(0),
 		overflows_(0),
+		counter(0),
 		counter16_(0),
 		increment_(increment),
 		desiredPos_(0.0),
@@ -109,7 +110,6 @@ Motor::Motor(TIM_TypeDef *TIMX,
 
 	// set the count to the last saved count.
 	setCount();
-
 }
 
 //----------------------------------------------------------------------------//
@@ -228,29 +228,46 @@ void Motor::Error_Handler(void)
 //----------------------------------------------------------------------------//
 int32_t Motor::getCount()
 {
-	// 16-bit counter of timer
-	uint16_t counter = __HAL_TIM_GET_COUNTER(&Encoder_Handle);  
-	//Encoder_Handle is the same for all motors since they share the encoder
-	// pins on the board
+//	// 16-bit counter of timer
+//	// according the function definition, the below function returns uint32_t.
+//	uint16_t counter = __HAL_TIM_GET_COUNTER(&Encoder_Handle);
+//	//Encoder_Handle is the same for all motors since they share the encoder
+//	// pins on the board
+//
+//	// The following assumes this function is called frequently enough that
+//	// the encoder cannot change more 0x8000 counts between calls, and that
+//	// the counter overflows from 0xffff to 0 and underflows from 0 to 0xffff
+//	if ((counter16_ > 0xc000) && (counter < 0x4000))
+//		overflows_ += 1; // overflow
+//	else if ((counter16_ < 0x4000) && (counter > 0xc000))
+//		overflows_ -= 1; // underflow
+//	counter16_ = counter;
+//	counter32_ = overflows_ * 0x10000 + counter;
+//	return counter32_;
 
-	// The following assumes this function is called frequently enough that
-	// the encoder cannot change more 0x8000 counts between calls, and that
-	// the counter overflows from 0xffff to 0 and underflows from 0 to 0xffff
-	if ((counter16_ > 0xc000) && (counter < 0x4000))
-		overflows_ += 1; // overflow
-	else if ((counter16_ < 0x4000) && (counter > 0xc000))
-		overflows_ -= 1; // underflow
-	counter16_ = counter;
-	counter32_ = overflows_ * 0x10000 + counter;
-	return counter32_;
+	counter = __HAL_TIM_GET_COUNTER(&Encoder_Handle);
+	if (counter == 65535){
+		if (duty_ < 0)
+			overflows_ ++;
+		else if (duty_ > 0)
+			overflows_ --;
+	}
+	int32_t ans = overflows_ * 65536 + counter;
+	return ans;
+}
+
+uint32_t Motor::get_raw_count()
+{
+	return __HAL_TIM_GET_COUNTER(&Encoder_Handle);
 }
 
 //----------------------------------------------------------------------------//
 void Motor::setCount()
 {
-	overflows_ = counter32_ / ((int32_t) 0x10000);
-	if (counter32_ < 0)
-		overflows_--;
-	counter16_ = (uint16_t) (counter32_ - (overflows_ * 0x10000));
-	__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter16_);
+//	overflows_ = counter32_ / ((int32_t) 0x10000);
+//	if (counter32_ < 0)
+//		overflows_--;
+//	counter16_ = (uint16_t) (counter32_ - (overflows_ * 0x10000));
+//	__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter16_);
+	__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter);
 }

@@ -23,6 +23,8 @@ public:
     bool gohome();
 
     int32_t getCount(void);
+    uint32_t get_raw_count();
+
     float getDuty(){return (float)duty_;}
     // TODO: create
     void disable()
@@ -49,6 +51,7 @@ private:
 	int32_t counter32_;
 	int16_t overflows_;
 	uint16_t counter16_;
+	int counter;
 	float desiredPos_;
 
 	// Timer Output Compare Configuration Structure

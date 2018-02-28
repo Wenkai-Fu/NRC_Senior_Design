@@ -35,7 +35,7 @@ Motor motor_vertical(TIM11, c2p_vertical, 2, 1.0);
 Motor motor_claw(TIM13, c2p_claw, 3, 1.0);
 
 //Initialize pointer to select which motor is enabled, read encoders, ect.
-Motor *motor = &motor_claw;
+Motor *motor = &motor_vertical;
 
 
 bool bot_limit_switch = false, top_limit_switch = false,
