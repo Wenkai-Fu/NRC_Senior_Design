@@ -14,7 +14,8 @@ Motor::Motor(TIM_TypeDef *TIMX,
 		counts_to_position_(counts_to_position),
 		counter32_(0),
 		overflows_(0),
-		counter(0),
+		cnt(0),
+		old_cnt(0),
 		counter16_(0),
 		increment_(increment),
 		desiredPos_(0.0),
@@ -245,14 +246,16 @@ int32_t Motor::getCount()
 //	counter32_ = overflows_ * 0x10000 + counter;
 //	return counter32_;
 
-	counter = __HAL_TIM_GET_COUNTER(&Encoder_Handle);
-	if (counter == 65535){
-		if (duty_ < 0)
-			overflows_ ++;
-		else if (duty_ > 0)
-			overflows_ --;
-	}
-	int32_t ans = overflows_ * 65536 + counter;
+	old_cnt = cnt;
+	cnt = __HAL_TIM_GET_COUNTER(&Encoder_Handle);
+	int diff = cnt - old_cnt;
+	// step change
+	if (diff < -10000)
+		overflows_ += 1;
+	else if (diff > 10000)
+		overflows_ -= 1;
+
+	int32_t ans = overflows_ * 65536 + cnt;
 	return ans;
 }
 
@@ -269,5 +272,5 @@ void Motor::setCount()
 //		overflows_--;
 //	counter16_ = (uint16_t) (counter32_ - (overflows_ * 0x10000));
 //	__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter16_);
-	__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter);
+	__HAL_TIM_SET_COUNTER(&Encoder_Handle, cnt);
 }

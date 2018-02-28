@@ -51,7 +51,8 @@ private:
 	int32_t counter32_;
 	int16_t overflows_;
 	uint16_t counter16_;
-	int counter;
+	uint32_t cnt;
+	uint32_t old_cnt;
 	float desiredPos_;
 
 	// Timer Output Compare Configuration Structure
