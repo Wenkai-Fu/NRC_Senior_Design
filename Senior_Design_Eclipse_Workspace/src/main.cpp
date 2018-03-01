@@ -162,7 +162,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		motor_claw.setDuty(0);
 
 	// set duty for active motor
-	if (motor->enabled())
+	if (motor -> enabled())
 	{
 		//Azmuthal rotates less than others so it needs a smaller duty
 		int duty_command = 100;
@@ -175,8 +175,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			motor->setDuty(-duty_command);
 		else if (motor->getPosError() < -threshold)
 			motor->setDuty(duty_command);
-		else
-			motor->setDuty(0);
+		else{
+			motor -> setDuty(0);
+			// end of the cycle that apart 1cm from the bottom switch
+			if (bot_limit_switch)
+				bot_limit_switch = false;
+		}
 	}
 }
 
@@ -192,8 +196,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		BSP_LED_On(LED1);
 		motor_vertical.disable();
 		bot_limit_switch = true;
-		// TODO: possibly do a reset or something
-		// TODO: probably store the limit in the motor
+
+		// set origin at the bottom switch
+		motor_vertical.set_zero();
+		motor_vertical.enable();
+		motor_vertical.increase();
 	}
 	// switch limit at the top
 	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))

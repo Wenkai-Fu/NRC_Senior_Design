@@ -101,14 +101,14 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT1);
-		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 3, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT2);
 		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT3);
-		EDIT_SetFloatMode(hItem, 0.0,-9999.0, 2.0e9, 0, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-9999.0, 2.0e6, 0, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT4);
@@ -171,7 +171,6 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 			{
 				set_motor(VERTICAL);
 				TEXT_SetText(hItem, "Going home.");
-//				motor->setDesiredPosition(0.0);
 				motor -> gohome();
 			}
 			if (Id == GUI_ID_BUTTON7)

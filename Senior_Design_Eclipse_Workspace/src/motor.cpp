@@ -207,8 +207,16 @@ bool Motor::decrease()
 }
 
 bool Motor::gohome(){
-	desiredPos_ -= getPosition();
+	// up a large distance to trigger the bottom switch
+	setDesiredPosition(-2000.0);
 	return true;
+}
+
+void Motor::set_zero(){
+	desiredPos_ = 0.0;
+	cnt = 0;
+	old_cnt = 0;
+	overflows_ = 0;
 }
 
 

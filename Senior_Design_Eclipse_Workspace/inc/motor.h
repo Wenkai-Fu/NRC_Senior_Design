@@ -37,10 +37,12 @@ public:
     	return enable_;
     }
 
+    void set_zero();
+    void setCount();
+
 private:
 
 	void Error_Handler(void);
-	void setCount();
 
 	int16_t duty_;
 	TIM_HandleTypeDef TIM_HANDLE_;
