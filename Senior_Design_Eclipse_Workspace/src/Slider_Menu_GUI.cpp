@@ -8,7 +8,6 @@
 #define RECOMMENDED_MEMORY (1024L * 15)
 
 extern Motor *motor, motor_azimuthal, motor_vertical, motor_claw;
-extern bool bot_limit_switch, top_limit_switch, claw_limit_switch;
 
 /*********************************************************************
  * Function description
@@ -17,7 +16,7 @@ extern bool bot_limit_switch, top_limit_switch, claw_limit_switch;
  */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 {
-	{ FRAMEWIN_CreateIndirect, "Motor Control", 0, 0, 0, 480, 272, 0 },
+	{ FRAMEWIN_CreateIndirect, "Motor Control. If anything goes wrong, PRESS STOP!", 0, 0, 0, 480, 272, 0 },
 	//
 	// TEXT BOXES
 	{ TEXT_CreateIndirect, "Desired", GUI_ID_TEXT0, 240,  30, 120, 40, TEXT_CF_LEFT },
@@ -278,11 +277,11 @@ void MainTask(void)
 		}
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT3);
 		TEXT_SetText(hItem, "");
-		if (bot_limit_switch)
+		if (motor_vertical.get_bot_ls())
 			TEXT_SetText(hItem, "bottom limit switch!");
-		else if (top_limit_switch)
+		else if (motor_vertical.get_top_ls())
 			TEXT_SetText(hItem, "top limit switch!");
-		else if (claw_limit_switch)
+		else if (motor_claw.get_claw_ls())
 			TEXT_SetText(hItem, "claw limit switch!");
 		// + other warnings, etc.
 

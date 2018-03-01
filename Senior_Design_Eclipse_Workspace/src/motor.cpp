@@ -19,7 +19,10 @@ Motor::Motor(TIM_TypeDef *TIMX,
 		counter16_(0),
 		increment_(increment),
 		desiredPos_(0.0),
-		enable_(false)
+		enable_(false),
+		bot_ls(false),
+		top_ls(false),
+		claw_ls(false)
 {
 
 	/* Initalization of GPIO pin to control the motor's direction
@@ -207,7 +210,7 @@ bool Motor::decrease()
 }
 
 bool Motor::gohome(){
-	// up a large distance to trigger the bottom switch
+	// up a large distance to trigger the top limit switch
 	setDesiredPosition(-2000.0);
 	return true;
 }

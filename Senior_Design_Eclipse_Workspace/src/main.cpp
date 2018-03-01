@@ -178,8 +178,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		else{
 			motor -> setDuty(0);
 			// end of the cycle that apart 1cm from the bottom switch
-			if (bot_limit_switch)
-				bot_limit_switch = false;
+			if (motor_vertical.get_top_ls())
+				motor_vertical.set_top_ls(false);
 		}
 	}
 }
@@ -187,28 +187,37 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 //----------------------------------------------------------------------------//
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	bot_limit_switch = false;
-	top_limit_switch = false;
+	/*
+	 * Seems the top and bottom limit switch wiring conflict!
+	 * When the two switch are triggered, the behavior is innormal.
+	 * The line connecting the bottom switch (red and black) is different from
+	 * the board end (green and red)
+	 *  -- Kevin
+	 */
 	BSP_LED_Off(LED1);
-	// switch limit at the bottom
+	// bottom switch limit
 	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
 	{
 		BSP_LED_On(LED1);
 		motor_vertical.disable();
-		bot_limit_switch = true;
+		motor_vertical.set_bot_ls(true);
+
+		// Bound off after solving the wiring issue!!!
+		// motor_vertical.setDesiredPosition(motor_vertical.getPosition());
+		// motor_vertical.enable();
+		// motor_vertical.decrease();
+	}
+	// top limit switch (fuel at top limit)
+	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
+	{
+		BSP_LED_On(LED1);
+		motor_vertical.disable();
+		motor_vertical.set_top_ls(true);
 
 		// set origin at the bottom switch
 		motor_vertical.set_zero();
 		motor_vertical.enable();
 		motor_vertical.increase();
-	}
-	// switch limit at the top
-	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
-	{
-		BSP_LED_On(LED1);
-		motor_vertical.disable();
-		top_limit_switch = true;
-		// possibly do a reset or something
 	}
 	else if (HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_9))
 	{

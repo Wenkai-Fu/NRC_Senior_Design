@@ -38,11 +38,22 @@ public:
     }
 
     void set_zero();
-    void setCount();
+
+    // limit switch operation
+    void set_bot_ls(bool condition) {bot_ls = condition;}
+    bool get_bot_ls() {return bot_ls;}
+
+    void set_top_ls(bool condition) {top_ls = condition;}
+    bool get_top_ls() {return top_ls;}
+
+    void set_claw_ls(bool condition) {claw_ls = condition;}
+    bool get_claw_ls() {return claw_ls;}
+
 
 private:
 
 	void Error_Handler(void);
+	void setCount();
 
 	int16_t duty_;
 	TIM_HandleTypeDef TIM_HANDLE_;
@@ -69,6 +80,9 @@ private:
 	//
 	float increment_;
 	bool enable_;
+
+	// limit switches. z motor use bot and top. claw motor use claw.
+	bool bot_ls, top_ls, claw_ls;
 };
 
 #endif /* MOTOR_H_ */
