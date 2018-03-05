@@ -12,11 +12,9 @@ Motor::Motor(TIM_TypeDef *TIMX,
 		prescaler_(99),
 		period_(99),
 		counts_to_position_(counts_to_position),
-		counter32_(0),
 		overflows_(0),
 		cnt(0),
 		old_cnt(0),
-		counter16_(0),
 		increment_(increment),
 		desiredPos_(0.0),
 		enable_(false),
@@ -24,7 +22,6 @@ Motor::Motor(TIM_TypeDef *TIMX,
 		top_ls(false),
 		claw_ls(false)
 {
-
 	/* Initalization of GPIO pin to control the motor's direction
 	   through the direction pin of the h-bridge  */
 	GPIO_InitTypeDef GPIO_InitStruct;
@@ -240,23 +237,6 @@ void Motor::Error_Handler(void)
 //----------------------------------------------------------------------------//
 int32_t Motor::getCount()
 {
-//	// 16-bit counter of timer
-//	// according the function definition, the below function returns uint32_t.
-//	uint16_t counter = __HAL_TIM_GET_COUNTER(&Encoder_Handle);
-//	//Encoder_Handle is the same for all motors since they share the encoder
-//	// pins on the board
-//
-//	// The following assumes this function is called frequently enough that
-//	// the encoder cannot change more 0x8000 counts between calls, and that
-//	// the counter overflows from 0xffff to 0 and underflows from 0 to 0xffff
-//	if ((counter16_ > 0xc000) && (counter < 0x4000))
-//		overflows_ += 1; // overflow
-//	else if ((counter16_ < 0x4000) && (counter > 0xc000))
-//		overflows_ -= 1; // underflow
-//	counter16_ = counter;
-//	counter32_ = overflows_ * 0x10000 + counter;
-//	return counter32_;
-
 	old_cnt = cnt;
 	cnt = __HAL_TIM_GET_COUNTER(&Encoder_Handle);
 	int diff = cnt - old_cnt;
@@ -278,10 +258,5 @@ uint32_t Motor::get_raw_count()
 //----------------------------------------------------------------------------//
 void Motor::setCount()
 {
-//	overflows_ = counter32_ / ((int32_t) 0x10000);
-//	if (counter32_ < 0)
-//		overflows_--;
-//	counter16_ = (uint16_t) (counter32_ - (overflows_ * 0x10000));
-//	__HAL_TIM_SET_COUNTER(&Encoder_Handle, counter16_);
 	__HAL_TIM_SET_COUNTER(&Encoder_Handle, cnt);
 }

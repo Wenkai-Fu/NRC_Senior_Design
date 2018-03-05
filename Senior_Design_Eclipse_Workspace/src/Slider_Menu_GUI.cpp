@@ -107,7 +107,7 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT3);
-		EDIT_SetFloatMode(hItem, 0.0,-9999.0, 2.0e6, 0, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-2.0e9, 2.0e9, 0, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT4);
@@ -255,7 +255,7 @@ void MainTask(void)
 
 			// print raw count of z motor
 			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
-			EDIT_SetFloatValue(hItem, motor_vertical.get_raw_count());
+			EDIT_SetFloatValue(hItem, motor_vertical.getCount());
 		}
 
 		else if (motor_azimuthal.enabled())

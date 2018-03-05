@@ -14,16 +14,24 @@ TIM_HandleTypeDef MotorPWM;
 
 arm_pid_instance_f32 PID;
 
+/*
+ * Variables defining distance per count
+ */
 // counts-to-position
 float c2p_azimuthal = -float(Inches_to_Centimeters)/float(Pulses_Per_Revolution*
                       Azimuthal_Gear_Ratio);// * Pinion_Spur_Gear_Ratio);//ThreadPitch* 360
+
 // Original in inch, divide the value in the parentheses by 2.54 to
 // convert to cm
-float c2p_vertical = -1.0 / float(Pulses_Per_Revolution *
-		                          Vertical_Gear_Ratio *
-		                          Pinion_Spur_Gear_Ratio *
-								  ThreadPitch /
-								  2.54);
+//float c2p_vertical = -1.0 / float(Pulses_Per_Revolution *
+//		                          Vertical_Gear_Ratio *
+//		                          Pinion_Spur_Gear_Ratio *
+//								  ThreadPitch /
+//								  2.54);
+// c2p_vertical is about -6.22e-5 cm per count, or 16085 counts per cm
+
+// use the calibrated value
+float c2p_vertical = -6.3411541e-5;
 
 float c2p_claw =  -float(Inches_to_Centimeters)/
 		          float(Pulses_Per_Revolution*Claw_Gear_Ratio*ThreadPitch);
@@ -36,10 +44,6 @@ Motor motor_claw(TIM13, c2p_claw, 3, 1.0);
 
 //Initialize pointer to select which motor is enabled, read encoders, ect.
 Motor *motor = &motor_vertical;
-
-
-bool bot_limit_switch = false, top_limit_switch = false,
-		claw_limit_switch = false;
 
 static void SystemClock_Config(void);
 extern void MainTask(void);
@@ -148,7 +152,7 @@ int main(void)
 // Period elapsed callback in non blocking mode
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	const float threshold = 0.01f;
+	const float threshold = 0.01;
 
 	TouchUpdate();
 
@@ -171,11 +175,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		// sending a negative duty command. But not for the claw... -DC
 /*		if (motor_azimuthal.enabled())
 				main_duty_command = 50; */
+
 		if (motor->getPosError() > threshold)
+			// z motor goes up
 			motor->setDuty(-duty_command);
 		else if (motor->getPosError() < -threshold)
 			motor->setDuty(duty_command);
-		else{
+		else
+		{
 			motor -> setDuty(0);
 			// end of the cycle that apart 1cm from the bottom switch
 			if (motor_vertical.get_top_ls())
@@ -214,7 +221,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		motor_vertical.disable();
 		motor_vertical.set_top_ls(true);
 
-		// set origin at the bottom switch
+		// set origin at the top switch
 		motor_vertical.set_zero();
 		motor_vertical.enable();
 		motor_vertical.increase();
@@ -224,7 +231,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		// claw switch limit
 		BSP_LED_On(LED1);
 		motor_claw.disable();
-		claw_limit_switch = true;
+		motor_claw.set_claw_ls(true);
 		// possibly do a reset or something
 	}
 

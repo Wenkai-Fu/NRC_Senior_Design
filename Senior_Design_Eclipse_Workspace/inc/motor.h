@@ -49,7 +49,6 @@ public:
     void set_claw_ls(bool condition) {claw_ls = condition;}
     bool get_claw_ls() {return claw_ls;}
 
-
 private:
 
 	void Error_Handler(void);
@@ -61,12 +60,12 @@ private:
 	int16_t prescaler_;
 	int16_t period_;
 	float counts_to_position_;
-	int32_t counter32_;
+
 	int16_t overflows_;
-	uint16_t counter16_;
 	uint32_t cnt;
 	uint32_t old_cnt;
-	float desiredPos_;
+
+	float desiredPos_; // desired position
 
 	// Timer Output Compare Configuration Structure
 	TIM_OC_InitTypeDef sMotorConfig;
