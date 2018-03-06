@@ -130,7 +130,11 @@ void Motor::enable()
 //----------------------------------------------------------------------------//
 void Motor::setDesiredPosition(float desiredPos)
 {
-	desiredPos_ = desiredPos;
+	// bottom limit protection
+	if (desiredPos <= 55.0)
+		desiredPos_ = desiredPos;
+	else
+		desiredPos_ = 55.0;
 }
 
 //----------------------------------------------------------------------------//
@@ -192,23 +196,17 @@ float Motor::getPosError()
 //----------------------------------------------------------------------------//
 bool Motor::increase()
 {
-	// TODO: may want software limits.
-	//if (desiredPos_ + increment_ > maxPos_) return false;
 	desiredPos_ += increment_;
+	// bottom limit protection
+	if (desiredPos_ >= 55.0)
+		desiredPos_ = 55.0;
 	return true;
 }
 
 //----------------------------------------------------------------------------//
 bool Motor::decrease()
 {
-	//if (desiredPos_ - increment_ < minPos_) return false;
 	desiredPos_ -= increment_;
-	return true;
-}
-
-bool Motor::gohome(){
-	// up a large distance to trigger the top limit switch
-	setDesiredPosition(-2000.0);
 	return true;
 }
 

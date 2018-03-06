@@ -20,7 +20,6 @@ public:
     float getPosError();
     bool increase();
     bool decrease();
-    bool gohome();
 
     int32_t getCount(void);
     uint32_t get_raw_count();

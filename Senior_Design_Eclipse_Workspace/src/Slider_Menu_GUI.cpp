@@ -170,7 +170,8 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 			{
 				set_motor(VERTICAL);
 				TEXT_SetText(hItem, "Going home.");
-				motor -> gohome();
+				// up a large distance to trigger the top limit switch
+				motor -> setDesiredPosition(-2000.0);
 			}
 			if (Id == GUI_ID_BUTTON7)
 			{
@@ -253,7 +254,7 @@ void MainTask(void)
 			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
 			EDIT_SetFloatValue(hItem, motor_vertical.getPosition());
 
-			// print raw count of z motor
+			// print accumulated count of z motor
 			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
 			EDIT_SetFloatValue(hItem, motor_vertical.getCount());
 		}
