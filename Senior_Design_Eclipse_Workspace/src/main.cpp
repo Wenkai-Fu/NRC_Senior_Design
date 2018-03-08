@@ -152,7 +152,7 @@ int main(void)
 // Period elapsed callback in non blocking mode
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	const float threshold = 0.01;
+	float threshold = 0.01;
 
 	TouchUpdate();
 
@@ -168,13 +168,21 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	// set duty for active motor
 	if (motor -> enabled())
 	{
-		//Azmuthal rotates less than others so it needs a smaller duty
-		int duty_command = 100;
+		// Azmuthal rotates less than others so it needs a smaller duty
+		int duty_command;
+		if (motor -> get_id() == 2)
+			// z motor
+			duty_command = 100;
+		else if (motor -> get_id() == 1)
+		{
+			// azimuthal motor
+			duty_command = 30;
+//			threshold = 0.02;
+		}
+
 		//it appears that a lower duty command (~90) interferes with the 
 		// encoder's ability to distinguish direction but only when
 		// sending a negative duty command. But not for the claw... -DC
-/*		if (motor_azimuthal.enabled())
-				main_duty_command = 50; */
 
 		if (motor->getPosError() > threshold)
 			// z motor goes up
@@ -184,7 +192,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		else
 		{
 			motor -> setDuty(0);
-			// end of the cycle that apart 1cm from the bottom switch
+			// end of the cycle that apart 1cm from the top switch
 			if (motor_vertical.get_top_ls())
 				motor_vertical.set_top_ls(false);
 		}
@@ -195,14 +203,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	/*
-	 * Seems the top and bottom limit switch wiring conflict!
-	 * When the two switch are triggered, the behavior is innormal.
-	 * The line connecting the bottom switch (red and black) is different from
-	 * the board end (green and red)
-	 *  -- Kevin
+	 * The GPIN_PIN_10 port, which is used by the bottom limit switch, is
+	 * broken. Disconnected.
+	 * --Kevin
 	 */
 	BSP_LED_Off(LED1);
 	// bottom switch limit
+	//
 	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
 	{
 		BSP_LED_On(LED1);

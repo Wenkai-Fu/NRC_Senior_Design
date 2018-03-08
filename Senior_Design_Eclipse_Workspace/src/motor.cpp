@@ -6,7 +6,7 @@
 Motor::Motor(TIM_TypeDef *TIMX,
 		     const float counts_to_position,
 			 const int encoder_bits,
-			 const float increment) :
+			 const float increment):
 		duty_(0),
 		dir_(false),
 		prescaler_(99),
@@ -20,7 +20,8 @@ Motor::Motor(TIM_TypeDef *TIMX,
 		enable_(false),
 		bot_ls(false),
 		top_ls(false),
-		claw_ls(false)
+		claw_ls(false),
+		id(encoder_bits)
 {
 	/* Initalization of GPIO pin to control the motor's direction
 	   through the direction pin of the h-bridge  */
@@ -130,11 +131,16 @@ void Motor::enable()
 //----------------------------------------------------------------------------//
 void Motor::setDesiredPosition(float desiredPos)
 {
-	// bottom limit protection
-	if (desiredPos <= 55.0)
-		desiredPos_ = desiredPos;
+	if (id == 2){
+		// z motor
+		// bottom limit protection
+		if (desiredPos <= 55.0)
+			desiredPos_ = desiredPos;
+		else
+			desiredPos_ = 55.0;
+	}
 	else
-		desiredPos_ = 55.0;
+		desiredPos_ = desiredPos;
 }
 
 //----------------------------------------------------------------------------//
@@ -197,9 +203,12 @@ float Motor::getPosError()
 bool Motor::increase()
 {
 	desiredPos_ += increment_;
-	// bottom limit protection
-	if (desiredPos_ >= 55.0)
-		desiredPos_ = 55.0;
+	if (id == 2){
+		// z motor
+		// bottom limit protection
+		if (desiredPos_ >= 55.0)
+			desiredPos_ = 55.0;
+	}
 	return true;
 }
 

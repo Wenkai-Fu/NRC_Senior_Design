@@ -48,6 +48,8 @@ public:
     void set_claw_ls(bool condition) {claw_ls = condition;}
     bool get_claw_ls() {return claw_ls;}
 
+    int get_id() { return id;}
+
 private:
 
 	void Error_Handler(void);
@@ -81,6 +83,8 @@ private:
 
 	// limit switches. z motor use bot and top. claw motor use claw.
 	bool bot_ls, top_ls, claw_ls;
+
+	int id;
 };
 
 #endif /* MOTOR_H_ */

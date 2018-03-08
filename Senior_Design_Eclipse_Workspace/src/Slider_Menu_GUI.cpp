@@ -27,8 +27,8 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 	// EDIT BOXES
 	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT0, 240,  60, 100, 30, 0, 3 },
 	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT1, 360,  60, 100, 30, 0, 3 },
-	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT2, 240, 100, 10, 30, 0, 3 },
-	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT3, 260, 100, 200, 30, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT2, 240, 100, 100, 30, 0, 3 },
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT3, 360, 100, 100, 30, 0, 3 },
 	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT4, 240, 140, 100, 30, 0, 3 },
 	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT5, 360, 140, 100, 30, 0, 3 },
 	//
@@ -100,14 +100,14 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT1);
-		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 3, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT2);
 		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT3);
-		EDIT_SetFloatMode(hItem, 0.0,-2.0e9, 2.0e9, 0, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-999, 999, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT4);
@@ -255,8 +255,8 @@ void MainTask(void)
 			EDIT_SetFloatValue(hItem, motor_vertical.getPosition());
 
 			// print accumulated count of z motor
-			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
-			EDIT_SetFloatValue(hItem, motor_vertical.getCount());
+//			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
+//			EDIT_SetFloatValue(hItem, motor_vertical.getCount());
 		}
 
 		else if (motor_azimuthal.enabled())
@@ -264,8 +264,8 @@ void MainTask(void)
 			// azimuthal
 			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);
 			EDIT_SetFloatValue(hItem, motor_azimuthal.getDesiredPosition());
-//			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
-//			EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition());
+			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
+			EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition());
 		}
 
 		else if (motor_claw.enabled())
