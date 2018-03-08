@@ -180,9 +180,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 //			threshold = 0.02;
 		}
 
-		//it appears that a lower duty command (~90) interferes with the 
-		// encoder's ability to distinguish direction but only when
-		// sending a negative duty command. But not for the claw... -DC
+		else if (motor -> get_id() == 3)
+			// claw motor
+			duty_command = 50;
 
 		if (motor->getPosError() > threshold)
 			// z motor goes up
