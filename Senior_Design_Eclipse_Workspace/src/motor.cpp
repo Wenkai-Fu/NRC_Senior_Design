@@ -112,6 +112,13 @@ Motor::Motor(TIM_TypeDef *TIMX,
 
 	// set the count to the last saved count.
 	setCount();
+
+	if (id == 3)
+	{
+		// go home
+		desiredPos_ = -10.0;
+		enable();
+	}
 }
 
 //----------------------------------------------------------------------------//
@@ -131,16 +138,7 @@ void Motor::enable()
 //----------------------------------------------------------------------------//
 void Motor::setDesiredPosition(float desiredPos)
 {
-	if (id == 2){
-		// z motor
-		// bottom limit protection
-		if (desiredPos <= 55.0)
-			desiredPos_ = desiredPos;
-		else
-			desiredPos_ = 55.0;
-	}
-	else
-		desiredPos_ = desiredPos;
+	desiredPos_ = desiredPos;
 }
 
 //----------------------------------------------------------------------------//
@@ -208,6 +206,11 @@ bool Motor::increase()
 		// bottom limit protection
 		if (desiredPos_ >= 55.0)
 			desiredPos_ = 55.0;
+	}
+	else if (id == 3){
+		// claw motor, close protection
+		if (desiredPos_ >= 6.5)
+			desiredPos_ = 6.5;
 	}
 	return true;
 }

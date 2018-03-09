@@ -182,7 +182,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 		else if (motor -> get_id() == 3)
 			// claw motor
-			duty_command = 50;
+			duty_command = 30;
 
 		if (motor->getPosError() > threshold)
 			// z motor goes up
@@ -195,6 +195,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			// end of the cycle that apart 1cm from the top switch
 			if (motor_vertical.get_top_ls())
 				motor_vertical.set_top_ls(false);
+			else if (motor_claw.get_claw_ls())
+				motor_claw.set_claw_ls(false);
 		}
 	}
 }
@@ -235,11 +237,18 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	}
 	else if (HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_9))
 	{
-		// claw switch limit
-		BSP_LED_On(LED1);
-		motor_claw.disable();
-		motor_claw.set_claw_ls(true);
-		// possibly do a reset or something
+		if (motor_claw.getPosition() > 0.2)
+			// avoid the fake trigger (pos ~= 0.6) when leave the switch
+			return;
+		else{
+			// claw switch limit. claw at fully open position
+			BSP_LED_On(LED1);
+			motor_claw.disable();
+			motor_claw.set_claw_ls(true);
+			motor_claw.set_zero();
+			motor_claw.enable();
+			motor_claw.setDesiredPosition(0.1);
+		}
 	}
 
 }
