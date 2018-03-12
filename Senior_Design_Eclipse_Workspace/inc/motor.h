@@ -31,10 +31,7 @@ public:
     	enable_ = false;
     	duty_ = 0;
     }
-    bool enabled()
-    {
-    	return enable_;
-    }
+    bool enabled(){return enable_;}
 
     void set_zero();
 
@@ -49,6 +46,9 @@ public:
     bool get_claw_ls() {return claw_ls;}
 
     int get_id() { return id;}
+
+    // force the z and claw go home at start
+    bool cor_establish;
 
 private:
 

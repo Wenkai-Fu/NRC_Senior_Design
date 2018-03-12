@@ -21,7 +21,8 @@ Motor::Motor(TIM_TypeDef *TIMX,
 		bot_ls(false),
 		top_ls(false),
 		claw_ls(false),
-		id(encoder_bits)
+		id(encoder_bits),
+		cor_establish(false)
 {
 	/* Initalization of GPIO pin to control the motor's direction
 	   through the direction pin of the h-bridge  */
@@ -113,12 +114,9 @@ Motor::Motor(TIM_TypeDef *TIMX,
 	// set the count to the last saved count.
 	setCount();
 
-	if (id == 3)
-	{
-		// go home
-		desiredPos_ = -10.0;
-		enable();
-	}
+	if (id == 3 or id == 2)
+		// home position to trigger switch
+		desiredPos_ = -2000.0;
 }
 
 //----------------------------------------------------------------------------//

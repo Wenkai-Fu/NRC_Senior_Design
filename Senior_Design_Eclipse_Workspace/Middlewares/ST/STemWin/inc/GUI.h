@@ -1584,6 +1584,10 @@ extern const tGUI_XBF_APIList GUI_XBF_APIList_Prop_AA4_Ext;
 #define GUI_ID_BUTTON7    0x177
 #define GUI_ID_BUTTON8    0x178
 #define GUI_ID_BUTTON9    0x179
+// custom IDs above GUI_ID_USER
+#define GUI_ID_BUTTON10   0x801
+#define GUI_ID_BUTTON11   0x802
+
 
 #define GUI_ID_DROPDOWN0  0x180
 #define GUI_ID_DROPDOWN1  0x181

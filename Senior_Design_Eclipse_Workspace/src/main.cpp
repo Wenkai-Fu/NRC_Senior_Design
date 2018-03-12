@@ -182,7 +182,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 		else if (motor -> get_id() == 3)
 			// claw motor
-			duty_command = 30;
+			duty_command = 50;
 
 		if (motor->getPosError() > threshold)
 			// z motor goes up
@@ -197,6 +197,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				motor_vertical.set_top_ls(false);
 			else if (motor_claw.get_claw_ls())
 				motor_claw.set_claw_ls(false);
+
+			// Initial going home
+			if (!motor_claw.cor_establish){
+				motor_claw.cor_establish = true;
+				motor_claw.disable();
+			}
 		}
 	}
 }
