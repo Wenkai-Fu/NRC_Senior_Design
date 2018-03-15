@@ -24,9 +24,12 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 	{ TEXT_CreateIndirect, "Enable", GUI_ID_TEXT4, 20,  10, 80, 30, TEXT_CF_HCENTER },
 	{ TEXT_CreateIndirect, "Operation", GUI_ID_TEXT5, 110,  10, 170, 30, TEXT_CF_HCENTER },
 	// down left status window
-	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT2,  20, 210, 200, 30, TEXT_CF_LEFT },
+	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT2,  10, 220, 160, 30, TEXT_CF_LEFT},
+	// establish coordinate (going home)
+	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT6, 175, 220, 130, 30, TEXT_CF_LEFT},
 	// down right warning window
-	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT3, 230, 210, 250, 30, TEXT_CF_LEFT},
+	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT3, 310, 220, 160, 30, TEXT_CF_LEFT},
+
     //
 	// EDIT BOXES. Show set and current positions
 	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT0, 290,  35, 80, 30, 0, 3 },
@@ -87,7 +90,7 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 	int Id;
 
 	//motor count not getting updated enough? -DC
-	motor->getCount();
+	motor -> getCount();
 	hDlg = pMsg->hWin;
 	switch (pMsg->MsgId)
 	{
@@ -138,6 +141,9 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_TEXT3);
 		TEXT_SetTextColor(hItem, GUI_RED);
+
+		hItem = WM_GetDialogItem(hDlg, GUI_ID_TEXT2);
+		TEXT_SetTextColor(hItem, GUI_BLUE);
 
 		break;
 
@@ -218,10 +224,10 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 			// rotate
 			if (Id == GUI_ID_BUTTON8)
 				// clockwise
-				motor_azimuthal.increase();
+				motor_azimuthal.decrease();
 			if (Id == GUI_ID_BUTTON9)
 				// anticlockwise
-				motor_azimuthal.decrease();
+				motor_azimuthal.increase();
 
 			break;
 		}
@@ -263,12 +269,22 @@ void MainTask(void)
 	hDialogMain = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate),
 			_cbCallback, WM_HBKWIN, 0, 0);
 
-	if (!motor_claw.cor_establish)
-		set_motor(CLAW);
+//	if (!motor_claw.cor_establish)
+//		set_motor(CLAW);
 
 	while (1)
 	{
 		GUI_Delay(10);
+
+		if (!motor_claw.cor_establish){
+			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
+			TEXT_SetText(hItem, "Claw Homing");
+		}
+		else{
+			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
+			TEXT_SetText(hItem, "");
+		}
+
 
 		// display set position
 		// vertical
@@ -324,7 +340,7 @@ void MainTask(void)
 		else if (motor_vertical.get_top_ls())
 			TEXT_SetText(hItem, "top limit switch!");
 		else if (motor_claw.get_claw_ls())
-			TEXT_SetText(hItem, "claw limit switch!");
+			TEXT_SetText(hItem, "claw open @ limit!");
 		// + other warnings, etc.
 
 	}

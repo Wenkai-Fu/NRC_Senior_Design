@@ -198,17 +198,17 @@ float Motor::getPosError()
 //----------------------------------------------------------------------------//
 bool Motor::increase()
 {
+	// effective after coordinate system established
 	desiredPos_ += increment_;
 	if (id == 2){
-		// z motor
-		// bottom limit protection
+		// z motor, bottom limit protection
 		if (desiredPos_ >= 55.0)
 			desiredPos_ = 55.0;
 	}
 	else if (id == 3){
 		// claw motor, close protection
-		if (desiredPos_ >= 6.5)
-			desiredPos_ = 6.5;
+		if (desiredPos_ >= 5.0)
+			desiredPos_ = 5.0;
 	}
 	return true;
 }
@@ -216,6 +216,7 @@ bool Motor::increase()
 //----------------------------------------------------------------------------//
 bool Motor::decrease()
 {
+	// effective after coordinate system established
 	desiredPos_ -= increment_;
 	return true;
 }

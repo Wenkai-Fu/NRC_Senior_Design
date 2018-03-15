@@ -40,7 +40,7 @@ Motor motor_azimuthal(TIM10, c2p_azimuthal, 1, 5.0);
 
 Motor motor_vertical(TIM11, c2p_vertical, 2, 1.0);
 
-Motor motor_claw(TIM13, c2p_claw, 3, 1.0);
+Motor motor_claw(TIM13, c2p_claw, 3, 0.5);
 
 //Initialize pointer to select which motor is enabled, read encoders, ect.
 Motor *motor = &motor_vertical;
@@ -174,35 +174,33 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			// z motor
 			duty_command = 100;
 		else if (motor -> get_id() == 1)
-		{
 			// azimuthal motor
 			duty_command = 30;
-//			threshold = 0.02;
-		}
 
 		else if (motor -> get_id() == 3)
 			// claw motor
-			duty_command = 50;
+			duty_command = 70;
 
 		if (motor->getPosError() > threshold)
 			// z motor goes up
 			motor->setDuty(-duty_command);
-		else if (motor->getPosError() < -threshold)
+		else if (motor->getPosError() < -threshold){
 			motor->setDuty(duty_command);
+			if (motor -> get_id() == 3 and motor -> get_claw_ls())
+				motor -> set_claw_ls(false);
+		}
 		else
 		{
 			motor -> setDuty(0);
 			// end of the cycle that apart 1cm from the top switch
 			if (motor_vertical.get_top_ls())
 				motor_vertical.set_top_ls(false);
-			else if (motor_claw.get_claw_ls())
-				motor_claw.set_claw_ls(false);
 
-			// Initial going home
-			if (!motor_claw.cor_establish){
-				motor_claw.cor_establish = true;
-				motor_claw.disable();
-			}
+//			 Initial going home
+//			if (!motor_claw.cor_establish){
+//				motor_claw.cor_establish = true;
+//				motor_claw.disable();
+//			}
 		}
 	}
 }
@@ -216,8 +214,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	 * --Kevin
 	 */
 	BSP_LED_Off(LED1);
-	// bottom switch limit
-	//
+	// bottom switch limit (not used)
 	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10))
 	{
 		BSP_LED_On(LED1);
@@ -232,31 +229,34 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	// top limit switch (fuel at top limit)
 	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
 	{
-		BSP_LED_On(LED1);
-		motor_vertical.disable();
-		motor_vertical.set_top_ls(true);
+		if (motor_vertical.enabled()){
+			BSP_LED_On(LED1);
+			motor_vertical.disable();
+			motor_vertical.set_top_ls(true);
 
-		// set origin at the top switch
-		motor_vertical.set_zero();
-		motor_vertical.enable();
-		motor_vertical.increase();
+			// set origin at the top switch
+			motor_vertical.set_zero();
+			motor = &motor_vertical;
+			motor_vertical.enable();
+			motor_vertical.setDesiredPosition(1.0);
+		}
 	}
+	// claw switch limit. claw at fully open position
 	else if (HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_9))
 	{
-		if (motor_claw.getPosition() > 0.2)
-			// avoid the fake trigger (pos ~= 0.6) when leave the switch
-			return;
-		else{
-			// claw switch limit. claw at fully open position
+		if (motor_claw.enabled() and
+				abs(motor_claw.getDuty() - 0.0) > 1.0 and
+				motor_claw.getPosError() > 0.0)
+		{
 			BSP_LED_On(LED1);
 			motor_claw.disable();
 			motor_claw.set_claw_ls(true);
 			motor_claw.set_zero();
+			motor = &motor_claw;
 			motor_claw.enable();
-			motor_claw.setDesiredPosition(0.1);
+//			motor_claw.increase();
 		}
 	}
-
 }
 
 //----------------------------------------------------------------------------//
