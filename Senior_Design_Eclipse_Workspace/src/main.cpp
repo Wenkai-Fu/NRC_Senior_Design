@@ -244,9 +244,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	// claw switch limit. claw at fully open position
 	else if (HAL_GPIO_ReadPin(GPIOF,GPIO_PIN_9))
 	{
-		if (motor_claw.enabled() and
-				abs(motor_claw.getDuty() - 0.0) > 1.0 and
-				motor_claw.getPosError() > 0.0)
+		// effective when claw motor moves towards switch
+		if (motor_claw.getDuty() < -10)
 		{
 			BSP_LED_On(LED1);
 			motor_claw.disable();

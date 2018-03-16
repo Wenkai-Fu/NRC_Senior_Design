@@ -19,16 +19,16 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 	{ FRAMEWIN_CreateIndirect, "Motor Control. If anything goes wrong, PRESS STOP!", 0, 0, 0, 480, 272, 0 },
 	//
 	// TEXT BOXES
-	{ TEXT_CreateIndirect, "Set", GUI_ID_TEXT0, 290,  10, 80, 40, TEXT_CF_HCENTER },
-	{ TEXT_CreateIndirect, "Real", GUI_ID_TEXT1, 380,  10, 80, 40, TEXT_CF_HCENTER},
+	{ TEXT_CreateIndirect, "Set", GUI_ID_TEXT0, 290,  10, 80, 40, TEXT_CF_LEFT},
+	{ TEXT_CreateIndirect, "Real", GUI_ID_TEXT1, 380,  10, 80, 40, TEXT_CF_LEFT},
 	{ TEXT_CreateIndirect, "Enable", GUI_ID_TEXT4, 20,  10, 80, 30, TEXT_CF_HCENTER },
 	{ TEXT_CreateIndirect, "Operation", GUI_ID_TEXT5, 110,  10, 170, 30, TEXT_CF_HCENTER },
 	// down left status window
-	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT2,  10, 220, 160, 30, TEXT_CF_LEFT},
+	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT2,  10, 220, 140, 30, TEXT_CF_LEFT},
 	// establish coordinate (going home)
-	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT6, 175, 220, 130, 30, TEXT_CF_LEFT},
+	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT6, 155, 220, 140, 30, TEXT_CF_LEFT},
 	// down right warning window
-	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT3, 310, 220, 160, 30, TEXT_CF_LEFT},
+	{ TEXT_CreateIndirect, "       ", GUI_ID_TEXT3, 300, 220, 170, 30, TEXT_CF_LEFT},
 
     //
 	// EDIT BOXES. Show set and current positions
@@ -276,16 +276,6 @@ void MainTask(void)
 	{
 		GUI_Delay(10);
 
-		if (!motor_claw.cor_establish){
-			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
-			TEXT_SetText(hItem, "Claw Homing");
-		}
-		else{
-			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
-			TEXT_SetText(hItem, "");
-		}
-
-
 		// display set position
 		// vertical
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT0);
@@ -317,6 +307,20 @@ void MainTask(void)
 //			EDIT_SetFloatValue(hItem, motor_vertical.getDesiredPosition());
 			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT1);
 			EDIT_SetFloatValue(hItem, motor_vertical.getPosition());
+
+			// status window
+			if (motor_vertical.getDuty() < -10){
+				hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
+				TEXT_SetText(hItem, "Z Uping");
+			}
+			else if (motor_vertical.getDuty() > 10){
+				hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
+				TEXT_SetText(hItem, "Z Downing");
+			}
+			else{
+				hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
+				TEXT_SetText(hItem, "Z Stall");
+			}
 		}
 
 		else if (motor_azimuthal.enabled())
@@ -324,6 +328,20 @@ void MainTask(void)
 			// azimuthal
 			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
 			EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition());
+
+			// status window
+			if (motor_azimuthal.getDuty() < -10){
+				hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
+				TEXT_SetText(hItem, "C.W. Rotating");
+			}
+			else if (motor_azimuthal.getDuty() > 10){
+				hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
+				TEXT_SetText(hItem, "A.C.W. Rotating");
+			}
+			else{
+				hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
+				TEXT_SetText(hItem, "Rotate Stall");
+			}
 		}
 
 		else if (motor_claw.enabled())
@@ -331,6 +349,26 @@ void MainTask(void)
 			// claw
 			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT5);
 			EDIT_SetFloatValue(hItem, motor_claw.getPosition());
+
+			// status window
+			if (motor_claw.getDuty() < -10){
+				hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
+				TEXT_SetText(hItem, "Claw Opening");
+			}
+			else if (motor_claw.getDuty() > 10){
+				hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
+				TEXT_SetText(hItem, "Claw Closing");
+			}
+			else{
+				hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
+				TEXT_SetText(hItem, "Claw Stall");
+			}
+		}
+
+		else{
+			// no motor is enabled, stop condition
+			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT6);
+			TEXT_SetText(hItem, "");
 		}
 
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_TEXT3);
