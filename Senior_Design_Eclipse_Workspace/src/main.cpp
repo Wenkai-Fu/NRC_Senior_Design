@@ -158,15 +158,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 	TouchUpdate();
 
-	// stop all motors until further instruction
-	// if motor is not enabled, stop it.
-	if (!(motor_azimuthal.enabled()))
-		motor_azimuthal.setDuty(0);
-	if (!(motor_vertical.enabled()))
-		motor_vertical.setDuty(0);
-	if (!(motor_claw.enabled()))
-		motor_claw.setDuty(0);
-
 	// set duty for active motor
 	if (motor -> enabled())
 	{
@@ -197,12 +188,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			// end of the cycle that apart 1cm from the top switch
 			if (motor_vertical.get_top_ls())
 				motor_vertical.set_top_ls(false);
-
-//			 Initial going home
-//			if (!motor_claw.cor_establish){
-//				motor_claw.cor_establish = true;
-//				motor_claw.disable();
-//			}
 		}
 	}
 }
@@ -231,7 +216,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	// top limit switch (fuel at top limit)
 	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0))
 	{
-		if (motor_vertical.enabled()){
+		if (motor_vertical.enabled())
+		{
 			BSP_LED_On(LED1);
 			motor_vertical.disable();
 			motor_vertical.set_top_ls(true);
@@ -255,7 +241,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			motor_claw.set_zero();
 			motor = &motor_claw;
 			motor_claw.enable();
-//			motor_claw.increase();
 		}
 	}
 }

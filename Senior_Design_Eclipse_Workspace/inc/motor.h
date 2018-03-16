@@ -26,11 +26,8 @@ public:
 
     float getDuty(){return (float)duty_;}
     // TODO: create
-    void disable()
-    {
-    	enable_ = false;
-    	duty_ = 0;
-    }
+    void disable();
+
     bool enabled(){return enable_;}
 
     void set_zero();

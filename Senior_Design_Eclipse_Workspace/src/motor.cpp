@@ -114,7 +114,7 @@ Motor::Motor(TIM_TypeDef *TIMX,
 	// set the count to the last saved count.
 	setCount();
 
-	if (id == 3 or id == 2)
+	if (id == 2 or id == 3)
 		// home position to trigger switch
 		desiredPos_ = -2000.0;
 }
@@ -131,6 +131,14 @@ void Motor::enable()
 
 	// set the count to the last saved count.
 	setCount();
+}
+
+void Motor::disable()
+{
+	// disable immediately
+	enable_ = false;
+	duty_ = 0;
+	setDuty(duty_);
 }
 
 //----------------------------------------------------------------------------//
