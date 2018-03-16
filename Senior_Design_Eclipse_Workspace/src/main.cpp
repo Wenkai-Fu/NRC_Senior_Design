@@ -18,8 +18,10 @@ arm_pid_instance_f32 PID;
  * Variables defining distance per count
  */
 // counts-to-position
-float c2p_azimuthal = -float(Inches_to_Centimeters)/float(Pulses_Per_Revolution*
-                      Azimuthal_Gear_Ratio);// * Pinion_Spur_Gear_Ratio);//ThreadPitch* 360
+//float c2p_azimuthal = -float(Inches_to_Centimeters)/float(Pulses_Per_Revolution*
+//                      Azimuthal_Gear_Ratio);// * Pinion_Spur_Gear_Ratio);//ThreadPitch* 360
+
+float c2p_azimuthal = -0.00135858 / (360.0 / 357.0);
 
 // Original in inch, divide the value in the parentheses by 2.54 to
 // convert to cm

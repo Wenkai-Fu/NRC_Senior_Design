@@ -40,17 +40,17 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT5, 380, 140, 80, 30, 0, 3 },
 
 	// BUTTONS
-	{ BUTTON_CreateIndirect, "Z (cm)",  GUI_ID_BUTTON0, 20,  35, 80, 65 },
+	{ BUTTON_CreateIndirect, "Z (cm)",  GUI_ID_BUTTON0, 5,  35, 95, 65 },
 	{ BUTTON_CreateIndirect, "Home",      GUI_ID_BUTTON6, 110,  35,  80, 30 },
 	{ BUTTON_CreateIndirect, "Fuel",      GUI_ID_BUTTON7, 200,  35,  80, 30 },
 	{ BUTTON_CreateIndirect, "Down",         GUI_ID_BUTTON4,  110,  70,  80, 30},
 	{ BUTTON_CreateIndirect, "Up",         GUI_ID_BUTTON5,  200, 70,  80, 30 },
 
-	{ BUTTON_CreateIndirect, "Rotate", GUI_ID_BUTTON1, 20, 105, 80, 30 },
+	{ BUTTON_CreateIndirect, "Rot.(deg.)", GUI_ID_BUTTON1, 5, 105, 95, 30 },
 	{ BUTTON_CreateIndirect, "C.W.",     GUI_ID_BUTTON8,  110,  105,  80, 30 },
 	{ BUTTON_CreateIndirect, "A.C.W.",     GUI_ID_BUTTON9,  200,  105,  80, 30 },
 
-	{ BUTTON_CreateIndirect, "Claw",      GUI_ID_BUTTON2, 20, 140, 80, 30 },
+	{ BUTTON_CreateIndirect, "Claw",      GUI_ID_BUTTON2, 5, 140, 95, 30 },
 	{ BUTTON_CreateIndirect, "Close",     GUI_ID_BUTTON10,  110, 140,  80, 30 },
 	{ BUTTON_CreateIndirect, "Open",     GUI_ID_BUTTON11,  200,  140,  80, 30 },
 
@@ -283,7 +283,7 @@ void MainTask(void)
 
 		// azimuthal
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);
-		EDIT_SetFloatValue(hItem, motor_azimuthal.getDesiredPosition());
+		EDIT_SetFloatValue(hItem, motor_azimuthal.getDesiredPosition() * 4.0);
 
 		// claw
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT4);
@@ -327,7 +327,7 @@ void MainTask(void)
 		{
 			// azimuthal
 			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
-			EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition());
+			EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition() * 4.0);
 
 			// status window
 			if (motor_azimuthal.getDuty() < -10){
