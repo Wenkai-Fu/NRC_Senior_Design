@@ -45,7 +45,7 @@ Motor motor_vertical(TIM11, c2p_vertical, 2, 1.0);
 Motor motor_claw(TIM13, c2p_claw, 3, 0.5);
 
 //Initialize pointer to select which motor is enabled, read encoders, ect.
-Motor *motor = &motor_vertical;
+//Motor *motor = &motor_vertical;
 
 static void SystemClock_Config(void);
 extern void MainTask(void);
@@ -79,7 +79,7 @@ int main(void)
 	PID.Kp = kp;
 	PID.Ki = ki;
 	PID.Kd = kd;
-	arm_pid_init_f32(&PID, 1);
+//	arm_pid_init_f32(&PID, 1);
 
 
 	/***********************************************************/
@@ -158,17 +158,25 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 	TouchUpdate();
 
+	Motor* motor = NULL;
+	if (motor_azimuthal.enabled())
+		motor = &motor_azimuthal;
+	else if (motor_vertical.enabled())
+		motor = &motor_vertical;
+	else if (motor_claw.enabled())
+		motor = &motor_claw;
+
 	// set duty for active motor
-	if (motor -> enabled())
+	if (motor)
 	{
-		// Azmuthal rotates less than others so it needs a smaller duty
+		// azimuthal rotates less than others so it needs a smaller duty
 		int duty_command;
 		if (motor -> get_id() == 2)
 			// z motor
 			duty_command = 100;
 		else if (motor -> get_id() == 1)
 			// azimuthal motor
-			duty_command = 30;
+			duty_command = 100;
 
 		else if (motor -> get_id() == 3)
 			// claw motor
@@ -224,7 +232,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 			// set origin at the top switch
 			motor_vertical.set_zero();
-			motor = &motor_vertical;
+//			motor = &motor_vertical;
 			motor_vertical.enable();
 			motor_vertical.setDesiredPosition(1.0);
 		}
@@ -239,7 +247,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			motor_claw.disable();
 			motor_claw.set_claw_ls(true);
 			motor_claw.set_zero();
-			motor = &motor_claw;
+//			motor = &motor_claw;
 			motor_claw.enable();
 		}
 	}

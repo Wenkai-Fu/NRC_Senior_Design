@@ -7,7 +7,7 @@
 
 #define RECOMMENDED_MEMORY (1024L * 15)
 
-extern Motor *motor, motor_azimuthal, motor_vertical, motor_claw;
+extern Motor motor_azimuthal, motor_vertical, motor_claw;
 
 /*********************************************************************
  * Function description
@@ -63,9 +63,12 @@ WM_HWIN _hDialogMain;
 
 static void disable_all()
 {
-	motor_vertical.disable();
-	motor_azimuthal.disable();
-	motor_claw.disable();
+	if (motor_vertical.enabled())
+		motor_vertical.disable();
+	if (motor_azimuthal.enabled())
+		motor_azimuthal.disable();
+	if (motor_claw.enabled())
+		motor_claw.disable();
 }
 
 const int VERTICAL = 0, AZIMUTHAL = 1, CLAW = 2;
@@ -73,12 +76,15 @@ static void set_motor(const int key)
 {
 	disable_all();
 	if (key == VERTICAL)
-		motor = &motor_vertical;
+//		motor = &motor_vertical;
+		motor_vertical.enable();
 	else if (key == AZIMUTHAL)
-		motor = &motor_azimuthal;
+//		motor = &motor_azimuthal;
+		motor_azimuthal.enable();
 	else if (key == CLAW)
-		motor = &motor_claw;
-	motor -> enable();
+//		motor = &motor_claw;
+		motor_claw.enable();
+//	motor -> enable();
 }
 
 //----------------------------------------------------------------------------//
@@ -90,7 +96,7 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 	int Id;
 
 	//motor count not getting updated enough? -DC
-	motor -> getCount();
+//	motor -> getCount();
 	hDlg = pMsg->hWin;
 	switch (pMsg->MsgId)
 	{
@@ -126,10 +132,10 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT2);
-		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-9999.0, 9999.0, 1, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT3);
-		EDIT_SetFloatMode(hItem, 0.0,-999, 999, 2, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-99999, 99999, 0, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT4);
@@ -327,7 +333,8 @@ void MainTask(void)
 		{
 			// azimuthal
 			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
-			EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition() * 4.0);
+//			EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition() * 4.0);
+			EDIT_SetFloatValue(hItem, motor_azimuthal.get_raw_count());
 
 			// status window
 			if (motor_azimuthal.getDuty() < -10){
