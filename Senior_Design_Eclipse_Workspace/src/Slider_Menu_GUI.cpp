@@ -132,10 +132,10 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT2);
-		EDIT_SetFloatMode(hItem, 0.0,-9999.0, 9999.0, 1, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-9999.0, 9999.0, 0, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT3);
-		EDIT_SetFloatMode(hItem, 0.0,-99999, 99999, 0, 0);
+		EDIT_SetFloatMode(hItem, 0.0,-99999, 99999, 1, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT4);
@@ -333,8 +333,8 @@ void MainTask(void)
 		{
 			// azimuthal
 			hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT3);
-//			EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition() * 4.0);
-			EDIT_SetFloatValue(hItem, motor_azimuthal.get_raw_count());
+			EDIT_SetFloatValue(hItem, motor_azimuthal.getPosition() * 4.0);
+//			EDIT_SetFloatValue(hItem, motor_azimuthal.get_raw_count());
 
 			// status window
 			if (motor_azimuthal.getDuty() < -10){
