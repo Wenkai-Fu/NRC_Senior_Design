@@ -215,8 +215,8 @@ bool Motor::increase()
 	}
 	else if (id == 3){
 		// claw motor, close protection
-		if (desiredPos_ >= 5.0)
-			desiredPos_ = 5.0;
+		if (desiredPos_ >= 6.0)
+			desiredPos_ = 6.0;
 	}
 	return true;
 }
