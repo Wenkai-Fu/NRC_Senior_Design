@@ -211,7 +211,7 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 				motor_vertical.setDesiredPosition(-2000.0);
 			if (Id == GUI_ID_BUTTON7)
 				// fuel
-				motor_vertical.setDesiredPosition(23.0);  //changed from 42.5 -DC
+				motor_vertical.setDesiredPosition(6.0);  //changed from 42.5 -DC
 			if (Id == GUI_ID_BUTTON4)
 				// down
 				motor_vertical.increase();

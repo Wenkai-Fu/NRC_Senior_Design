@@ -210,8 +210,8 @@ bool Motor::increase()
 	desiredPos_ += increment_;
 	if (id == 2){
 		// z motor, bottom limit protection
-		if (desiredPos_ >= 55.0)
-			desiredPos_ = 55.0;
+		if (desiredPos_ >= 63.0)
+			desiredPos_ = 63.0;
 	}
 	else if (id == 3){
 		// claw motor, close protection
