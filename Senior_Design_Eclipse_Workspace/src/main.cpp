@@ -40,7 +40,7 @@ float c2p_claw =  -float(Inches_to_Centimeters)/
 
 Motor motor_azimuthal(TIM10, c2p_azimuthal, 1, 5.0);
 
-Motor motor_vertical(TIM11, c2p_vertical, 2, 1.0);
+Motor motor_vertical(TIM11, c2p_vertical, 2, 0.5);
 
 Motor motor_claw(TIM13, c2p_claw, 3, 0.5);
 
