@@ -11,11 +11,12 @@ extern Motor motor_azimuthal, motor_vertical, motor_claw;
 
 /*********************************************************************
  * Function description
- *   This table conatins the info required to create the dialog.
+ *   This table contains the info required to create the dialog.
  *   It has been created manually, but could also be created by a GUI-builder.
  */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 {
+		// positive x direction towards right, positive y direction towards down
 	{ FRAMEWIN_CreateIndirect, "Motor Control. If anything goes wrong, PRESS STOP!", 0, 0, 0, 480, 272, 0 },
 	//
 	// TEXT BOXES
@@ -38,6 +39,8 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT3, 380, 105, 80, 30, 0, 3 },
 	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT4, 290, 140, 80, 30, 0, 3 },
 	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT5, 380, 140, 80, 30, 0, 3 },
+	// z step size
+	{ EDIT_CreateIndirect, NULL, GUI_ID_EDIT6, 380, 70, 80, 30, 0, 3 },
 
 	// BUTTONS
 	{ BUTTON_CreateIndirect, "Z (cm)",  GUI_ID_BUTTON0, 5,  35, 95, 65 },
@@ -45,6 +48,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] =
 	{ BUTTON_CreateIndirect, "Fuel",      GUI_ID_BUTTON7, 200,  35,  80, 30 },
 	{ BUTTON_CreateIndirect, "Down",         GUI_ID_BUTTON4,  110,  70,  80, 30},
 	{ BUTTON_CreateIndirect, "Up",         GUI_ID_BUTTON5,  200, 70,  80, 30 },
+	{ BUTTON_CreateIndirect, "Zstep",       GUI_ID_BUTTON12,  290, 70,  80, 30 },
 
 	{ BUTTON_CreateIndirect, "Rot.(deg.)", GUI_ID_BUTTON1, 5, 105, 95, 30 },
 	{ BUTTON_CreateIndirect, "C.W.",     GUI_ID_BUTTON8,  110,  105,  80, 30 },
@@ -97,7 +101,7 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 
 	//motor count not getting updated enough? -DC
 //	motor -> getCount();
-	hDlg = pMsg->hWin;
+	hDlg = pMsg->hWin; /* Destination window */
 	switch (pMsg->MsgId)
 	{
 
@@ -122,15 +126,27 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		BUTTON_SetFont(hItem, &GUI_Font16B_ASCII);
 		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_BUTTON9);
 		BUTTON_SetFont(hItem, &GUI_Font16B_ASCII);
+		// z step button
+		hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_BUTTON12);
+		BUTTON_SetFont(hItem, &GUI_Font16B_ASCII);
 
 		// Edits
+		// z
+		// set position
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT0);
 		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
+		// real position
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT1);
 		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
+		// step
+		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT6);
+		EDIT_SetFloatMode(hItem, 0.0,-999.0, 999.0, 2, 0);
+		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
+
+		// azimuthal
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT2);
 		EDIT_SetFloatMode(hItem, 0.0,-9999.0, 9999.0, 0, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
@@ -138,6 +154,7 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 		EDIT_SetFloatMode(hItem, 0.0,-99999, 99999, 1, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
 
+		// claw
 		hItem = WM_GetDialogItem(hDlg, GUI_ID_EDIT4);
 		EDIT_SetFloatMode(hItem, 0.0,-99.0, 99.0, 2, 0);
 		EDIT_SetTextAlign(hItem, GUI_TA_VCENTER | GUI_TA_RIGHT );
@@ -218,6 +235,20 @@ static void _cbCallback(WM_MESSAGE * pMsg)
 			if (Id == GUI_ID_BUTTON5)
 				// up
 				motor_vertical.decrease();
+			// toggle z step size
+			if (Id == GUI_ID_BUTTON12){
+				if (motor_vertical.zstep5){
+					// initial zstep5 = true. step change from 0.5 to 0.1
+					motor_vertical.set_increment(0.1);
+					motor_vertical.zstep5 = false;
+				}
+				else{
+					// change z step size from 0.1 to 0.5
+					motor_vertical.set_increment(0.5);
+					motor_vertical.zstep5 = true;
+				}
+
+			}
 
 			// claw
 			if (Id == GUI_ID_BUTTON10)
@@ -286,6 +317,13 @@ void MainTask(void)
 		// vertical
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT0);
 		EDIT_SetFloatValue(hItem, motor_vertical.getDesiredPosition());
+		// z step size
+		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT6);
+		if (motor_vertical.zstep5)
+			EDIT_SetFloatValue(hItem, 0.5);
+		else
+			EDIT_SetFloatValue(hItem, 0.1);
+
 
 		// azimuthal
 		hItem = WM_GetDialogItem(hDialogMain, GUI_ID_EDIT2);

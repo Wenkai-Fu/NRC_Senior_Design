@@ -38,6 +38,8 @@ float c2p_vertical = -6.3411541e-5;
 float c2p_claw =  -float(Inches_to_Centimeters)/
 		          float(Pulses_Per_Revolution*Claw_Gear_Ratio*ThreadPitch);
 
+// Initialize the three motors. Slide_Menu_GUI.cpp uses these three
+// objects by extern keyword.
 Motor motor_azimuthal(TIM10, c2p_azimuthal, 1, 5.0);
 
 Motor motor_vertical(TIM11, c2p_vertical, 2, 0.5);

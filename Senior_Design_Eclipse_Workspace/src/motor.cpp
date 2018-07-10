@@ -22,7 +22,8 @@ Motor::Motor(TIM_TypeDef *TIMX,
 		top_ls(false),
 		claw_ls(false),
 		id(encoder_bits),
-		cor_establish(false)
+		cor_establish(false),
+		zstep5(true)
 {
 	/* Initalization of GPIO pin to control the motor's direction
 	   through the direction pin of the h-bridge  */
@@ -114,9 +115,13 @@ Motor::Motor(TIM_TypeDef *TIMX,
 	// set the count to the last saved count.
 	setCount();
 
-	if (id == 2 or id == 3)
-		// home position to trigger switch
-		desiredPos_ = -2000.0;
+//	if (id == 2 or id == 3)
+//		// home position to trigger switch
+//		desiredPos_ = -2000.0;
+
+	if (id == 2)
+			// home position to trigger switch
+			desiredPos_ = -2000.0;
 }
 
 //----------------------------------------------------------------------------//
@@ -215,8 +220,8 @@ bool Motor::increase()
 	}
 	else if (id == 3){
 		// claw motor, close protection
-		if (desiredPos_ >= 6.0)
-			desiredPos_ = 6.0;
+		if (desiredPos_ >= 4.0)
+			desiredPos_ = 4.0;
 	}
 	return true;
 }
@@ -234,6 +239,11 @@ void Motor::set_zero(){
 	cnt = 0;
 	old_cnt = 0;
 	overflows_ = 0;
+}
+
+void Motor::set_increment(float input){
+	// used by z motor to find claw grabing position
+	increment_ = input;
 }
 
 

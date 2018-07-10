@@ -20,6 +20,7 @@ public:
     float getPosError();
     bool increase();
     bool decrease();
+    void set_increment(float input);
 
     int32_t getCount(void);
     uint32_t get_raw_count();
@@ -46,6 +47,14 @@ public:
 
     // force the z and claw go home at start
     bool cor_establish;
+
+    // toggle switch for z step size. 1mm for finding accurate
+    // claw close position.
+    // true: step size = 5mm (default)
+    // false: step size = 1mm
+    bool zstep5;
+
+
 
 private:
 
