@@ -1,0 +1,235 @@
+%% 
+%% Copyright 2007, 2008, 2009 Elsevier Ltd
+%% 
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%% 
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%% 
+
+%% Template article for Elsevier's document class `elsarticle'
+%% with numbered style bibliographic references
+%% SP 2008/03/01
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+\newif\ifDRAFT
+% \DRAFTfalse
+\DRAFTtrue
+
+\ifDRAFT
+	\documentclass[review,number,sort&compress]{elsarticle}
+    %% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers.
+%% \usepackage{lineno}
+    \usepackage{lineno}
+    \newcommand{\picwidth}{\textwidth}
+\else 
+  	\documentclass[final,5p,times]{elsarticle}
+    \newcommand{\picwidth}{.5\textwidth}
+\fi
+
+% packages
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{braket}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{diagbox} % generate diagonal divided cell in table
+
+% new commands
+\newcommand{\EQ}[1]{Eq.~(\ref{#1})}                
+\newcommand{\EQUATION}[1]{Equation~(\ref{#1})} 
+\newcommand{\TWOEQS}[2]{Eqs.~(\ref{eq:#1})~and~(\ref{eq:#2})}  
+\newcommand{\TWOEQUATIONS}[2]{Equations~(\ref{eq:#1})~and~(\ref{eq:#2})}  
+\newcommand{\EQS}[1]{Eqs.~(\ref{#1})}             %-- Eqs. (refeqs)
+\newcommand{\EQUATIONS}[1]{Equations~(\ref{#1})}  %-- Eqs. (refeqs)
+\newcommand{\FIG}[1]{Fig.~\ref{#1}}               %-- Fig. refig
+\newcommand{\FIGURE}[1]{Figure~\ref{#1}}          %-- Figure refig
+\newcommand{\TAB}[1]{Table~\ref{#1}}              %-- Table tablref
+\newcommand{\SEC}[1]{Section~\ref{#1}}               %-- Eq. (refeq)
+\newcommand{\REF}[1]{Ref.~\citen{#1}}               %-- Eq. (refeq)
+\newcommand{\BLUE}[1]{\textcolor{blue}{#1}}
+
+\ifDRAFT
+\doublespacing
+\fi
+
+\journal{NIM A}
+
+\begin{document}
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for theassociated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for theassociated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for theassociated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{Code Structure of the Fuel Motion Device}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{}
+%% \address[label1]{}
+%% \address[label2]{}
+
+% \author{}
+
+% \address{add 1}
+
+% \begin{abstract}
+% %% Text of abstract
+% Here is the abstract.
+% \end{abstract}
+
+% \begin{keyword}
+% %% keywords here, in the form: keyword \sep keyword
+% keyword1 \sep keyword2
+% \end{keyword}
+\end{frontmatter}
+
+\ifDRAFT
+\linenumbers
+\fi
+
+%% main text
+\section{Introduction}
+The main files to be change are:
+\begin{enumerate}
+\item motor.h + motor.cpp
+\item main.cpp
+\item Slider\_Menu\_GUI.cpp
+\end{enumerate}
+
+\section{Motor Class}
+The motor class is where code communicates with the hardware (motor). 
+The \textbf{enable} function lets the selected motor use the encoder port, 
+since this port is shared by the three motors.
+The \textbf{setDuty} function sends duty signal to the motor.
+When initialize, each motor object has its unique \textbf{id} and \textbf{increment\_}. 
+The \textbf{increase} and the \textbf{decrease} functions increase and decrease the motor position by increment\_ value, respectively.
+The \textbf{zstep5} boolean is used by the axial motor. When it is true, the axial step size is 5mm, otherwise, it is 1mm. The 1mm step size is used to finely locate
+the claw grabing position.
+For axial motor, the lowest position is \textbf{63}~cm, and the maximum closing position for the claw is \textbf{4}. These maximum values are set in the \textbf{increase} function.
+
+\section{main.cc}
+In main.cc, three motor objects are initialized to be global variables, which are also declared in Slider\_Menu\_GUI.cpp by the \emph{extern} keyword.
+The \textbf{HAL\_TIM\_PeriodElapsedCallback} function compares the enabled motor's set position and real position (read by the encoder). 
+If they differ, duty was sent to the motor to move it to the set position, i.e., the motor is controlled here.
+In addition, if the claw motor starts to  close from the fully open position, i.e., the limit switch begins to leave from the trigger position (= full open position), the limit switch trigger signal is turned off.
+If the axial motor stops 1~cm from the top limit switch, its limit switch signal is also turned off.
+
+The \textbf{HAL\_GPIO\_EXTI\_Callback} function defines motor behaviors then the limit switches are triggered.
+When the top limit switch of the axial motor is triggered and \textbf{the axial motor is enabled} (this enable condition prevents mistake trigger of the switch when other motor is using the only encoder port), the real and the set positions are set to zero.
+Then, the motor is automatically lowered to $z = 1$~cm.
+When the claw limit switch is triggered and the claw is opening, the claw set and real positions are set to zero, and the claw is left at the fully open position.
+The claw-opening condition ensures the trigger action will not happen when the claw is closing (switch departs from the trigger position).
+This is important because the switch is cheap, when the switch is releasing from the trigger position, it will send trigger signal, which is not wanted.
+Recall that we only want the trigger signal when claw is opening (switch is approaching the trigger position).
+The claw is left at the trigger position (not bound off as the axial motor) because we want it to be fully opened.
+
+\section{Slider\_Menu\_GUI.cpp}
+The \textbf{\_aDialogCreate} variable defines the GUI layout.
+The origin of the coordinate system is at up-left conner with  $x$ axis points to right and $y$ axis points down.
+The total $x$ and $y$ widths are 480 and 270, respectively.
+The syntax for the text, edit, and button widgets can be found at Chapter 18 and 19 of Senior\_Design\_Eclipse\_Workspace/Middlewares/ST/STemWin/Documentation/STemWin528.pdf file.
+
+The \textbf{\_cbCallback} function defines the fonts of the button widgets, showing number of digits of the edit widgets, and most importantly, the call back functions of the buttons.
+In addition, the enabled motor or all stop information is shown at the left-down conner text widget.
+
+The \textbf{MainTask} function shows the set positions to corresponding edit widgets.
+The motor moving condition is updated at the bottom-middle text widget.
+The limit switch condition is shown at the bottom-right text widget.
+
+\section{Operation Manual}
+\subsection{Axial motor}
+The initial set position is -2000~cm to force homing  and establishing the coordinate of the $z$ motor.
+The \textbf{Fuel} button sets the desired position to 6~cm.
+The \textbf{Down} and the \textbf{Up} buttons lower and raise the axial motor by a step size, respectively.
+The step size can be toggled between 5~mm and 1~mm by the \textbf{Zstep} button, and the current step size is shown right to the \textbf{Zstep} button.
+
+\subsection{Azimuthal}
+The \textbf{C.W.} and the \textbf{A.C.W.} buttons rotate the azimuthal motor clock-wise and anti-clock-wise, respectively, when look down.
+
+\subsection{Claw}
+The \textbf{Open} and the \textbf{Close} buttons open and close the claw.
+Before the operation, make sure the claw is at about half open (position = 2 or 3).
+Then, open the claw to trigger the switch (fully open position), which set the desired and current position to zero.
+The claw is soft protected to be fully closed to position of 4.
+Note when claw is at switch limit position, it can still be opened further since the switch will not send out signal.
+This setting is preserved in case the fuel element can not drop at the trigger position.
+Then we open the claw further to drop it at the price of breaking the claw coupling between the motor and the thread, which can be fixed later.
+Remember, when claw is fully opened, \textbf{the next operation is close! Do not open it further unless necessary!}
+After the experiment, move the claw to the half open position (2 or 3).
+
+
+
+
+
+
+
+
+
+
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+
+%% \section{}
+%% \label{}
+
+%% If you have bibdatabase file and want bibtex to generate the
+%% bibitems, please use
+%%
+\section*{References}
+\bibliographystyle{elsarticle-num} 
+\bibliography{ref}
+
+\end{document}
+\endinput
+%%
+%% End of file `elsarticle-template-num.tex'.
